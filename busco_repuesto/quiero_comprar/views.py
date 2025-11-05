@@ -19,14 +19,16 @@ def procesar_compra(request):
                 marca_auto=request.POST.get('marca_auto'),
                 modelo_auto=request.POST.get('modelo_auto', ''),
                 año_auto=request.POST.get('año_auto') if request.POST.get('año_auto') else None,
+                nro_chasis=request.POST.get('nro_chasis', ''),
                 categoria_repuesto=request.POST.get('categoria_repuesto'),
                 repuesto_especifico=request.POST.get('repuesto_especifico'),
                 descripcion_adicional=request.POST.get('descripcion_adicional', ''),
                 urgencia=request.POST.get('urgencia'),
-                nombre_completo=request.POST.get('nombre_completo'),
+                nombre=request.POST.get('nombre'),
                 email=request.POST.get('email'),
-                telefono=request.POST.get('telefono'),
-                dni=request.POST.get('dni')
+                celular=request.POST.get('celular'),
+                localidad=request.POST.get('localidad', ''),
+                zona=request.POST.get('zona', '')
             )
             
             # Buscar repuestos con algoritmo de coincidencia mejorado
@@ -50,19 +52,21 @@ def procesar_solicitud(request):
     """Procesar solicitud de repuesto y mostrar confirmación con coincidencias"""
     if request.method == 'POST':
         try:
-            # Crear la solicitud de compra
+            # Crear la solicitud de compra con los campos correctos del modelo
             solicitud = SolicitudCompra.objects.create(
                 marca_auto=request.POST.get('marca_auto'),
                 modelo_auto=request.POST.get('modelo_auto', ''),
                 año_auto=request.POST.get('año_auto') if request.POST.get('año_auto') else None,
+                nro_chasis=request.POST.get('nro_chasis', ''),
                 categoria_repuesto=request.POST.get('categoria_repuesto'),
                 repuesto_especifico=request.POST.get('repuesto_especifico'),
                 descripcion_adicional=request.POST.get('descripcion_adicional', ''),
                 urgencia=request.POST.get('urgencia'),
-                nombre_completo=request.POST.get('nombre_completo'),
+                nombre=request.POST.get('nombre'),
                 email=request.POST.get('email'),
-                telefono=request.POST.get('telefono'),
-                dni=request.POST.get('dni')
+                celular=request.POST.get('celular'),
+                localidad=request.POST.get('localidad', ''),
+                zona=request.POST.get('zona', '')
             )
             
             # Buscar repuestos que coincidan con la solicitud

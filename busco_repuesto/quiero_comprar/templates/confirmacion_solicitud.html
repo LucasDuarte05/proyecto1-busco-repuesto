@@ -342,6 +342,12 @@
                         {{ solicitud.marca_auto }} 
                         {% if solicitud.modelo_auto %}{{ solicitud.modelo_auto }}{% endif %}
                         {% if solicitud.año_auto %}({{ solicitud.año_auto }}){% endif %}
+                        {% if solicitud.nro_chasis %}
+                        <div class="summary-item">
+                            <span class="summary-label">VIN/Nº Chasis:</span>
+                            <span class="summary-value">{{ solicitud.nro_chasis }}</span>
+                        </div>
+                        {% endif %}
                     </span>
                 </div>
                 <div class="summary-item">
@@ -368,6 +374,18 @@
                     <span class="summary-label">Contacto:</span>
                     <span class="summary-value">{{ solicitud.email }}</span>
                 </div>
+                {% if solicitud.localidad %}
+                <div class="summary-item">
+                    <span class="summary-label">Localidad:</span>
+                    <span class="summary-value">{{ solicitud.localidad }}</span>
+                </div>
+                {% endif %}
+                {% if solicitud.zona %}
+                <div class="summary-item">
+                    <span class="summary-label">Zona/Provincia:</span>
+                    <span class="summary-value">{{ solicitud.zona }}</span>
+                </div>
+                {% endif %}
             </div>
 
             {% if hay_coincidencias %}

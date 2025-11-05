@@ -5,6 +5,7 @@ class SolicitudCompra(models.Model):
         ('baja', 'Baja - Puedo esperar'),
         ('media', 'Media - Lo necesito pronto'),
         ('alta', 'Alta - Urgente'),
+        ('super_alta', 'Super Alta - Muy Urgente (en hora)'),
     ]
     
     CATEGORIA_CHOICES = [
@@ -22,16 +23,18 @@ class SolicitudCompra(models.Model):
     marca_auto = models.CharField(max_length=100, verbose_name="Marca del Auto")
     modelo_auto = models.CharField(max_length=100, verbose_name="Modelo del Auto", blank=True)
     año_auto = models.IntegerField(verbose_name="Año del Auto", null=True, blank=True)
+    nro_chasis = models.CharField(max_length=100, verbose_name="VIN/Número de Chasis", blank=True, default='')
     categoria_repuesto = models.CharField(max_length=50, choices=CATEGORIA_CHOICES, verbose_name="Categoría del Repuesto")
     repuesto_especifico = models.CharField(max_length=200, verbose_name="Repuesto Específico")
     descripcion_adicional = models.TextField(verbose_name="Descripción Adicional", blank=True)
     urgencia = models.CharField(max_length=20, choices=URGENCIA_CHOICES, verbose_name="Nivel de Urgencia")
     
     # Datos personales
-    nombre_completo = models.CharField(max_length=200, verbose_name="Nombre Completo")
+    nombre = models.CharField(max_length=200, verbose_name="Nombre")
     email = models.EmailField(verbose_name="Email")
-    telefono = models.CharField(max_length=20, verbose_name="Teléfono")
-    dni = models.CharField(max_length=20, verbose_name="DNI")
+    celular = models.CharField(max_length=20, verbose_name="Celular")
+    localidad = models.CharField(max_length=200, verbose_name="Localidad", blank=True, default='')
+    zona = models.CharField(max_length=200, verbose_name="Zona/Provincia", blank=True, default='')
     
     # Metadata
     fecha_solicitud = models.DateTimeField(auto_now_add=True)
@@ -43,7 +46,7 @@ class SolicitudCompra(models.Model):
         ordering = ['-fecha_solicitud']
     
     def __str__(self):
-        return f"{self.nombre_completo} - {self.repuesto_especifico}"
+        return f"{self.nombre} - {self.repuesto_especifico}"
 
 
 class PublicacionVenta(models.Model):

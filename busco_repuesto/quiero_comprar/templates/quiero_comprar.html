@@ -334,6 +334,10 @@
                             <option value="">Selecciona un año</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label>VIN/Número de Chasis</label>
+                        <input type="text" name="nro_chasis" id="nro_chasis" placeholder="Opcional">
+                    </div>
                 </div>
 
                 <!-- Paso 2: Información del Repuesto -->
@@ -378,9 +382,10 @@
                         <label>Urgencia <span class="required">*</span></label>
                         <select name="urgencia" required>
                             <option value="">Selecciona el nivel</option>
-                            <option value="baja">Baja - Puedo esperar</option>
-                            <option value="media">Media - Lo necesito pronto</option>
+                            <option value="super_alta">Super Alta - Muy Urgente (en hora)</option>
                             <option value="alta">Alta - Urgente</option>
+                            <option value="media">Media - Lo necesito pronto</option>
+                            <option value="baja">Baja - Puedo esperar</option>
                         </select>
                     </div>
                 </div>
@@ -391,8 +396,8 @@
                     <p class="step-description">Para que los vendedores puedan contactarte</p>
                     
                     <div class="form-group">
-                        <label>Nombre Completo <span class="required">*</span></label>
-                        <input type="text" name="nombre_completo" required placeholder="Tu nombre completo">
+                        <label>Nombre <span class="required">*</span></label>
+                        <input type="text" name="nombre" required placeholder="Tu nombre">
                     </div>
 
                     <div class="form-group">
@@ -401,13 +406,18 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Teléfono <span class="required">*</span></label>
-                        <input type="text" name="telefono" required placeholder="Ej: +54 11 1234-5678">
+                        <label>Celular <span class="required">*</span></label>
+                        <input type="text" name="celular" required placeholder="Ej: +54 11 1234-5678">
                     </div>
 
                     <div class="form-group">
-                        <label>DNI <span class="required">*</span></label>
-                        <input type="text" name="dni" required placeholder="Tu número de documento">
+                        <label>Localidad</label>
+                        <input type="text" name="localidad" placeholder="Ej: Capital Federal">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Zona/Provincia</label>
+                        <input type="text" name="zona" placeholder="Ej: Buenos Aires">
                     </div>
                 </div>
 
