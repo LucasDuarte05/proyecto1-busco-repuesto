@@ -1,0 +1,297 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicación Exitosa - Busco Repuesto</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 50%, #1e8449 100%);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-header {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .success-header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .success-header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .publication-summary {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .summary-title {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .summary-item {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: #4a5568;
+            min-width: 140px;
+        }
+
+        .summary-value {
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .price-highlight {
+            font-size: 1.8em;
+            color: #27ae60;
+            font-weight: 700;
+        }
+
+        .info-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h3 {
+            color: #e65100;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-box li {
+            color: #ef6c00;
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .info-box li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #ff9800;
+            font-weight: bold;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .button-group .btn-primary {
+            grid-column: 1 / -1;
+        }
+
+        .btn {
+            padding: 18px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(230, 126, 34, 0.4);
+        }
+
+        .btn-secondary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .success-header {
+                padding: 40px 20px;
+            }
+
+            .success-icon {
+                font-size: 4em;
+            }
+
+            .success-header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .summary-item {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group .btn-primary {
+                grid-column: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-header">
+            <div class="success-icon">🎉</div>
+            <h1>¡Publicación Exitosa!</h1>
+            <p>Tu repuesto ya está visible para los compradores</p>
+        </div>
+
+        <div class="content">
+            <div class="publication-summary">
+                <div class="summary-title">Resumen de tu publicación:</div>
+                <div class="summary-item">
+                    <span class="summary-label">Título:</span>
+                    <span class="summary-value">{{ publicacion.titulo }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Compatible:</span>
+                    <span class="summary-value">
+                        {{ publicacion.marca_auto }} 
+                        {% if publicacion.modelo_auto %}{{ publicacion.modelo_auto }}{% endif %}
+                    </span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Categoría:</span>
+                    <span class="summary-value">{{ publicacion.get_categoria_display }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Estado:</span>
+                    <span class="summary-value">{{ publicacion.get_estado_display }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Precio:</span>
+                    <span class="summary-value price-highlight">${{ publicacion.precio }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Ubicación:</span>
+                    <span class="summary-value">📍 {{ publicacion.ubicacion }}</span>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>¿Qué sigue ahora?</h3>
+                <ul>
+                    <li>Los compradores podrán ver tu repuesto cuando busquen productos similares</li>
+                    <li>Te contactarán directamente por email o teléfono si están interesados</li>
+                    <li>Asegúrate de responder rápido para no perder ventas</li>
+                    <li>Mantén tu disponibilidad actualizada</li>
+                </ul>
+            </div>
+
+            <div class="button-group">
+                <a href="{% url 'ver_solicitudes' %}" class="btn btn-primary">
+                    <span>🛒</span>
+                    Ver Solicitudes de Compra
+                </a>
+                <a href="{% url 'index' %}" class="btn btn-secondary">
+                    <span>🏠</span>
+                    Ir al Inicio
+                </a>
+                <a href="{% url 'publicar_repuesto' %}" class="btn btn-secondary">
+                    <span>➕</span>
+                    Publicar Otro
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

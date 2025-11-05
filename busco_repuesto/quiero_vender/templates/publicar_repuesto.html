@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Repuesto - Busco Repuesto</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 50%, #c44f00 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .form-content {
+            padding: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #e67e22;
+        }
+
+        .section-title:first-child {
+            margin-top: 0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-row.single {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #e67e22;
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .helper-text {
+            font-size: 0.85em;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            color: white;
+            flex: 2;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(230, 126, 34, 0.4);
+        }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: #4a5568;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-cancel:hover {
+            background: #cbd5e0;
+        }
+
+        .home-link {
+            display: inline-block;
+            margin: 20px 40px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .home-link:hover {
+            text-decoration: underline;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .info-box p {
+            color: #856404;
+            margin: 5px 0;
+        }
+
+        .custom-input {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .custom-input.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-content {
+                padding: 30px 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'index' %}" class="home-link">← Volver al inicio</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>💰 Publicar Repuesto</h1>
+            <p>Completa el formulario para que los compradores encuentren tu repuesto</p>
+        </div>
+
+        <form method="POST" action="{% url 'procesar_publicacion' %}" class="form-content" id="mainForm">
+            {% csrf_token %}
+            <div class="info-box">
+                <p><strong>💡 Tip:</strong> Cuanta más información proporciones, más fácil será que los compradores encuentren tu repuesto.</p>
+            </div>
+
+            <h2 class="section-title">Información del Repuesto</h2>
+            
+            <div class="form-group">
+                <label>Título de la Publicación <span class="required">*</span></label>
+                <input type="text" name="titulo" required placeholder="Ej: Alternador Chevrolet Corsa 1.6 Original">
+                <div class="helper-text">Sé específico y claro en el título</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Marca Compatible <span class="required">*</span></label>
+                    <select name="marca_auto" id="marca_auto" required>
+                        <option value="">Selecciona una marca</option>
+                        <option value="Chevrolet">Chevrolet</option>
+                        <option value="Ford">Ford</option>
+                        <option value="Volkswagen">Volkswagen</option>
+                        <option value="Fiat">Fiat</option>
+                        <option value="Peugeot">Peugeot</option>
+                        <option value="Renault">Renault</option>
+                        <option value="Toyota">Toyota</option>
+                        <option value="Honda">Honda</option>
+                        <option value="Nissan">Nissan</option>
+                        <option value="Citroen">Citroën</option>
+                        <option value="Hyundai">Hyundai</option>
+                        <option value="Kia">Kia</option>
+                        <option value="Mazda">Mazda</option>
+                        <option value="Mitsubishi">Mitsubishi</option>
+                        <option value="Suzuki">Suzuki</option>
+                        <option value="Universal">Universal / Compatible con varias marcas</option>
+                        <option value="Otro">Otra marca</option>
+                    </select>
+                    <input type="text" name="marca_auto_otro" id="marca_auto_otro" class="custom-input" placeholder="Especifica la marca">
+                </div>
+
+                <div class="form-group">
+                    <label>Modelo Compatible</label>
+                    <select name="modelo_auto" id="modelo_auto">
+                        <option value="">Primero selecciona una marca</option>
+                    </select>
+                    <input type="text" name="modelo_auto_otro" id="modelo_auto_otro" class="custom-input" placeholder="Especifica el modelo">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Año Desde</label>
+                    <select name="año_desde" id="año_desde">
+                        <option value="">Seleccionar año</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Año Hasta</label>
+                    <select name="año_hasta" id="año_hasta">
+                        <option value="">Seleccionar año</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Categoría <span class="required">*</span></label>
+                    <select name="categoria" id="categoria" required>
+                        <option value="">Selecciona una categoría</option>
+                        <option value="motor">Motor</option>
+                        <option value="transmision">Transmisión</option>
+                        <option value="suspension">Suspensión</option>
+                        <option value="frenos">Frenos</option>
+                        <option value="electrico">Sistema Eléctrico</option>
+                        <option value="carroceria">Carrocería</option>
+                        <option value="interior">Interior</option>
+                        <option value="neumaticos">Neumáticos</option>
+                        <option value="escape">Sistema de Escape</option>
+                        <option value="climatizacion">Climatización</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Estado <span class="required">*</span></label>
+                    <select name="estado" required>
+                        <option value="">Selecciona el estado</option>
+                        <option value="nuevo">Nuevo</option>
+                        <option value="usado_excelente">Usado - Excelente estado</option>
+                        <option value="usado_bueno">Usado - Buen estado</option>
+                        <option value="usado_regular">Usado - Estado regular</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Descripción Detallada <span class="required">*</span></label>
+                <textarea name="descripcion" required placeholder="Describe el repuesto: condición, funcionamiento, si tiene desgaste, motivo de venta, etc."></textarea>
+                <div class="helper-text">Sé honesto sobre el estado del repuesto</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Precio (ARS) <span class="required">*</span></label>
+                    <input type="number" name="precio" required min="0" step="0.01" placeholder="Ej: 25000">
+                </div>
+
+                <div class="form-group">
+                    <label>Ubicación <span class="required">*</span></label>
+                    <select name="ubicacion" id="ubicacion" required>
+                        <option value="">Selecciona tu ubicación</option>
+                        <option value="CABA">CABA - Capital Federal</option>
+                        <option value="GBA Zona Norte">GBA - Zona Norte</option>
+                        <option value="GBA Zona Sur">GBA - Zona Sur</option>
+                        <option value="GBA Zona Oeste">GBA - Zona Oeste</option>
+                        <option value="La Plata">La Plata</option>
+                        <option value="Rosario">Rosario</option>
+                        <option value="Córdoba">Córdoba</option>
+                        <option value="Mendoza">Mendoza</option>
+                        <option value="Mar del Plata">Mar del Plata</option>
+                        <option value="Tucumán">Tucumán</option>
+                        <option value="Salta">Salta</option>
+                        <option value="Santa Fe">Santa Fe</option>
+                        <option value="Neuquén">Neuquén</option>
+                        <option value="Otro">Otra ubicación</option>
+                    </select>
+                    <input type="text" name="ubicacion_otro" id="ubicacion_otro" class="custom-input" placeholder="Especifica tu ubicación">
+                </div>
+            </div>
+
+            <h2 class="section-title">Tus Datos de Contacto</h2>
+
+            <div class="form-group">
+                <label>Nombre Completo / Razón Social <span class="required">*</span></label>
+                <input type="text" name="nombre_vendedor" required placeholder="Tu nombre o nombre de tu negocio">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email <span class="required">*</span></label>
+                    <input type="email" name="email_vendedor" required placeholder="tu@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono <span class="required">*</span></label>
+                    <input type="text" name="telefono_vendedor" required placeholder="Ej: +54 11 1234-5678">
+                </div>
+            </div>
+
+            <div class="button-group">
+                <a href="{% url 'index' %}" class="btn btn-cancel">Cancelar</a>
+                <button type="submit" class="btn btn-submit">Publicar Repuesto 🚀</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Base de datos de modelos por marca
+        const modelosPorMarca = {
+            'Chevrolet': ['Agile', 'Astra', 'Aveo', 'Blazer', 'Captiva', 'Classic', 'Cobalt', 'Corsa', 'Cruze', 'Montana', 'Onix', 'Prisma', 'S10', 'Sail', 'Sonic', 'Spark', 'Spin', 'Tracker', 'Trailblazer', 'Zafira'],
+            'Ford': ['EcoSport', 'Edge', 'Escort', 'Explorer', 'F-100', 'F-150', 'Fiesta', 'Focus', 'Fusion', 'Ka', 'Kuga', 'Mondeo', 'Mustang', 'Ranger', 'Territory', 'Transit'],
+            'Volkswagen': ['Amarok', 'Beetle', 'Bora', 'Caddy', 'Fox', 'Gol', 'Golf', 'Jetta', 'Passat', 'Polo', 'Saveiro', 'Suran', 'T-Cross', 'Tiguan', 'Touareg', 'Up', 'Vento', 'Virtus'],
+            'Fiat': ['500', 'Argo', 'Bravo', 'Cronos', 'Doblo', 'Ducato', 'Fiorino', 'Idea', 'Linea', 'Mobi', 'Palio', 'Punto', 'Siena', 'Strada', 'Toro', 'Uno', 'Weekend'],
+            'Peugeot': ['106', '205', '206', '207', '208', '2008', '301', '307', '308', '3008', '405', '406', '407', '408', '5008', '504', '505', 'Partner', 'Boxer'],
+            'Renault': ['Alaskan', 'Captur', 'Clio', 'Duster', 'Fluence', 'Kangoo', 'Koleos', 'Kwid', 'Logan', 'Master', 'Megane', 'Oroch', 'Sandero', 'Scenic', 'Stepway', 'Symbol', 'Talisman', 'Twingo'],
+            'Toyota': ['Camry', 'Corolla', 'Etios', 'Hilux', 'Land Cruiser', 'Prius', 'RAV4', 'SW4', 'Yaris'],
+            'Honda': ['Accord', 'City', 'Civic', 'CR-V', 'Fit', 'HR-V', 'Pilot'],
+            'Nissan': ['Frontier', 'Kicks', 'March', 'Murano', 'Pathfinder', 'Sentra', 'Tiida', 'Versa', 'X-Trail'],
+            'Citroen': ['C3', 'C4', 'C4 Cactus', 'C4 Lounge', 'C5', 'Berlingo', 'Jumper'],
+            'Hyundai': ['Accent', 'Creta', 'Elantra', 'i10', 'i30', 'Ioniq', 'Kona', 'Santa Fe', 'Tucson', 'Veloster'],
+            'Kia': ['Carnival', 'Cerato', 'Picanto', 'Rio', 'Seltos', 'Sorento', 'Sportage', 'Soul'],
+            'Mazda': ['2', '3', '6', 'CX-3', 'CX-5', 'CX-9'],
+            'Mitsubishi': ['ASX', 'Eclipse', 'L200', 'Lancer', 'Montero', 'Outlander', 'Pajero'],
+            'Suzuki': ['Alto', 'Baleno', 'Celerio', 'Fun', 'Grand Vitara', 'Swift', 'Vitara']
+        };
+
+        // Generar años desde 1980 hasta 2025
+        function generarAnios() {
+            const selectDesde = document.getElementById('año_desde');
+            const selectHasta = document.getElementById('año_hasta');
+            const añoActual = 2025;
+            
+            for (let año = añoActual; año >= 1980; año--) {
+                const optionDesde = document.createElement('option');
+                optionDesde.value = año;
+                optionDesde.textContent = año;
+                selectDesde.appendChild(optionDesde);
+
+                const optionHasta = document.createElement('option');
+                optionHasta.value = año;
+                optionHasta.textContent = año;
+                selectHasta.appendChild(optionHasta);
+            }
+        }
+
+        // Actualizar modelos según la marca seleccionada
+        document.getElementById('marca_auto').addEventListener('change', function() {
+            const marca = this.value;
+            const modeloSelect = document.getElementById('modelo_auto');
+            const marcaOtro = document.getElementById('marca_auto_otro');
+            const modeloOtro = document.getElementById('modelo_auto_otro');
+            
+            // Resetear campo "otro" de modelo
+            modeloOtro.classList.remove('show');
+            modeloOtro.value = '';
+            
+            // Manejar campo "otro" de marca
+            if (marca === 'Otro') {
+                marcaOtro.classList.add('show');
+                marcaOtro.required = true;
+                modeloSelect.innerHTML = '<option value="">Especifica marca primero</option>';
+                modeloSelect.disabled = true;
+            } else {
+                marcaOtro.classList.remove('show');
+                marcaOtro.required = false;
+                marcaOtro.value = '';
+                modeloSelect.disabled = false;
+                
+                // Limpiar select de modelos
+                modeloSelect.innerHTML = '<option value="">Selecciona un modelo</option>';
+                
+                if (marca && marca !== 'Universal' && modelosPorMarca[marca]) {
+                    // Agregar modelos de la marca
+                    modelosPorMarca[marca].forEach(modelo => {
+                        const option = document.createElement('option');
+                        option.value = modelo;
+                        option.textContent = modelo;
+                        modeloSelect.appendChild(option);
+                    });
+                    
+                    // Agregar opción "Otro"
+                    const optionOtro = document.createElement('option');
+                    optionOtro.value = 'Otro';
+                    optionOtro.textContent = 'Otro modelo';
+                    modeloSelect.appendChild(optionOtro);
+                } else if (marca === 'Universal') {
+                    modeloSelect.innerHTML = '<option value="">No aplica (Universal)</option>';
+                }
+            }
+        });
+
+        // Manejar opción "Otro" en modelo
+        document.getElementById('modelo_auto').addEventListener('change', function() {
+            const modeloOtro = document.getElementById('modelo_auto_otro');
+            
+            if (this.value === 'Otro') {
+                modeloOtro.classList.add('show');
+                modeloOtro.required = true;
+            } else {
+                modeloOtro.classList.remove('show');
+                modeloOtro.required = false;
+                modeloOtro.value = '';
+            }
+        });
+
+        // Manejar opción "Otro" en ubicación
+        document.getElementById('ubicacion').addEventListener('change', function() {
+            const ubicacionOtro = document.getElementById('ubicacion_otro');
+            
+            if (this.value === 'Otro') {
+                ubicacionOtro.classList.add('show');
+                ubicacionOtro.required = true;
+            } else {
+                ubicacionOtro.classList.remove('show');
+                ubicacionOtro.required = false;
+                ubicacionOtro.value = '';
+            }
+        });
+
+        // Validar que año_hasta sea mayor que año_desde
+        document.getElementById('año_hasta').addEventListener('change', function() {
+            const añoDesde = document.getElementById('año_desde').value;
+            const añoHasta = this.value;
+            
+            if (añoDesde && añoHasta && parseInt(añoHasta) < parseInt(añoDesde)) {
+                alert('El año "hasta" no puede ser menor que el año "desde"');
+                this.value = '';
+            }
+        });
+
+        // Inicializar
+        generarAnios();
+
+        // Manejar envío del formulario
+        document.getElementById('mainForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validar campos personalizados
+            const marca = document.getElementById('marca_auto').value;
+            const marcaOtro = document.getElementById('marca_auto_otro').value;
+            const modelo = document.getElementById('modelo_auto').value;
+            const modeloOtro = document.getElementById('modelo_auto_otro').value;
+            const ubicacion = document.getElementById('ubicacion').value;
+            const ubicacionOtro = document.getElementById('ubicacion_otro').value;
+            
+            if (marca === 'Otro' && !marcaOtro) {
+                alert('Por favor especifica la marca');
+                return;
+            }
+            
+            if (modelo === 'Otro' && !modeloOtro) {
+                alert('Por favor especifica el modelo');
+                return;
+            }
+            
+            if (ubicacion === 'Otro' && !ubicacionOtro) {
+                alert('Por favor especifica tu ubicación');
+                return;
+            }
+            
+            this.submit(); // Enviar el formulario
+            // Aquí iría: this.submit();
+        });
+    </script>
+</body>
+</html>
