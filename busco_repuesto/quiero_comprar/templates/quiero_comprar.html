@@ -5,263 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscar Repuesto - Busco Repuesto</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-
-        .progress-bar {
-            display: flex;
-            justify-content: space-between;
-            padding: 30px;
-            background: #f8f9fa;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .progress-step {
-            flex: 1;
-            text-align: center;
-            position: relative;
-        }
-
-        .progress-step::after {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 50%;
-            width: 100%;
-            height: 2px;
-            background: #cbd5e0;
-            z-index: 0;
-        }
-
-        .progress-step:last-child::after {
-            display: none;
-        }
-
-        .progress-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #cbd5e0;
-            color: #718096;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 8px;
-            font-weight: bold;
-            position: relative;
-            z-index: 1;
-            transition: all 0.3s;
-        }
-
-        .progress-step.active .progress-circle {
-            background: #3498db;
-            color: white;
-        }
-
-        .progress-step.completed .progress-circle {
-            background: #27ae60;
-            color: white;
-        }
-
-        .progress-label {
-            font-size: 0.85em;
-            color: #718096;
-            font-weight: 600;
-        }
-
-        .form-content {
-            padding: 40px;
-        }
-
-        .step {
-            display: none;
-        }
-
-        .step.active {
-            display: block;
-            animation: fadeIn 0.4s;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .step-title {
-            font-size: 1.8em;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .step-description {
-            color: #718096;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #2c3e50;
-            font-weight: 600;
-            font-size: 0.95em;
-        }
-
-        .required {
-            color: #e74c3c;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 1em;
-            transition: all 0.3s;
-            font-family: inherit;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 40px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }
-
-        .btn-secondary {
-            background: #e2e8f0;
-            color: #4a5568;
-        }
-
-        .btn-secondary:hover {
-            background: #cbd5e0;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .home-link {
-            display: inline-block;
-            margin: 20px 40px;
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .home-link:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .progress-bar {
-                padding: 20px 10px;
-            }
-
-            .progress-label {
-                font-size: 0.7em;
-            }
-
-            .progress-circle {
-                width: 30px;
-                height: 30px;
-                font-size: 0.9em;
-            }
-
-            .form-content {
-                padding: 30px 20px;
-            }
-
-            .step-title {
-                font-size: 1.5em;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'quiero_comprar/quiero_comprar.css' %}">
 </head>
 <body>
     <a href="{% url 'index' %}" class="home-link">← Volver al inicio</a>
@@ -411,13 +155,17 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Localidad</label>
-                        <input type="text" name="localidad" placeholder="Ej: Capital Federal">
+                        <label>Zona/Provincia</label>
+                        <select name="zona" id="zona">
+                            <option value="">Selecciona una provincia</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Zona/Provincia</label>
-                        <input type="text" name="zona" placeholder="Ej: Buenos Aires">
+                        <label>Localidad</label>
+                        <select name="localidad" id="localidad">
+                            <option value="">Primero selecciona una provincia</option>
+                        </select>
                     </div>
                 </div>
 
@@ -461,6 +209,34 @@
             'otros': ['Neumáticos', 'Llantas', 'Tapa de tanque', 'Antena', 'Escape', 'Silenciador', 'Catalizador', 'Limpia parabrisas', 'Otros repuestos']
         };
 
+        // Datos de provincias y localidades de Argentina
+        const localidadesPorProvincia = {
+            'Buenos Aires': ['La Plata', 'Mar del Plata', 'Bahía Blanca', 'Quilmes', 'Avellaneda', 'Lanús', 'San Isidro', 'Lomas de Zamora', 'Morón', 'San Miguel', 'Tigre', 'Vicente López', 'Tres de Febrero', 'La Matanza', 'Almirante Brown', 'Pilar', 'Escobar', 'General San Martín', 'Tandil', 'Olavarría', 'Pergamino', 'Junín', 'Necochea', 'Zárate', 'Campana', 'San Nicolás', 'Luján', 'Mercedes', 'Chivilcoy', 'San Pedro', 'Azul', 'Balcarce', 'Bragado', 'Chascomús', 'Dolores', 'General Pueyrredón', 'La Costa', 'Pinamar', 'Villa Gesell'],
+            'CABA': ['Palermo', 'Recoleta', 'Belgrano', 'Caballito', 'Almagro', 'Villa Urquiza', 'Flores', 'Villa Crespo', 'San Telmo', 'Puerto Madero', 'Núñez', 'Colegiales', 'Villa Devoto', 'Villa del Parque', 'Paternal', 'Chacarita', 'Agronomía', 'Saavedra', 'Coghlan', 'Villa Ortúzar', 'Parque Chas', 'Villa Pueyrredón', 'Monte Castro', 'Versalles', 'Liniers', 'Mataderos', 'Parque Avellaneda', 'Floresta', 'Vélez Sarsfield', 'Villa Luro', 'Villa Real', 'Parque Chacabuco', 'Boedo', 'Barracas', 'La Boca', 'Constitución', 'San Cristóbal', 'Balvanera', 'Once', 'Retiro', 'San Nicolás', 'Monserrat'],
+            'Catamarca': ['San Fernando del Valle de Catamarca', 'Andalgalá', 'Belén', 'Santa María', 'Tinogasta', 'Fiambalá', 'Valle Viejo', 'Recreo', 'Fray Mamerto Esquiú', 'Capayán', 'Pomán', 'Ancasti'],
+            'Chaco': ['Resistencia', 'Barranqueras', 'Fontana', 'Puerto Vilelas', 'Sáenz Peña', 'Villa Ángela', 'Charata', 'General San Martín', 'Quitilipi', 'Las Breñas', 'Machagai', 'Castelli', 'Juan José Castelli'],
+            'Chubut': ['Rawson', 'Puerto Madryn', 'Comodoro Rivadavia', 'Trelew', 'Esquel', 'Puerto Deseado', 'Rada Tilly', 'Gaiman', 'Dolavon', 'Trevelin', 'Sarmiento', 'Gobernador Costa', 'Río Mayo'],
+            'Córdoba': ['Córdoba', 'Villa Carlos Paz', 'Río Cuarto', 'Villa María', 'San Francisco', 'Alta Gracia', 'Río Tercero', 'Bell Ville', 'Jesús María', 'La Calera', 'Cosquín', 'Cruz del Eje', 'Villa Dolores', 'Deán Funes', 'La Falda', 'Arroyito', 'San Francisco del Chañar', 'Laboulaye', 'Villa Allende', 'Unquillo', 'Río Segundo', 'Villa del Rosario', 'Morteros', 'Marcos Juárez', 'Las Varillas', 'Corral de Bustos', 'Villa Nueva', 'Villa General Belgrano'],
+            'Corrientes': ['Corrientes', 'Goya', 'Mercedes', 'Paso de los Libres', 'Curuzú Cuatiá', 'Santo Tomé', 'Esquina', 'Monte Caseros', 'Bella Vista', 'Saladas', 'Ituzaingó', 'Alvear'],
+            'Entre Ríos': ['Paraná', 'Concordia', 'Gualeguaychú', 'Concepción del Uruguay', 'Gualeguay', 'La Paz', 'Federación', 'Victoria', 'Villaguay', 'Colón', 'San José', 'Chajarí', 'Federal', 'Basavilbaso', 'Crespo', 'San Salvador', 'Diamante', 'Nogoyá'],
+            'Formosa': ['Formosa', 'Clorinda', 'Pirané', 'El Colorado', 'Ingeniero Juárez', 'Las Lomitas', 'Laguna Blanca', 'Comandante Fontana', 'Ibarreta', 'Misión Laishí', 'Villa Escolar', 'Herradura'],
+            'Jujuy': ['San Salvador de Jujuy', 'San Pedro', 'Libertador General San Martín', 'Palpalá', 'La Quiaca', 'Humahuaca', 'Perico', 'El Carmen', 'Tilcara', 'Monterrico', 'Libertad', 'Fraile Pintado', 'Yuto'],
+            'La Pampa': ['Santa Rosa', 'General Pico', 'General Acha', 'Toay', 'Eduardo Castex', 'Realicó', 'Intendente Alvear', 'Macachín', 'Victorica', 'Winifreda', 'Ingeniero Luiggi', 'Quemú Quemú'],
+            'La Rioja': ['La Rioja', 'Chilecito', 'Arauco', 'Chamical', 'Aimogasta', 'Villa Unión', 'Chepes', 'Nonogasta', 'Famatina', 'Vinchina'],
+            'Mendoza': ['Mendoza', 'San Rafael', 'Godoy Cruz', 'Guaymallén', 'Luján de Cuyo', 'Maipú', 'Las Heras', 'San Martín', 'Rivadavia', 'Junín', 'Tunuyán', 'Tupungato', 'Malargüe', 'General Alvear', 'Lavalle', 'La Paz', 'Santa Rosa', 'San Carlos'],
+            'Misiones': ['Posadas', 'Oberá', 'Eldorado', 'Puerto Iguazú', 'Apóstoles', 'Leandro N. Alem', 'San Vicente', 'Montecarlo', 'Jardín América', 'Puerto Rico', 'Aristóbulo del Valle', 'Wanda', 'Campo Grande', 'Garupá', 'Candelaria', 'San Ignacio'],
+            'Neuquén': ['Neuquén', 'Plottier', 'Centenario', 'Cutral-Có', 'Plaza Huincul', 'Zapala', 'San Martín de los Andes', 'Junín de los Andes', 'Villa La Angostura', 'Chos Malal', 'Senillosa', 'San Patricio del Chañar', 'Añelo', 'Loncopué', 'Aluminé'],
+            'Río Negro': ['Viedma', 'San Carlos de Bariloche', 'General Roca', 'Cipolletti', 'Villa Regina', 'Río Colorado', 'Allen', 'Cinco Saltos', 'Catriel', 'El Bolsón', 'Choele Choel', 'San Antonio Oeste', 'Las Grutas', 'Ingeniero Jacobacci', 'Sierra Grande'],
+            'Salta': ['Salta', 'San Ramón de la Nueva Orán', 'Tartagal', 'Metán', 'General Güemes', 'Cafayate', 'Joaquín V. González', 'Rosario de la Frontera', 'Embarcación', 'Cerrillos', 'Chicoana', 'La Caldera', 'El Carril', 'Campo Quijano', 'Cachi', 'Molinos'],
+            'San Juan': ['San Juan', 'Rawson', 'Chimbas', 'Rivadavia', 'Santa Lucía', 'Pocito', 'Caucete', 'Albardón', '9 de Julio', '25 de Mayo', 'Jáchal', 'Valle Fértil', 'Calingasta', 'Iglesia'],
+            'San Luis': ['San Luis', 'Villa Mercedes', 'La Punta', 'Merlo', 'Juana Koslay', 'El Trapiche', 'Tilisarao', 'Naschel', 'Justo Daract', 'Villa de la Quebrada', 'Concarán', 'La Toma', 'Quines', 'San Francisco del Monte de Oro'],
+            'Santa Cruz': ['Río Gallegos', 'Caleta Olivia', 'Pico Truncado', 'Puerto Deseado', 'Puerto San Julián', 'Río Turbio', 'El Calafate', 'Las Heras', 'Puerto Santa Cruz', 'Comandante Luis Piedra Buena', '28 de Noviembre', 'Perito Moreno', 'Gobernador Gregores'],
+            'Santa Fe': ['Santa Fe', 'Rosario', 'Rafaela', 'Venado Tuerto', 'Reconquista', 'Villa Constitución', 'Casilda', 'San Lorenzo', 'Esperanza', 'Santo Tomé', 'Gálvez', 'Firmat', 'Cañada de Gómez', 'Vera', 'San Javier', 'Rufino', 'Tostado', 'Calchaquí', 'Las Rosas', 'Funes', 'Capitán Bermúdez', 'Arroyo Seco', 'Villa Gobernador Gálvez'],
+            'Santiago del Estero': ['Santiago del Estero', 'La Banda', 'Termas de Río Hondo', 'Añatuya', 'Frías', 'Monte Quemado', 'Fernández', 'Suncho Corral', 'Quimilí', 'Clodomira', 'Pinto', 'Loreto', 'Bandera', 'Villa Ojo de Agua'],
+            'Tierra del Fuego': ['Ushuaia', 'Río Grande', 'Tolhuin'],
+            'Tucumán': ['San Miguel de Tucumán', 'Yerba Buena', 'Tafí Viejo', 'Banda del Río Salí', 'Concepción', 'Aguilares', 'Monteros', 'Famaillá', 'Alderetes', 'Simoca', 'Juan Bautista Alberdi', 'Bella Vista', 'Trancas', 'Burruyacú', 'Tafí del Valle', 'Graneros', 'La Cocha']
+        };
+
         // Generar años (desde 1980 hasta 2025)
         const añoSelect = document.getElementById('año_auto');
         for (let año = 2025; año >= 1980; año--) {
@@ -502,6 +278,47 @@
                     repuestoSelect.appendChild(option);
                 });
             }
+        });
+
+        // ===== FUNCIONES PARA PROVINCIAS Y LOCALIDADES =====
+        const provincias = Object.keys(localidadesPorProvincia).sort();
+
+        // Función para cargar provincias en un select
+        function cargarProvincias(selectElement) {
+            selectElement.innerHTML = '<option value="">Selecciona una provincia</option>';
+            provincias.forEach(provincia => {
+                const option = document.createElement('option');
+                option.value = provincia;
+                option.textContent = provincia;
+                selectElement.appendChild(option);
+            });
+        }
+
+        // Función para cargar localidades según la provincia seleccionada
+        function cargarLocalidades(provincia, selectElement) {
+            selectElement.innerHTML = '<option value="">Selecciona una localidad</option>';
+            
+            if (provincia && localidadesPorProvincia[provincia]) {
+                localidadesPorProvincia[provincia].forEach(localidad => {
+                    const option = document.createElement('option');
+                    option.value = localidad;
+                    option.textContent = localidad;
+                    selectElement.appendChild(option);
+                });
+            }
+        }
+
+        // Inicializar selectores de provincia y localidad
+        const zonaSelect = document.getElementById('zona');
+        const localidadSelect = document.getElementById('localidad');
+
+        // Cargar provincias al iniciar
+        cargarProvincias(zonaSelect);
+
+        // Evento para cambiar localidades cuando se selecciona una provincia
+        zonaSelect.addEventListener('change', function() {
+            const provinciaSeleccionada = this.value;
+            cargarLocalidades(provinciaSeleccionada, localidadSelect);
         });
 
         // Navegación entre pasos
