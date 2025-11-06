@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repuestos Disponibles - Busco Repuesto</title>
+    <title>Solicitud Enviada - Busco Repuesto</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         * {
             margin: 0;
@@ -24,17 +25,91 @@
             margin: 0 auto;
         }
 
-        .header {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        .top-bar {
+            margin-bottom: 20px;
         }
 
-        .header h1 {
+        .btn-volver {
+            background: white;
+            color: #3498db;
+            padding: 10px 20px;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .btn-volver:hover {
+            background: #3498db;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .confirmation-header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .success-icon::after {
+            content: '✓';
+            font-size: 38px;
+            color: white;
+            font-weight: bold;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .confirmation-header h1 {
             color: #2c3e50;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+            font-size: 1.6em;
+        }
+
+        .confirmation-message {
+            color: #4a5568;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .content-wrapper {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .search-info-section {
+            padding-right: 10px;
         }
 
         .search-info {
@@ -46,220 +121,53 @@
 
         .search-info h3 {
             color: #2c3e50;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.15em;
         }
 
         .search-detail {
-            color: #718096;
-            margin: 5px 0;
-        }
-
-        .results-header {
-            background: white;
-            border-radius: 15px;
-            padding: 20px 30px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .results-count {
-            font-size: 1.3em;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-
-        .results-count span {
-            color: #3498db;
-        }
-
-        .no-results {
-            background: white;
-            border-radius: 15px;
-            padding: 60px 30px;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .no-results-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-
-        .no-results h2 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-
-        .no-results p {
-            color: #718096;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
-
-        .repuesto-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .repuesto-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f1f1f1;
-        }
-
-        .card-title {
-            flex: 1;
-        }
-
-        .card-title h2 {
-            color: #2c3e50;
-            font-size: 1.5em;
-            margin-bottom: 8px;
-        }
-
-        .card-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-            margin-right: 8px;
-        }
-
-        .badge-categoria {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .badge-estado {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .badge-usado {
-            background: #fff3e0;
-            color: #ef6c00;
-        }
-
-        .price {
-            font-size: 2em;
-            color: #27ae60;
-            font-weight: 700;
-        }
-
-        .card-body {
-            margin-bottom: 20px;
-        }
-
-        .detail-row {
-            display: flex;
-            margin: 10px 0;
             color: #4a5568;
-        }
-
-        .detail-label {
-            font-weight: 600;
-            min-width: 150px;
-            color: #2c3e50;
-        }
-
-        .descripcion {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            line-height: 1.6;
-            color: #4a5568;
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 20px;
-            border-top: 2px solid #f1f1f1;
-        }
-
-        .vendedor-info {
-            flex: 1;
-        }
-
-        .vendedor-info h4 {
-            color: #2c3e50;
-            margin-bottom: 8px;
-        }
-
-        .contacto {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .contacto-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #718096;
+            margin: 12px 0;
             font-size: 0.95em;
+            line-height: 1.4;
         }
 
-        .btn-contactar {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-            padding: 15px 35px;
-            border: none;
+        .search-detail strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.9em;
+        }
+
+        .search-detail span {
+            display: block;
+            padding-left: 8px;
+        }
+
+        .map-section {
+            padding-left: 10px;
+        }
+
+        .map-section h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.15em;
+        }
+
+        #map {
+            width: 100%;
+            height: 280px;
             border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-contactar:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }
-
-        .btn-volver {
-            background: white;
-            color: #3498db;
-            padding: 12px 25px;
-            border: 2px solid #3498db;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-block;
-            transition: all 0.3s;
-        }
-
-        .btn-volver:hover {
-            background: #3498db;
-            color: white;
+            border: 2px solid #e1e8ed;
         }
 
         .urgencia-badge {
             display: inline-block;
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 0.9em;
+            font-size: 0.85em;
+            margin-top: 4px;
         }
 
         .urgencia-alta {
@@ -277,136 +185,215 @@
             color: #0c5460;
         }
 
-        @media (max-width: 768px) {
-            .header {
-                padding: 20px;
-            }
-
-            .results-header {
-                flex-direction: column;
-                gap: 15px;
-                align-items: flex-start;
-            }
-
-            .card-header {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .price {
-                font-size: 1.5em;
-            }
-
-            .card-footer {
-                flex-direction: column;
+        @media (max-width: 968px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
                 gap: 20px;
             }
 
-            .contacto {
-                flex-direction: column;
-                gap: 8px;
+            .search-info-section,
+            .map-section {
+                padding: 0;
+            }
+
+            #map {
+                height: 320px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .confirmation-header {
+                padding: 20px;
+            }
+
+            .confirmation-header h1 {
+                font-size: 1.4em;
+            }
+
+            .confirmation-message {
+                font-size: 0.9em;
+            }
+
+            .content-wrapper {
+                padding: 18px;
+            }
+
+            .success-icon {
+                width: 50px;
+                height: 50px;
+            }
+
+            .success-icon::after {
+                font-size: 32px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>📋 Tu Búsqueda</h1>
-            <div class="search-info">
-                <h3>Estás buscando:</h3>
-                <div class="search-detail"><strong>Vehículo:</strong> {{ solicitud.marca_auto }} {% if solicitud.modelo_auto %}{{ solicitud.modelo_auto }}{% endif %} {% if solicitud.año_auto %}({{ solicitud.año_auto }}){% endif %}</div>
-                <div class="search-detail"><strong>Repuesto:</strong> {{ solicitud.get_categoria_repuesto_display }} - {{ solicitud.repuesto_especifico }}</div>
-                <div class="search-detail">
-                    <strong>Urgencia:</strong> 
-                    {% if solicitud.urgencia == 'alta' %}
-                        <span class="urgencia-badge urgencia-alta">Alta - Urgente</span>
-                    {% elif solicitud.urgencia == 'media' %}
-                        <span class="urgencia-badge urgencia-media">Media - Lo necesito pronto</span>
-                    {% else %}
-                        <span class="urgencia-badge urgencia-baja">Baja - Puedo esperar</span>
-                    {% endif %}
-                </div>
-            </div>
+        <div class="top-bar">
+            <a href="{% url 'index' %}" class="btn-volver">← Volver al Inicio</a>
         </div>
 
-        <div class="results-header">
-            <div class="results-count">
-                Encontramos <span>{{ total_encontrados }}</span> repuesto{{ total_encontrados|pluralize }}
-            </div>
-            <a href="{% url 'index' %}" class="btn-volver">← Volver al inicio</a>
+        <div class="confirmation-header">
+            <div class="success-icon"></div>
+            <h1>¡Solicitud Enviada Exitosamente!</h1>
+            <p class="confirmation-message">
+                Hemos recibido tu solicitud y estamos procesándola. Los vendedores de tu zona serán notificados.
+                <br>
+                <strong>Te contactaremos a la brevedad.</strong>
+            </p>
         </div>
 
-        {% if repuestos %}
-            {% for repuesto in repuestos %}
-            <div class="repuesto-card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <h2>{{ repuesto.titulo }}</h2>
-                        <div>
-                            <span class="card-badge badge-categoria">{{ repuesto.get_categoria_display }}</span>
-                            {% if repuesto.estado == 'nuevo' %}
-                                <span class="card-badge badge-estado">Nuevo</span>
-                            {% else %}
-                                <span class="card-badge badge-usado">{{ repuesto.get_estado_display }}</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="price">${{ repuesto.precio }}</div>
-                </div>
-
-                <div class="card-body">
-                    <div class="detail-row">
-                        <span class="detail-label">Compatible con:</span>
-                        <span>{{ repuesto.marca_auto }} {% if repuesto.modelo_auto %}{{ repuesto.modelo_auto }}{% endif %}</span>
-                    </div>
-                    {% if repuesto.año_desde or repuesto.año_hasta %}
-                    <div class="detail-row">
-                        <span class="detail-label">Años:</span>
-                        <span>
-                            {% if repuesto.año_desde %}Desde {{ repuesto.año_desde }}{% endif %}
-                            {% if repuesto.año_hasta %} hasta {{ repuesto.año_hasta }}{% endif %}
-                        </span>
-                    </div>
-                    {% endif %}
-                    <div class="detail-row">
-                        <span class="detail-label">Estado:</span>
-                        <span>{{ repuesto.get_estado_display }}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Ubicación:</span>
-                        <span>📍 {{ repuesto.ubicacion }}</span>
+        <div class="content-wrapper">
+            <div class="search-info-section">
+                <div class="search-info">
+                    <h3>📋 Resumen de tu solicitud:</h3>
+                    
+                    <div class="search-detail">
+                        <strong>Vehículo:</strong>
+                        <span>{{ solicitud.marca_auto }}{% if solicitud.modelo_auto %} {{ solicitud.modelo_auto }}{% endif %}{% if solicitud.año_auto %} ({{ solicitud.año_auto }}){% endif %}</span>
                     </div>
                     
-                    <div class="descripcion">
-                        <strong>Descripción:</strong><br>
-                        {{ repuesto.descripcion }}
+                    <div class="search-detail">
+                        <strong>Repuesto:</strong>
+                        <span>{{ solicitud.get_categoria_repuesto_display }} - {{ solicitud.repuesto_especifico }}</span>
+                    </div>
+                    
+                    <div class="search-detail">
+                        <strong>Ubicación:</strong>
+                        <span>📍 {{ solicitud.localidad }}{% if solicitud.zona %}, {{ solicitud.zona }}{% endif %}</span>
+                    </div>
+                    
+                    <div class="search-detail">
+                        <strong>Urgencia:</strong>
+                        <span>
+                            {% if solicitud.urgencia == 'super_alta' %}
+                                <span class="urgencia-badge urgencia-alta">⚡ Super Alta - Muy Urgente</span>
+                            {% elif solicitud.urgencia == 'alta' %}
+                                <span class="urgencia-badge urgencia-alta">⚠️ Alta - Urgente</span>
+                            {% elif solicitud.urgencia == 'media' %}
+                                <span class="urgencia-badge urgencia-media">⏰ Media - Pronto</span>
+                            {% else %}
+                                <span class="urgencia-badge urgencia-baja">⏳ Baja - Puede esperar</span>
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
+            </div>
 
-                <div class="card-footer">
-                    <div class="vendedor-info">
-                        <h4>Vendedor: {{ repuesto.nombre_vendedor }}</h4>
-                        <div class="contacto">
-                            <span class="contacto-item">📧 {{ repuesto.email_vendedor }}</span>
-                            <span class="contacto-item">📱 {{ repuesto.telefono_vendedor }}</span>
-                        </div>
-                    </div>
-                    <a href="mailto:{{ repuesto.email_vendedor }}?subject=Consulta sobre {{ repuesto.titulo }}" class="btn-contactar">
-                        Contactar Vendedor
-                    </a>
-                </div>
+            <div class="map-section">
+                <h3>🗺️ Vendedores en tu zona</h3>
+                <div id="map"></div>
             </div>
-            {% endfor %}
-        {% else %}
-            <div class="no-results">
-                <div class="no-results-icon">😔</div>
-                <h2>No encontramos repuestos disponibles</h2>
-                <p>Aún no hay vendedores que hayan publicado este repuesto.<br>Te sugerimos ampliar tu búsqueda o intentar más tarde.</p>
-                <a href="{% url 'quiero_comprar' %}" class="btn-contactar">Nueva Búsqueda</a>
-                <a href="{% url 'listado_repuestos' %}" class="btn-contactar">Ver Todos Los Repuestos</a>
-            </div>
-        {% endif %}
+        </div>
     </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Coordenadas predefinidas para ubicaciones
+        const coordenadas = {
+            'Caseros': { lat: -34.6089, lng: -58.5631 },
+            'Buenos Aires': { lat: -34.6037, lng: -58.3816 },
+            'Morón': { lat: -34.6534, lng: -58.6198 },
+            'La Matanza': { lat: -34.7704, lng: -58.6259 },
+            'Tres de Febrero': { lat: -34.5950, lng: -58.5697 },
+            'Vicente López': { lat: -34.5267, lng: -58.4739 },
+            'San Martín': { lat: -34.5736, lng: -58.5378 },
+            'Hurlingham': { lat: -34.5897, lng: -58.6356 },
+            'Ituzaingó': { lat: -34.6611, lng: -58.6739 },
+            'San Isidro': { lat: -34.4709, lng: -58.5270 }
+        };
+
+        // Obtener ubicación desde Django
+        const ubicacionCompleta = "{{ solicitud.localidad }}{% if solicitud.zona %}, {{ solicitud.zona }}{% endif %}";
+        const localidad = "{{ solicitud.localidad }}";
+        
+        // Buscar coordenadas
+        let coords = coordenadas[localidad];
+        
+        // Si no encuentra la localidad exacta, usar coordenadas por defecto
+        if (!coords) {
+            coords = coordenadas['Caseros'];
+        }
+
+        // Inicializar el mapa
+        const map = L.map('map').setView([coords.lat, coords.lng], 13);
+
+        // Agregar capa de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Icono personalizado para el usuario
+        const userIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        // Icono personalizado para vendedores
+        const vendedorIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        // Marcador de tu ubicación
+        L.marker([coords.lat, coords.lng], {icon: userIcon})
+            .addTo(map)
+            .bindPopup('<b>Tu ubicación</b><br>' + ubicacionCompleta)
+            .openPopup();
+
+        // Vendedores cercanos simulados
+        const vendedores = [
+            { 
+                lat: coords.lat + 0.01, 
+                lng: coords.lng + 0.01, 
+                nombre: 'Repuestos García',
+                direccion: 'Av. San Martín 1234',
+                telefono: '011-4567-8901'
+            },
+            { 
+                lat: coords.lat - 0.015, 
+                lng: coords.lng + 0.02, 
+                nombre: 'Auto Parts Central',
+                direccion: 'Calle Falsa 567',
+                telefono: '011-4567-8902'
+            },
+            { 
+                lat: coords.lat + 0.02, 
+                lng: coords.lng - 0.015, 
+                nombre: 'Desarmadero López',
+                direccion: 'Ruta 8 Km 25',
+                telefono: '011-4567-8903'
+            }
+        ];
+
+        // Agregar marcadores de vendedores
+        vendedores.forEach(vendedor => {
+            L.marker([vendedor.lat, vendedor.lng], {icon: vendedorIcon})
+                .addTo(map)
+                .bindPopup(`
+                    <b>${vendedor.nombre}</b><br>
+                    ${vendedor.direccion}<br>
+                    📱 ${vendedor.telefono}
+                `);
+        });
+
+        // Ajustar el mapa para mostrar todos los marcadores
+        const group = L.featureGroup(
+            [L.marker([coords.lat, coords.lng])]
+            .concat(vendedores.map(v => L.marker([v.lat, v.lng])))
+        );
+        map.fitBounds(group.getBounds().pad(0.1));
+    </script>
 </body>
 </html>
