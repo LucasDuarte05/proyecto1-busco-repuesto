@@ -409,6 +409,8 @@
             font-size: 12px;
             transition: all 0.2s;
             white-space: nowrap;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-contactar:hover {
@@ -658,8 +660,10 @@
                                     </div>
                                 </td>
                                 <td class="col-acciones">
-                                    <a href="mailto:{{ solicitud.email }}?subject=Tengo el repuesto: {{ solicitud.repuesto_especifico }}" 
-                                       class="btn-contactar" title="Contactar">
+                                    <a href="#" 
+                                       onclick="abrirWhatsApp('{{ solicitud.celular }}', '{{ solicitud.nombre }}', '{{ solicitud.repuesto_especifico }}', '{{ solicitud.marca_auto }}', '{{ solicitud.modelo_auto }}'); return false;"
+                                       class="btn-contactar" 
+                                       title="Contactar por WhatsApp">
                                         💬 Contactar
                                     </a>
                                 </td>
@@ -718,6 +722,34 @@
             }
             
             form.submit();
+        }
+
+        function abrirWhatsApp(celular, nombre, repuesto, marca, modelo) {
+            // Limpiar el número de teléfono (quitar espacios, guiones, etc.)
+            let numeroLimpio = celular.replace(/\D/g, '');
+            
+            // Si el número no tiene código de país, agregar 54 (Argentina)
+            if (!numeroLimpio.startsWith('54') && numeroLimpio.length === 10) {
+                numeroLimpio = '54' + numeroLimpio;
+            }
+            
+            // Crear el mensaje predeterminado
+            let mensaje = `Hola ${nombre}! `;
+            mensaje += `Vi tu solicitud de: *${repuesto}*\n`;
+            mensaje += `Para: ${marca}`;
+            if (modelo) {
+                mensaje += ` ${modelo}`;
+            }
+            mensaje += `Tengo este repuesto disponible. ¿Te gustaría que hablemos sobre los detalles?`;
+            
+            // Codificar el mensaje para URL
+            const mensajeCodificado = encodeURIComponent(mensaje);
+            
+            // Crear la URL de WhatsApp
+            const urlWhatsApp = `https://wa.me/${numeroLimpio}?text=${mensajeCodificado}`;
+            
+            // Abrir WhatsApp en una nueva ventana
+            window.open(urlWhatsApp, '_blank');
         }
 
         document.querySelectorAll('#filterForm select, #filterForm input').forEach(element => {
