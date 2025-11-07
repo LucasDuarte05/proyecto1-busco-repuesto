@@ -78,12 +78,14 @@
                             <option value="">Selecciona un año</option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label>VIN/Número de Chasis</label>
-                        <input type="text" name="nro_chasis" id="nro_chasis" placeholder="Opcional">
+                        <div class="input-with-image">
+                            <input type="text" name="nro_chasis" id="nro_chasis" placeholder="Opcional" class="chasis-input">
+                            <img src="{% static 'quiero_comprar/img/cedula.png' %}" alt="VIN" class="input-icon">
+                        </div>
                     </div>
-                </div>
-
                 <!-- Paso 2: Información del Repuesto -->
                 <div class="step" data-step="2">
                     <h2 class="step-title">¿Qué repuesto necesitas?</h2>
@@ -127,9 +129,9 @@
                         <select name="urgencia" required>
                             <option value="">Selecciona el nivel</option>
                             <option value="super_alta">Super Alta - Muy Urgente (en hora)</option>
-                            <option value="alta">Alta - Urgente</option>
-                            <option value="media">Media - Lo necesito pronto</option>
-                            <option value="baja">Baja - Puedo esperar</option>
+                            <option value="alta">Alta - Urgente (En 3 días)</option>
+                            <option value="media">Media - Lo necesito pronto (En 1 semana)</option>
+                            <option value="baja">Baja - Puedo esperar (En 2 semanas)</option>
                         </select>
                     </div>
                 </div>
@@ -171,7 +173,7 @@
 
                 <div class="button-group">
                     <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">Anterior</button>
-                    <button type="button" class="btn btn-primary" id="nextBtn">Siguiente</button>
+                    <button type="button" class="btn btn-primary btn-siguiente" id="nextBtn">Siguiente</button>
                     <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">Buscar Repuestos 🔍</button>
                 </div>
             </div>

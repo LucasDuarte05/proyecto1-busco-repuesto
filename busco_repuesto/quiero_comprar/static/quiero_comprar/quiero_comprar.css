@@ -166,6 +166,11 @@
             border-color: #3498db;
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
+        
+        .chasis-input {
+            width: 60% !important;
+            max-width: 400px;
+        }
 
         textarea {
             resize: vertical;
@@ -200,6 +205,9 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
         }
+        .btn-siguiente {
+            margin-top: 40px;
+        }
 
         .btn-secondary {
             background: #e2e8f0;
@@ -225,6 +233,29 @@
 
         .home-link:hover {
             text-decoration: underline;
+        }
+        .input-with-image {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 0;
+            top: 60%;
+            transform: translateY(-50%);
+            width: 310px;
+            height: 210px;
+            object-fit: contain;
+            border-radius: 10px;
+            z-index: 0;
+            opacity: 0.95;
+        }
+
+        .input-with-padding {
+            padding-right: 4px !important;
         }
 
         @media (max-width: 768px) {
