@@ -66,6 +66,27 @@
             }
         }
 
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+
+        .user-info a {
+            color: #e67e22;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .user-info a:hover {
+            text-decoration: underline;
+        }
+
         .logo {
             display: flex;
             align-items: center;
@@ -211,6 +232,12 @@
                 padding: 40px 24px;
             }
 
+            .user-info {
+                position: static;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+
             h1 {
                 font-size: 2.2em;
             }
@@ -244,6 +271,14 @@
 </head>
 <body>
     <div class="container">
+        {% if user.is_authenticated %}
+        <div class="user-info">
+            👤 {{ user.get_full_name|default:user.email }}
+            <span>|</span>
+            <a href="{% url 'logout_vendedor' %}">Cerrar sesión</a>
+        </div>
+        {% endif %}
+
         <div class="logo">
             <div class="logo-icon">🔧</div>
         </div>
@@ -258,12 +293,21 @@
                     Quiero Comprar
                 </span>
             </a>
-            <a href="{% url 'login_vendedor' %}" class="btn btn-vender">
-                <span>
-                    <span>💰</span>
-                    Quiero Vender
-                </span>
-            </a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'ver_solicitudes' %}" class="btn btn-vender">
+                    <span>
+                        <span>💰</span>
+                        Quiero Vender
+                    </span>
+                </a>
+            {% else %}
+                <a href="{% url 'login_vendedor' %}" class="btn btn-vender">
+                    <span>
+                        <span>💰</span>
+                        Quiero Vender
+                    </span>
+                </a>
+            {% endif %}
         </div>
 
         <div class="features">

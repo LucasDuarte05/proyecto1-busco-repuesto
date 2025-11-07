@@ -1,24 +1,92 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from core.models import SolicitudCompra, PublicacionVenta
 from django.db.models import Q
 
 
+def logout_vendedor(request):
+    """Cerrar sesión del vendedor"""
+    logout(request)
+    messages.success(request, 'Has cerrado sesión exitosamente')
+    return redirect('index')
+
 
 def login_vendedor(request):
     """Mostrar página de login para vendedores"""
+    # Si ya está autenticado, redirigir a ver solicitudes
+    if request.user.is_authenticated:
+        return redirect('ver_solicitudes')
     return render(request, 'login_vendedor.html')
 
-def quiero_vender(request):
-    """Mostrar opciones para vendedores"""
-    return render(request, 'listado_solicitudes.html')
 
+@login_required(login_url='login_vendedor')
+def ver_solicitudes(request):
+    """Ver todas las solicitudes de compra activas - requiere login"""
+    solicitudes = SolicitudCompra.objects.filter(activa=True)
+    
+    # Obtener filtros de la URL
+    marca_filtro = request.GET.get('marca', '')
+    modelo_filtro = request.GET.get('modelo', '')
+    categoria_filtro = request.GET.get('categoria', '')
+    urgencia_filtro = request.GET.get('urgencia', '')
+    año_filtro = request.GET.get('año', '')
+    
+    # Aplicar filtros
+    if marca_filtro:
+        solicitudes = solicitudes.filter(marca_auto__icontains=marca_filtro)
+    
+    if modelo_filtro:
+        solicitudes = solicitudes.filter(modelo_auto__icontains=modelo_filtro)
+    
+    if categoria_filtro:
+        solicitudes = solicitudes.filter(categoria_repuesto=categoria_filtro)
+    
+    if urgencia_filtro:
+        solicitudes = solicitudes.filter(urgencia=urgencia_filtro)
+    
+    if año_filtro:
+        solicitudes = solicitudes.filter(año_auto=int(año_filtro))
+    
+    solicitudes = solicitudes.order_by('-fecha_solicitud')
+    
+    # Obtener valores únicos para los filtros
+    marcas_disponibles = SolicitudCompra.objects.filter(activa=True).values_list('marca_auto', flat=True).distinct().order_by('marca_auto')
+    categorias_disponibles = SolicitudCompra.CATEGORIA_CHOICES
+    urgencias_disponibles = SolicitudCompra.URGENCIA_CHOICES
+    
+    context = {
+        'solicitudes': solicitudes,
+        'total_solicitudes': solicitudes.count(),
+        'marcas_disponibles': marcas_disponibles,
+        'categorias_disponibles': categorias_disponibles,
+        'urgencias_disponibles': urgencias_disponibles,
+        # Filtros actuales
+        'marca_actual': marca_filtro,
+        'modelo_actual': modelo_filtro,
+        'categoria_actual': categoria_filtro,
+        'urgencia_actual': urgencia_filtro,
+        'año_actual': año_filtro,
+        # Datos del usuario
+        'usuario': request.user,
+    }
+    
+    return render(request, 'listado_solicitudes.html', context)
+
+
+@login_required(login_url='login_vendedor')
 def publicar_repuesto(request):
-    """Mostrar formulario para publicar repuesto"""
-    return render(request, 'publicar_repuesto.html')
+    """Mostrar formulario para publicar repuesto - requiere login"""
+    context = {
+        'usuario': request.user,
+    }
+    return render(request, 'publicar_repuesto.html', context)
 
+
+@login_required(login_url='login_vendedor')
 def procesar_publicacion(request):
-    """Procesar publicación de repuesto y buscar solicitudes coincidentes"""
+    """Procesar publicación de repuesto y buscar solicitudes coincidentes - requiere login"""
     if request.method == 'POST':
         try:
             # Obtener marca (puede ser del select o del campo "otro")
@@ -66,7 +134,8 @@ def procesar_publicacion(request):
                 'publicacion': publicacion,
                 'solicitudes': solicitudes_coincidentes,
                 'total_solicitudes': solicitudes_coincidentes.count(),
-                'hay_coincidencias': solicitudes_coincidentes.exists()
+                'hay_coincidencias': solicitudes_coincidentes.exists(),
+                'usuario': request.user,
             }
             
             return render(request, 'confirmacion_publicacion.html', context)
@@ -77,59 +146,12 @@ def procesar_publicacion(request):
     
     return redirect('publicar_repuesto')
 
+
+@login_required(login_url='login_vendedor')
 def procesar_venta(request):
-    """Alias para procesar_publicacion (mantener compatibilidad)"""
+    """Alias para procesar_publicacion (mantener compatibilidad) - requiere login"""
     return procesar_publicacion(request)
 
-def ver_solicitudes(request):
-    """Ver todas las solicitudes de compra activas"""
-    solicitudes = SolicitudCompra.objects.filter(activa=True)
-    
-    # Obtener filtros de la URL
-    marca_filtro = request.GET.get('marca', '')
-    modelo_filtro = request.GET.get('modelo', '')
-    categoria_filtro = request.GET.get('categoria', '')
-    urgencia_filtro = request.GET.get('urgencia', '')
-    año_filtro = request.GET.get('año', '')
-    
-    # Aplicar filtros
-    if marca_filtro:
-        solicitudes = solicitudes.filter(marca_auto__icontains=marca_filtro)
-    
-    if modelo_filtro:
-        solicitudes = solicitudes.filter(modelo_auto__icontains=modelo_filtro)
-    
-    if categoria_filtro:
-        solicitudes = solicitudes.filter(categoria_repuesto=categoria_filtro)
-    
-    if urgencia_filtro:
-        solicitudes = solicitudes.filter(urgencia=urgencia_filtro)
-    
-    if año_filtro:
-        solicitudes = solicitudes.filter(año_auto=int(año_filtro))
-    
-    solicitudes = solicitudes.order_by('-fecha_solicitud')
-    
-    # Obtener valores únicos para los filtros
-    marcas_disponibles = SolicitudCompra.objects.filter(activa=True).values_list('marca_auto', flat=True).distinct().order_by('marca_auto')
-    categorias_disponibles = SolicitudCompra.CATEGORIA_CHOICES
-    urgencias_disponibles = SolicitudCompra.URGENCIA_CHOICES
-    
-    context = {
-        'solicitudes': solicitudes,
-        'total_solicitudes': solicitudes.count(),
-        'marcas_disponibles': marcas_disponibles,
-        'categorias_disponibles': categorias_disponibles,
-        'urgencias_disponibles': urgencias_disponibles,
-        # Filtros actuales
-        'marca_actual': marca_filtro,
-        'modelo_actual': modelo_filtro,
-        'categoria_actual': categoria_filtro,
-        'urgencia_actual': urgencia_filtro,
-        'año_actual': año_filtro,
-    }
-    
-    return render(request, 'listado_solicitudes.html', context)
 
 def buscar_solicitudes_compatibles(publicacion):
     """
