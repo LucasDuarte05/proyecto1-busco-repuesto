@@ -83,7 +83,16 @@ class PublicacionVenta(models.Model):
     nombre_vendedor = models.CharField(max_length=200, verbose_name="Nombre del Vendedor")
     email_vendedor = models.EmailField(verbose_name="Email")
     telefono_vendedor = models.CharField(max_length=20, verbose_name="Teléfono")
-    ubicacion = models.CharField(max_length=200, verbose_name="Ubicación")
+    
+    # CAMPOS DE UBICACIÓN CON DIRECCIÓN EXACTA
+    zona = models.CharField(max_length=200, verbose_name="Zona/Provincia", blank=True, default='')
+    localidad = models.CharField(max_length=200, verbose_name="Localidad", blank=True, default='')
+    direccion = models.CharField(max_length=300, verbose_name="Dirección", blank=True, default='')
+    ubicacion = models.CharField(max_length=200, verbose_name="Ubicación", blank=True, default='')  # Mantener por compatibilidad
+    
+    # Coordenadas GPS (se calculan automáticamente desde la dirección)
+    latitud = models.DecimalField(max_digits=10, decimal_places=7, verbose_name="Latitud", null=True, blank=True)
+    longitud = models.DecimalField(max_digits=10, decimal_places=7, verbose_name="Longitud", null=True, blank=True)
     
     # Metadata
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
@@ -97,3 +106,17 @@ class PublicacionVenta(models.Model):
     
     def __str__(self):
         return f"{self.titulo} - ${self.precio}"
+    
+    def get_ubicacion_completa(self):
+        """Retorna la ubicación completa en formato legible"""
+        partes = []
+        if self.direccion:
+            partes.append(self.direccion)
+        if self.localidad:
+            partes.append(self.localidad)
+        if self.zona:
+            partes.append(self.zona)
+        
+        if partes:
+            return ", ".join(partes)
+        return self.ubicacion

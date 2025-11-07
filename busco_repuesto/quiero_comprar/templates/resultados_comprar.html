@@ -156,7 +156,7 @@
 
         #map {
             width: 100%;
-            height: 280px;
+            height: 400px;
             border-radius: 10px;
             border: 2px solid #e1e8ed;
         }
@@ -185,6 +185,26 @@
             color: #0c5460;
         }
 
+        .vendedores-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f4f8;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .vendedores-info h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .vendedores-info p {
+            color: #4a5568;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
         @media (max-width: 968px) {
             .content-wrapper {
                 grid-template-columns: 1fr;
@@ -197,7 +217,7 @@
             }
 
             #map {
-                height: 320px;
+                height: 350px;
             }
         }
 
@@ -228,8 +248,6 @@
             }
         }
     </style>
-    <title>Repuestos Disponibles - Busco Repuesto</title>
-    <link rel="stylesheet" href="{% static 'quiero_comprar/resultados_comprar.css' %}">
 </head>
 <body>
     <div class="container">
@@ -264,7 +282,7 @@
                     
                     <div class="search-detail">
                         <strong>Ubicación:</strong>
-                        <span>📍 {{ solicitud.localidad }}{% if solicitud.zona %}, {{ solicitud.zona }}{% endif %}</span>
+                        <span>📍 {% if solicitud.localidad %}{{ solicitud.localidad }}{% endif %}{% if solicitud.zona and solicitud.localidad %}, {% endif %}{% if solicitud.zona %}{{ solicitud.zona }}{% endif %}</span>
                     </div>
                     
                     <div class="search-detail">
@@ -282,573 +300,158 @@
                         </span>
                     </div>
                 </div>
+
+                {% if vendedores_list %}
+                <div class="vendedores-info">
+                    <h4>✅ ¡Encontramos {{ vendedores_list|length }} vendedor{% if vendedores_list|length > 1 %}es{% endif %}!</h4>
+                    <p><strong>{{ total_encontrados }}</strong> repuesto{% if total_encontrados > 1 %}s{% endif %} disponible{% if total_encontrados > 1 %}s{% endif %} en tu zona</p>
+                    <p>Los vendedores aparecen marcados en rojo en el mapa →</p>
+                </div>
+                {% else %}
+                <div class="vendedores-info" style="border-left-color: #f39c12;">
+                    <h4>⏳ Buscando vendedores...</h4>
+                    <p>Te notificaremos cuando encontremos repuestos disponibles.</p>
+                </div>
+                {% endif %}
             </div>
 
             <div class="map-section">
-                <h3>🗺️ Vendedores en tu zona</h3>
+                <h3>🗺️ Mapa de vendedores cercanos</h3>
                 <div id="map"></div>
             </div>
         </div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         // Base de datos completa de coordenadas de Argentina
         const coordenadas = {
-            // ==================== CIUDAD DE BUENOS AIRES ====================
+            // CIUDAD DE BUENOS AIRES
             'Buenos Aires': { lat: -34.6037, lng: -58.3816 },
             'CABA': { lat: -34.6037, lng: -58.3816 },
             'Capital Federal': { lat: -34.6037, lng: -58.3816 },
-            
-            // Barrios CABA
-            'Agronomía': { lat: -34.5994, lng: -58.4892 },
-            'Almagro': { lat: -34.6089, lng: -58.4186 },
-            'Balvanera': { lat: -34.6092, lng: -58.3972 },
-            'Barracas': { lat: -34.6419, lng: -58.3750 },
-            'Belgrano': { lat: -34.5633, lng: -58.4542 },
-            'Boedo': { lat: -34.6333, lng: -58.4167 },
-            'Caballito': { lat: -34.6178, lng: -58.4397 },
-            'Chacarita': { lat: -34.5878, lng: -58.4517 },
-            'Coghlan': { lat: -34.5622, lng: -58.4781 },
-            'Colegiales': { lat: -34.5739, lng: -58.4456 },
-            'Constitución': { lat: -34.6278, lng: -58.3817 },
-            'Flores': { lat: -34.6281, lng: -58.4658 },
-            'Floresta': { lat: -34.6294, lng: -58.4850 },
-            'La Boca': { lat: -34.6347, lng: -58.3631 },
-            'La Paternal': { lat: -34.5997, lng: -58.4628 },
-            'Liniers': { lat: -34.6417, lng: -58.5231 },
-            'Mataderos': { lat: -34.6539, lng: -58.4972 },
-            'Monte Castro': { lat: -34.6167, lng: -58.5017 },
-            'Montserrat': { lat: -34.6089, lng: -58.3739 },
-            'Nueva Pompeya': { lat: -34.6508, lng: -58.4131 },
-            'Núñez': { lat: -34.5478, lng: -58.4597 },
             'Palermo': { lat: -34.5886, lng: -58.4194 },
-            'Parque Avellaneda': { lat: -34.6467, lng: -58.4708 },
-            'Parque Chacabuco': { lat: -34.6372, lng: -58.4436 },
-            'Parque Chas': { lat: -34.5844, lng: -58.4858 },
-            'Parque Patricios': { lat: -34.6361, lng: -58.3972 },
-            'Puerto Madero': { lat: -34.6122, lng: -58.3633 },
             'Recoleta': { lat: -34.5881, lng: -58.3931 },
-            'Retiro': { lat: -34.5917, lng: -58.3756 },
-            'Saavedra': { lat: -34.5539, lng: -58.4847 },
-            'San Cristóbal': { lat: -34.6194, lng: -58.4000 },
-            'San Nicolás': { lat: -34.6033, lng: -58.3817 },
-            'San Telmo': { lat: -34.6211, lng: -58.3722 },
-            'Vélez Sársfield': { lat: -34.6344, lng: -58.5014 },
-            'Versalles': { lat: -34.6261, lng: -58.5208 },
-            'Villa Crespo': { lat: -34.5986, lng: -58.4378 },
-            'Villa del Parque': { lat: -34.6022, lng: -58.4828 },
-            'Villa Devoto': { lat: -34.6022, lng: -58.5050 },
-            'Villa General Mitre': { lat: -34.6047, lng: -58.4631 },
-            'Villa Lugano': { lat: -34.6756, lng: -58.4708 },
-            'Villa Luro': { lat: -34.6381, lng: -58.5011 },
-            'Villa Ortúzar': { lat: -34.5789, lng: -58.4669 },
-            'Villa Pueyrredón': { lat: -34.5844, lng: -58.5028 },
-            'Villa Real': { lat: -34.6103, lng: -58.5017 },
-            'Villa Riachuelo': { lat: -34.6911, lng: -58.4467 },
-            'Villa Santa Rita': { lat: -34.6331, lng: -58.4922 },
-            'Villa Soldati': { lat: -34.6631, lng: -58.4439 },
-            'Villa Urquiza': { lat: -34.5750, lng: -58.4844 },
-
-            // ==================== PROVINCIA DE BUENOS AIRES ====================
+            'Belgrano': { lat: -34.5633, lng: -58.4542 },
+            'Caballito': { lat: -34.6178, lng: -58.4397 },
+            'Almagro': { lat: -34.6089, lng: -58.4186 },
             
-            // Zona Norte GBA
+            // GBA Norte
             'San Isidro': { lat: -34.4709, lng: -58.5270 },
             'Vicente López': { lat: -34.5267, lng: -58.4739 },
-            'San Fernando': { lat: -34.4417, lng: -58.5597 },
             'Tigre': { lat: -34.4264, lng: -58.5797 },
-            'San Martín': { lat: -34.5736, lng: -58.5378 },
-            'General San Martín': { lat: -34.5736, lng: -58.5378 },
-            'Tres de Febrero': { lat: -34.5950, lng: -58.5697 },
-            'José C. Paz': { lat: -34.5217, lng: -58.7597 },
-            'Malvinas Argentinas': { lat: -34.4611, lng: -58.7039 },
+            'San Fernando': { lat: -34.4417, lng: -58.5597 },
             'Escobar': { lat: -34.3500, lng: -58.7950 },
             'Pilar': { lat: -34.4588, lng: -58.9142 },
-            'Campana': { lat: -34.1689, lng: -58.9594 },
-            'Zárate': { lat: -34.0978, lng: -59.0281 },
-            'Exaltación de la Cruz': { lat: -34.3136, lng: -59.1053 },
+            'Tres de Febrero': { lat: -34.6076, lng: -58.5689 },
             
-            // Zona Oeste GBA
+            // GBA Oeste
             'Morón': { lat: -34.6534, lng: -58.6198 },
             'Hurlingham': { lat: -34.5897, lng: -58.6356 },
             'Ituzaingó': { lat: -34.6611, lng: -58.6739 },
-            'Caseros': { lat: -34.6089, lng: -58.5631 },
-            'La Matanza': { lat: -34.7704, lng: -58.6259 },
-            'Ramos Mejía': { lat: -34.6417, lng: -58.5631 },
             'Merlo': { lat: -34.6656, lng: -58.7281 },
             'Moreno': { lat: -34.6500, lng: -58.7892 },
-            'Ciudadela': { lat: -34.6339, lng: -58.5436 },
-            'Villa Luzuriaga': { lat: -34.6700, lng: -58.5850 },
-            'San Justo': { lat: -34.6833, lng: -58.5597 },
-            'González Catán': { lat: -34.7667, lng: -58.6333 },
-            'Laferrere': { lat: -34.7500, lng: -58.5833 },
-            'Rafael Castillo': { lat: -34.7000, lng: -58.6333 },
-            'Gregorio de Laferrere': { lat: -34.7500, lng: -58.5833 },
             
-            // Zona Sur GBA
+            // GBA Sur
             'Avellaneda': { lat: -34.6614, lng: -58.3656 },
             'Lanús': { lat: -34.7000, lng: -58.3900 },
             'Lomas de Zamora': { lat: -34.7603, lng: -58.3972 },
             'Quilmes': { lat: -34.7200, lng: -58.2542 },
-            'Banfield': { lat: -34.7439, lng: -58.3950 },
             'Berazategui': { lat: -34.7639, lng: -58.2108 },
             'Florencio Varela': { lat: -34.7953, lng: -58.2750 },
-            'Almirante Brown': { lat: -34.8167, lng: -58.3950 },
-            'Esteban Echeverría': { lat: -34.8167, lng: -58.4617 },
-            'Ezeiza': { lat: -34.8542, lng: -58.5236 },
-            'Bernal': { lat: -34.7081, lng: -58.2808 },
-            'Wilde': { lat: -34.7042, lng: -58.3192 },
-            'Monte Grande': { lat: -34.8167, lng: -58.4667 },
-            'Burzaco': { lat: -34.8242, lng: -58.3942 },
-            'Adrogué': { lat: -34.8000, lng: -58.3833 },
-            'Temperley': { lat: -34.7667, lng: -58.3833 },
-            'Turdera': { lat: -34.7833, lng: -58.3833 },
             
-            // Interior Buenos Aires - Norte
+            // Interior Buenos Aires
             'La Plata': { lat: -34.9214, lng: -57.9544 },
             'Mar del Plata': { lat: -38.0055, lng: -57.5426 },
             'Bahía Blanca': { lat: -38.7183, lng: -62.2663 },
-            'San Nicolás de los Arroyos': { lat: -33.3369, lng: -60.2258 },
-            'Pergamino': { lat: -33.8894, lng: -60.5736 },
             'Tandil': { lat: -37.3217, lng: -59.1332 },
-            'Azul': { lat: -36.7770, lng: -59.8586 },
-            'Olavarría': { lat: -36.8927, lng: -60.3225 },
-            'Junín': { lat: -34.5858, lng: -60.9450 },
-            'Luján': { lat: -34.5667, lng: -59.1167 },
-            'Mercedes': { lat: -34.6511, lng: -59.4311 },
-            'Chivilcoy': { lat: -34.8969, lng: -60.0194 },
-            'Chacabuco': { lat: -34.6403, lng: -60.4736 },
-            'Bragado': { lat: -35.1167, lng: -60.4833 },
-            '25 de Mayo': { lat: -35.4325, lng: -60.1722 },
-            'Trenque Lauquen': { lat: -35.9722, lng: -62.7306 },
-            'General Pico': { lat: -35.6567, lng: -63.7567 },
-            'Pehuajó': { lat: -35.8103, lng: -61.8981 },
-            'Carlos Casares': { lat: -35.6167, lng: -61.3667 },
-            'Lincoln': { lat: -34.8667, lng: -61.5333 },
-            'General Villegas': { lat: -35.0333, lng: -63.0167 },
             
-            // Interior Buenos Aires - Sur y Costa
-            'Necochea': { lat: -38.5544, lng: -58.7397 },
-            'Quequén': { lat: -38.5544, lng: -58.7064 },
-            'Tres Arroyos': { lat: -38.3833, lng: -60.2833 },
-            'Balcarce': { lat: -37.8453, lng: -58.2553 },
-            'Miramar': { lat: -38.2667, lng: -57.8333 },
-            'Lobos': { lat: -35.1833, lng: -59.1000 },
-            'Chascomús': { lat: -35.5719, lng: -58.0197 },
-            'Dolores': { lat: -36.3136, lng: -57.6786 },
-            'Maipú': { lat: -36.8833, lng: -57.8833 },
-            'Ayacucho': { lat: -37.1500, lng: -58.4833 },
-            'Rauch': { lat: -36.7667, lng: -59.0667 },
-            'Las Flores': { lat: -36.0167, lng: -59.1000 },
-            'Saladillo': { lat: -35.6333, lng: -59.7667 },
-            'Roque Pérez': { lat: -35.4167, lng: -59.3333 },
-            'San Vicente': { lat: -35.0333, lng: -58.4167 },
-            'Cañuelas': { lat: -35.0500, lng: -58.7500 },
-            'Brandsen': { lat: -35.1667, lng: -58.2333 },
-            'Punta Indio': { lat: -35.3667, lng: -57.2833 },
-            'Magdalena': { lat: -35.0833, lng: -57.5167 },
-            'Pila': { lat: -36.0000, lng: -58.1333 },
-            'Castelli': { lat: -36.0833, lng: -57.8000 },
-            'General Guido': { lat: -36.6333, lng: -57.8000 },
-            'General Madariaga': { lat: -37.0000, lng: -57.1333 },
-            'Villa Gesell': { lat: -37.2644, lng: -56.9728 },
-            'Pinamar': { lat: -37.1094, lng: -56.8603 },
-            'General Lavalle': { lat: -36.4167, lng: -56.9667 },
-            'La Costa': { lat: -37.2833, lng: -56.7167 },
-            'San Clemente del Tuyú': { lat: -36.3581, lng: -56.7236 },
-            
-            // Interior Buenos Aires - Oeste
-            'Bolívar': { lat: -36.2333, lng: -61.1167 },
-            'Olavarría': { lat: -36.8927, lng: -60.3225 },
-            'Tapalqué': { lat: -36.3500, lng: -60.0167 },
-            'Daireaux': { lat: -36.5833, lng: -61.7500 },
-            'Guaminí': { lat: -37.0000, lng: -62.4500 },
-            'Adolfo Alsina': { lat: -37.1833, lng: -62.8167 },
-            'Pigüé': { lat: -37.6167, lng: -62.3833 },
-            'Saavedra': { lat: -37.7500, lng: -62.3500 },
-            'Puán': { lat: -37.5500, lng: -62.7667 },
-            'Tornquist': { lat: -38.0953, lng: -62.2239 },
-            'Coronel Pringles': { lat: -37.9833, lng: -61.3500 },
-            'Coronel Suárez': { lat: -37.4500, lng: -61.9333 },
-            'Coronel Dorrego': { lat: -38.7167, lng: -61.2833 },
-            'Monte Hermoso': { lat: -38.9833, lng: -61.3000 },
-            'Villarino': { lat: -39.0333, lng: -62.7000 },
-            'Patagones': { lat: -40.8000, lng: -62.9833 },
-            'Carmen de Patagones': { lat: -40.8000, lng: -62.9833 },
-
-            // ==================== CATAMARCA ====================
-            'San Fernando del Valle de Catamarca': { lat: -28.4696, lng: -65.7852 },
-            'Catamarca': { lat: -28.4696, lng: -65.7852 },
-            'Andalgalá': { lat: -27.5833, lng: -66.3167 },
-            'Belén': { lat: -27.6500, lng: -67.0333 },
-            'Santa María': { lat: -26.6969, lng: -66.0472 },
-            'Tinogasta': { lat: -28.0667, lng: -67.5667 },
-            'Fiambalá': { lat: -27.6833, lng: -67.6167 },
-            'Recreo': { lat: -29.2833, lng: -65.0333 },
-            'Valle Viejo': { lat: -28.4833, lng: -65.6833 },
-            'Fray Mamerto Esquiú': { lat: -28.5167, lng: -65.7333 },
-
-            // ==================== CHACO ====================
-            'Resistencia': { lat: -27.4514, lng: -58.9867 },
-            'Presidencia Roque Sáenz Peña': { lat: -26.7853, lng: -60.4389 },
-            'Villa Ángela': { lat: -27.5731, lng: -60.7156 },
-            'Charata': { lat: -27.2142, lng: -61.1881 },
-            'General José de San Martín': { lat: -26.5392, lng: -59.3464 },
-            'Fontana': { lat: -27.4167, lng: -59.0167 },
-            'Barranqueras': { lat: -27.4833, lng: -58.9333 },
-            'Las Breñas': { lat: -27.0906, lng: -61.0819 },
-            'Quitilipi': { lat: -26.8667, lng: -60.2167 },
-            'Machagai': { lat: -26.9264, lng: -60.0492 },
-            'Castelli': { lat: -25.9500, lng: -60.6167 },
-            'Villa Berthet': { lat: -27.2833, lng: -60.4167 },
-
-            // ==================== CHUBUT ====================
-            'Rawson': { lat: -43.3002, lng: -65.1023 },
-            'Comodoro Rivadavia': { lat: -45.8642, lng: -67.4806 },
-            'Puerto Madryn': { lat: -42.7692, lng: -65.0386 },
-            'Trelew': { lat: -43.2489, lng: -65.3050 },
-            'Esquel': { lat: -42.9114, lng: -71.3103 },
-            'Sarmiento': { lat: -45.5833, lng: -69.0833 },
-            'Gaiman': { lat: -43.2833, lng: -65.4833 },
-            'Dolavon': { lat: -43.3167, lng: -65.7000 },
-            'Puerto Pirámides': { lat: -42.5781, lng: -64.2839 },
-            'Rada Tilly': { lat: -45.9264, lng: -67.5531 },
-            'Camarones': { lat: -44.7992, lng: -65.7072 },
-            'Gobernador Costa': { lat: -43.6333, lng: -68.5333 },
-
-            // ==================== CÓRDOBA ====================
+            // Otras provincias
             'Córdoba': { lat: -31.4201, lng: -64.1888 },
-            'Villa Carlos Paz': { lat: -31.4241, lng: -64.4978 },
-            'Río Cuarto': { lat: -33.1301, lng: -64.3499 },
-            'Villa María': { lat: -32.4072, lng: -63.2408 },
-            'San Francisco': { lat: -31.4278, lng: -62.0831 },
-            'Alta Gracia': { lat: -31.6533, lng: -64.4278 },
-            'Bell Ville': { lat: -32.6253, lng: -62.6886 },
-            'Marcos Juárez': { lat: -32.6978, lng: -62.1003 },
-            'Villa Dolores': { lat: -31.9450, lng: -65.1892 },
-            'Jesús María': { lat: -30.9806, lng: -64.0939 },
-            'La Falda': { lat: -31.0867, lng: -64.4906 },
-            'Cosquín': { lat: -31.2447, lng: -64.4653 },
-            'Cruz del Eje': { lat: -30.7278, lng: -64.8083 },
-            'Deán Funes': { lat: -30.4197, lng: -64.3497 },
-            'Villa General Belgrano': { lat: -31.9794, lng: -64.5578 },
-            'Villa Allende': { lat: -31.2956, lng: -64.2928 },
-            'Unquillo': { lat: -31.2272, lng: -64.3153 },
-            'Río Tercero': { lat: -32.1742, lng: -64.1144 },
-            'Laboulaye': { lat: -34.1264, lng: -63.3939 },
-            'Arroyito': { lat: -31.4194, lng: -63.0514 },
-            'Villa Nueva': { lat: -32.4333, lng: -63.2500 },
-            'Oncativo': { lat: -31.9167, lng: -63.6833 },
-            'Las Varillas': { lat: -31.8731, lng: -62.7194 },
-            'Morteros': { lat: -30.7108, lng: -61.9978 },
-            'San Agustín': { lat: -32.3833, lng: -63.2167 },
-
-            // ==================== CORRIENTES ====================
-            'Corrientes': { lat: -27.4806, lng: -58.8341 },
-            'Goya': { lat: -29.1406, lng: -59.2633 },
-            'Curuzú Cuatiá': { lat: -29.7917, lng: -58.0511 },
-            'Paso de los Libres': { lat: -29.7103, lng: -57.0886 },
-            'Mercedes': { lat: -29.1842, lng: -58.0756 },
-            'Santo Tomé': { lat: -28.5489, lng: -56.0411 },
-            'Esquina': { lat: -30.0167, lng: -59.5333 },
-            'Bella Vista': { lat: -28.5097, lng: -59.0453 },
-            'Saladas': { lat: -28.2528, lng: -58.6258 },
-            'Monte Caseros': { lat: -30.2539, lng: -57.6378 },
-            'Alvear': { lat: -29.1000, lng: -56.5500 },
-            'Sauce': { lat: -30.1000, lng: -58.7833 },
-            'Empedrado': { lat: -27.9500, lng: -58.8000 },
-            'Ituzaingó': { lat: -27.5833, lng: -56.6833 },
-
-            // ==================== ENTRE RÍOS ====================
-            'Paraná': { lat: -31.7333, lng: -60.5289 },
-            'Concordia': { lat: -31.3931, lng: -58.0208 },
-            'Gualeguaychú': { lat: -33.0092, lng: -58.5175 },
-            'Concepción del Uruguay': { lat: -32.4836, lng: -58.2356 },
-            'Colón': { lat: -32.2236, lng: -58.1419 },
-            'Victoria': { lat: -32.6186, lng: -60.1558 },
-            'Gualeguay': { lat: -33.1428, lng: -59.3103 },
-            'Chajarí': { lat: -30.7550, lng: -57.9883 },
-            'La Paz': { lat: -30.7408, lng: -59.6464 },
-            'Villaguay': { lat: -31.8639, lng: -59.0267 },
-            'Federación': { lat: -30.9572, lng: -57.9039 },
-            'Diamante': { lat: -32.0667, lng: -60.6333 },
-            'Crespo': { lat: -32.0333, lng: -60.3000 },
-            'Santa Elena': { lat: -30.9500, lng: -59.7833 },
-            'San José de Feliciano': { lat: -30.3833, lng: -58.7500 },
-
-            // ==================== FORMOSA ====================
-            'Formosa': { lat: -26.1858, lng: -58.1756 },
-            'Clorinda': { lat: -25.2878, lng: -57.7194 },
-            'Pirané': { lat: -25.7328, lng: -59.1086 },
-            'Las Lomitas': { lat: -24.7094, lng: -60.5936 },
-            'Ibarreta': { lat: -25.2167, lng: -59.8583 },
-            'El Colorado': { lat: -26.3089, lng: -59.3750 },
-            'Comandante Fontana': { lat: -25.3333, lng: -59.6833 },
-            'Ingeniero Juárez': { lat: -23.8906, lng: -61.8503 },
-            'Laguna Yema': { lat: -24.2556, lng: -61.2444 },
-            'General Mosconi': { lat: -25.6833, lng: -60.6000 },
-
-            // ==================== JUJUY ====================
-            'San Salvador de Jujuy': { lat: -24.1858, lng: -65.2995 },
-            'Jujuy': { lat: -24.1858, lng: -65.2995 },
-            'San Pedro de Jujuy': { lat: -24.2314, lng: -64.8658 },
-            'Libertador General San Martín': { lat: -23.8067, lng: -64.7886 },
-            'Palpala': { lat: -24.2567, lng: -65.2108 },
-            'La Quiaca': { lat: -22.1017, lng: -65.5958 },
-            'Humahuaca': { lat: -23.2050, lng: -65.3503 },
-            'Tilcara': { lat: -23.5772, lng: -65.3964 },
-            'Purmamarca': { lat: -23.7486, lng: -65.4997 },
-            'Abra Pampa': { lat: -22.7167, lng: -65.7000 },
-            'El Carmen': { lat: -24.3833, lng: -65.2833 },
-            'San Antonio': { lat: -24.4000, lng: -65.3333 },
-
-            // ==================== LA PAMPA ====================
-            'Santa Rosa': { lat: -36.6167, lng: -64.2833 },
-            'General Pico': { lat: -35.6567, lng: -63.7567 },
-            'General Acha': { lat: -37.3833, lng: -64.6000 },
-            'Eduardo Castex': { lat: -35.9167, lng: -64.2833 },
-            'Toay': { lat: -36.6667, lng: -64.3833 },
-            'Realicó': { lat: -35.0333, lng: -64.2500 },
-            'Victorica': { lat: -36.2167, lng: -65.4333 },
-            'Macachín': { lat: -37.1333, lng: -63.6667 },
-            'Intendente Alvear': { lat: -35.2333, lng: -63.5833 },
-            'Telén': { lat: -35.4167, lng: -65.4333 },
-
-            // ==================== LA RIOJA ====================
-            'La Rioja': { lat: -29.4131, lng: -66.8558 },
-            'Chilecito': { lat: -29.1636, lng: -67.4964 },
-            'Aimogasta': { lat: -28.5617, lng: -66.8178 },
-            'Chamical': { lat: -30.3581, lng: -66.3147 },
-            'Chepes': { lat: -31.3333, lng: -66.6000 },
-            'Villa Unión': { lat: -29.3167, lng: -68.2167 },
-            'Arauco': { lat: -28.5833, lng: -66.7833 },
-            'Vinchina': { lat: -28.7500, lng: -68.2500 },
-
-            // ==================== MENDOZA ====================
-            'Mendoza': { lat: -32.8895, lng: -68.8458 },
-            'San Rafael': { lat: -34.6177, lng: -68.3301 },
-            'Godoy Cruz': { lat: -32.9269, lng: -68.8481 },
-            'Guaymallén': { lat: -32.8981, lng: -68.8128 },
-            'Luján de Cuyo': { lat: -33.0333, lng: -68.8833 },
-            'Maipú': { lat: -32.9833, lng: -68.7833 },
-            'Las Heras': { lat: -32.8500, lng: -68.8333 },
-            'Tunuyán': { lat: -33.5778, lng: -69.0156 },
-            'Tupungato': { lat: -33.3667, lng: -69.1500 },
-            'San Martín': { lat: -33.0833, lng: -68.4667 },
-            'Rivadavia': { lat: -33.1833, lng: -68.4667 },
-            'Junín': { lat: -33.1500, lng: -68.4833 },
-            'Santa Rosa': { lat: -33.2667, lng: -68.3167 },
-            'La Paz': { lat: -33.4667, lng: -67.5667 },
-            'Malargüe': { lat: -35.4756, lng: -69.5850 },
-            'General Alvear': { lat: -34.9667, lng: -67.6833 },
-
-            // ==================== MISIONES ====================
-            'Posadas': { lat: -27.3671, lng: -55.8961 },
-            'Oberá': { lat: -27.4869, lng: -55.1200 },
-            'Eldorado': { lat: -26.4097, lng: -54.6339 },
-            'Puerto Iguazú': { lat: -25.5994, lng: -54.5781 },
-            'Apóstoles': { lat: -27.9097, lng: -55.7569 },
-            'Leandro N. Alem': { lat: -27.6000, lng: -55.3167 },
-            'San Vicente': { lat: -26.6167, lng: -54.1333 },
-            'Jardín América': { lat: -27.0333, lng: -55.2333 },
-            'Montecarlo': { lat: -26.5667, lng: -54.7500 },
-            'Puerto Rico': { lat: -26.7994, lng: -55.0242 },
-            'Aristóbulo del Valle': { lat: -27.0994, lng: -54.8942 },
-            'Garuhapé': { lat: -26.9500, lng: -55.0333 },
-            'San Ignacio': { lat: -27.2583, lng: -55.5372 },
-            'Wanda': { lat: -25.9667, lng: -54.5667 },
-            '25 de Mayo': { lat: -27.3833, lng: -54.7500 },
-
-            // ==================== NEUQUÉN ====================
-            'Neuquén': { lat: -38.9516, lng: -68.0591 },
-            'San Martín de los Andes': { lat: -40.1578, lng: -71.3539 },
-            'Cutral-Có': { lat: -38.9333, lng: -69.2333 },
-            'Plaza Huincul': { lat: -38.9167, lng: -69.2167 },
-            'Zapala': { lat: -38.8992, lng: -70.0539 },
-            'Centenario': { lat: -38.8333, lng: -68.1333 },
-            'Plottier': { lat: -38.9500, lng: -68.2333 },
-            'Senillosa': { lat: -39.0167, lng: -68.4333 },
-            'Villa La Angostura': { lat: -40.7631, lng: -71.6453 },
-            'Junín de los Andes': { lat: -39.9500, lng: -71.0667 },
-            'Aluminé': { lat: -39.2333, lng: -70.9167 },
-            'Chos Malal': { lat: -37.3833, lng: -70.2667 },
-            'Loncopué': { lat: -38.0667, lng: -70.6167 },
-            'Las Lajas': { lat: -38.5167, lng: -70.3667 },
-
-            // ==================== RÍO NEGRO ====================
-            'Viedma': { lat: -40.8135, lng: -62.9967 },
-            'San Carlos de Bariloche': { lat: -41.1335, lng: -71.3103 },
-            'Bariloche': { lat: -41.1335, lng: -71.3103 },
-            'General Roca': { lat: -39.0333, lng: -67.5833 },
-            'Cipolletti': { lat: -38.9333, lng: -67.9833 },
-            'Allen': { lat: -38.9833, lng: -67.8167 },
-            'Villa Regina': { lat: -39.1000, lng: -67.0667 },
-            'Catriel': { lat: -37.8833, lng: -67.8000 },
-            'El Bolsón': { lat: -41.9667, lng: -71.5333 },
-            'San Antonio Oeste': { lat: -40.7333, lng: -64.9500 },
-            'Las Grutas': { lat: -40.8000, lng: -65.0833 },
-            'Sierra Grande': { lat: -41.6000, lng: -65.3500 },
-            'Ingeniero Jacobacci': { lat: -41.3333, lng: -69.5500 },
-            'Choele Choel': { lat: -39.2833, lng: -65.6667 },
-            'Luis Beltrán': { lat: -39.2000, lng: -65.7333 },
-            'Chichinales': { lat: -39.1167, lng: -66.9333 },
-            'Fernández Oro': { lat: -38.9500, lng: -67.9167 },
-
-            // ==================== SALTA ====================
-            'Salta': { lat: -24.7821, lng: -65.4232 },
-            'San Ramón de la Nueva Orán': { lat: -23.1331, lng: -64.3236 },
-            'Tartagal': { lat: -22.5167, lng: -63.8011 },
-            'Metán': { lat: -25.5000, lng: -64.9667 },
-            'General Güemes': { lat: -24.6667, lng: -65.0500 },
-            'Cafayate': { lat: -26.0733, lng: -65.9775 },
-            'Rosario de la Frontera': { lat: -25.8000, lng: -64.9667 },
-            'Joaquín V. González': { lat: -25.0833, lng: -64.1167 },
-            'Embarcación': { lat: -23.2167, lng: -64.0967 },
-            'El Carril': { lat: -25.0667, lng: -65.4833 },
-            'Pichanal': { lat: -23.3333, lng: -64.2333 },
-            'Cerrillos': { lat: -24.9000, lng: -65.4833 },
-            'La Caldera': { lat: -24.6167, lng: -65.4000 },
-            'Cachi': { lat: -25.1167, lng: -66.1667 },
-            'Molinos': { lat: -25.4333, lng: -66.3000 },
-
-            // ==================== SAN JUAN ====================
-            'San Juan': { lat: -31.5375, lng: -68.5364 },
-            'Chimbas': { lat: -31.4833, lng: -68.5333 },
-            'Rivadavia': { lat: -31.5333, lng: -68.5833 },
-            'Santa Lucía': { lat: -31.5333, lng: -68.5000 },
-            'Rawson': { lat: -31.5667, lng: -68.6000 },
-            'Pocito': { lat: -31.6833, lng: -68.5667 },
-            'Caucete': { lat: -31.6500, lng: -68.2833 },
-            'Albardón': { lat: -31.4333, lng: -68.5333 },
-            'Jáchal': { lat: -30.2333, lng: -68.7500 },
-            'Valle Fértil': { lat: -30.6333, lng: -67.4667 },
-            'Calingasta': { lat: -31.3000, lng: -69.4667 },
-            'Iglesia': { lat: -30.1667, lng: -69.1167 },
-            '25 de Mayo': { lat: -31.7167, lng: -68.1000 },
-            'Angaco': { lat: -31.5833, lng: -68.3500 },
-
-            // ==================== SAN LUIS ====================
-            'San Luis': { lat: -33.2950, lng: -66.3356 },
-            'Villa Mercedes': { lat: -33.6758, lng: -65.4594 },
-            'Merlo': { lat: -32.3439, lng: -65.0147 },
-            'La Punta': { lat: -33.1833, lng: -66.3167 },
-            'Justo Daract': { lat: -33.8500, lng: -65.1833 },
-            'Concarán': { lat: -32.5500, lng: -65.2500 },
-            'Santa Rosa del Conlara': { lat: -32.3333, lng: -65.2000 },
-            'Villa de la Quebrada': { lat: -32.6167, lng: -66.2833 },
-            'Tilisarao': { lat: -32.7000, lng: -65.3333 },
-            'Unión': { lat: -34.1500, lng: -65.8000 },
-            'La Toma': { lat: -33.0500, lng: -65.6333 },
-            'Naschel': { lat: -32.9167, lng: -65.3833 },
-
-            // ==================== SANTA CRUZ ====================
-            'Río Gallegos': { lat: -51.6226, lng: -69.2181 },
-            'Caleta Olivia': { lat: -46.4378, lng: -67.5289 },
-            'Pico Truncado': { lat: -46.7975, lng: -67.9564 },
-            'Puerto Deseado': { lat: -47.7500, lng: -65.8933 },
-            'Puerto San Julián': { lat: -49.3058, lng: -67.7292 },
-            'Comandante Luis Piedra Buena': { lat: -49.9833, lng: -68.9000 },
-            'El Calafate': { lat: -50.3378, lng: -72.2650 },
-            'Las Heras': { lat: -46.5411, lng: -68.9356 },
-            'Perito Moreno': { lat: -46.5833, lng: -70.9333 },
-            'Gobernador Gregores': { lat: -48.7500, lng: -70.2500 },
-            'Puerto Santa Cruz': { lat: -50.0167, lng: -68.5167 },
-            '28 de Noviembre': { lat: -51.6000, lng: -72.2667 },
-
-            // ==================== SANTA FE ====================
-            'Santa Fe': { lat: -31.6107, lng: -60.6973 },
             'Rosario': { lat: -32.9468, lng: -60.6393 },
-            'Rafaela': { lat: -31.2500, lng: -61.4872 },
-            'Reconquista': { lat: -29.1500, lng: -59.6500 },
-            'Venado Tuerto': { lat: -33.7456, lng: -61.9689 },
-            'Villa Gobernador Gálvez': { lat: -33.0278, lng: -60.6336 },
-            'Santo Tomé': { lat: -31.6667, lng: -60.7667 },
-            'Esperanza': { lat: -31.4500, lng: -60.9333 },
-            'San Lorenzo': { lat: -32.7500, lng: -60.7333 },
-            'Casilda': { lat: -33.0419, lng: -61.1681 },
-            'Firmat': { lat: -33.4631, lng: -61.4828 },
-            'Cañada de Gómez': { lat: -32.8167, lng: -61.3833 },
-            'Capitán Bermúdez': { lat: -32.8167, lng: -60.7167 },
-            'Funes': { lat: -32.9167, lng: -60.8167 },
-            'Villa Constitución': { lat: -33.2333, lng: -60.3333 },
-            'Gálvez': { lat: -32.0333, lng: -61.2167 },
-            'Rufino': { lat: -34.2667, lng: -62.7167 },
-            'Vera': { lat: -29.4667, lng: -60.2167 },
-            'Tostado': { lat: -29.2333, lng: -61.7667 },
-            'Las Rosas': { lat: -32.4833, lng: -61.5833 },
-            'Sunchales': { lat: -30.9500, lng: -61.5667 },
-            'San Javier': { lat: -30.5833, lng: -59.9333 },
-            'Coronda': { lat: -31.9667, lng: -60.9167 },
-            'San Carlos Centro': { lat: -31.7333, lng: -61.0833 },
-            'Totoras': { lat: -32.5833, lng: -61.1667 },
-            'San Jorge': { lat: -31.8833, lng: -61.8667 },
-            'Granadero Baigorria': { lat: -32.8667, lng: -60.7167 },
-            'Pérez': { lat: -32.9833, lng: -60.7667 },
-            'Arroyo Seco': { lat: -33.1500, lng: -60.5167 },
-
-            // ==================== SANTIAGO DEL ESTERO ====================
-            'Santiago del Estero': { lat: -27.7834, lng: -64.2642 },
-            'La Banda': { lat: -27.7333, lng: -64.2333 },
-            'Termas de Río Hondo': { lat: -27.4833, lng: -64.8667 },
-            'Añatuya': { lat: -28.4667, lng: -62.8333 },
-            'Frías': { lat: -28.6500, lng: -65.1333 },
-            'Monte Quemado': { lat: -25.8000, lng: -62.8167 },
-            'Fernández': { lat: -28.0667, lng: -63.0333 },
-            'Clodomira': { lat: -27.7167, lng: -64.7000 },
-            'Quimilí': { lat: -27.6500, lng: -62.4333 },
-            'Suncho Corral': { lat: -28.9500, lng: -63.4333 },
-            'Tintina': { lat: -28.2667, lng: -62.2500 },
-            'Pinto': { lat: -29.1500, lng: -62.6500 },
-            'Bandera': { lat: -28.8833, lng: -62.2667 },
-
-            // ==================== TIERRA DEL FUEGO ====================
-            'Ushuaia': { lat: -54.8019, lng: -68.3029 },
-            'Río Grande': { lat: -53.7875, lng: -67.7094 },
-            'Tolhuin': { lat: -54.5167, lng: -67.1833 },
-
-            // ==================== TUCUMÁN ====================
-            'San Miguel de Tucumán': { lat: -26.8083, lng: -65.2176 },
+            'Mendoza': { lat: -32.8895, lng: -68.8458 },
             'Tucumán': { lat: -26.8083, lng: -65.2176 },
-            'Yerba Buena': { lat: -26.8167, lng: -65.3167 },
-            'Tafí Viejo': { lat: -26.7333, lng: -65.2667 },
-            'Concepción': { lat: -27.3333, lng: -65.6000 },
-            'Aguilares': { lat: -27.4333, lng: -65.6167 },
-            'Monteros': { lat: -27.1667, lng: -65.5000 },
-            'Famaillá': { lat: -27.0500, lng: -65.4000 },
-            'Bella Vista': { lat: -26.7500, lng: -65.3000 },
-            'Alderetes': { lat: -26.8167, lng: -65.1833 },
-            'Las Talitas': { lat: -26.7667, lng: -65.2333 },
-            'Banda del Río Salí': { lat: -26.8333, lng: -65.1667 },
-            'Simoca': { lat: -27.2667, lng: -65.3667 },
-            'Burruyacú': { lat: -26.5000, lng: -64.7333 },
-            'Tafí del Valle': { lat: -26.8500, lng: -65.7167 },
-            'Trancas': { lat: -26.2167, lng: -65.2833 }
+            'San Miguel de Tucumán': { lat: -26.8083, lng: -65.2176 },
+            'Salta': { lat: -24.7821, lng: -65.4232 },
+            'Santa Fe': { lat: -31.6107, lng: -60.6973 },
+            'San Juan': { lat: -31.5375, lng: -68.5364 },
+            'Resistencia': { lat: -27.4514, lng: -58.9867 },
+            'Neuquén': { lat: -38.9516, lng: -68.0591 },
+            'Posadas': { lat: -27.3671, lng: -55.8961 },
+            'Paraná': { lat: -31.7333, lng: -60.5289 },
+            'Corrientes': { lat: -27.4806, lng: -58.8341 }
         };
 
-        // Obtener ubicación desde Django
-        const ubicacionCompleta = "{{ solicitud.localidad }}{% if solicitud.zona %}, {{ solicitud.zona }}{% endif %}";
-        const localidad = "{{ solicitud.localidad }}";
-        
-        // Buscar coordenadas (búsqueda exacta primero)
-        let coords = coordenadas[localidad];
-        
-        // Si no encuentra, intentar búsqueda parcial (case insensitive)
-        if (!coords) {
-            const localidadLower = localidad.toLowerCase();
-            const key = Object.keys(coordenadas).find(k => 
-                k.toLowerCase().includes(localidadLower) || 
-                localidadLower.includes(k.toLowerCase())
-            );
-            if (key) coords = coordenadas[key];
+        // Parsear vendedores desde Django
+        let vendedoresData = [];
+        try {
+            const vendedoresJson = '{{ vendedores_json|safe }}';
+            console.log('[DEBUG] JSON recibido:', vendedoresJson);
+            
+            if (vendedoresJson && vendedoresJson !== 'None' && vendedoresJson !== '') {
+                vendedoresData = JSON.parse(vendedoresJson);
+                console.log('[DEBUG] Vendedores parseados:', vendedoresData);
+            }
+        } catch (e) {
+            console.error('[ERROR] Error parseando vendedores JSON:', e);
         }
         
-        // Si aún no encuentra, usar coordenadas por defecto (Buenos Aires)
-        if (!coords) {
-            coords = coordenadas['Buenos Aires'];
+        // Obtener ubicación del usuario
+        const localidad = "{{ solicitud.localidad }}";
+        const zona = "{{ solicitud.zona }}";
+        
+        console.log('[DEBUG] Ubicación usuario:', { localidad, zona });
+        
+        // Función para buscar coordenadas
+        function buscarCoordenadas(loc, prov) {
+            // Intentar primero con localidad + zona
+            if (loc && prov) {
+                const key1 = `${loc}, ${prov}`;
+                if (coordenadas[key1]) return coordenadas[key1];
+            }
+            
+            // Intentar solo con localidad
+            if (loc && coordenadas[loc]) return coordenadas[loc];
+            
+            // Intentar solo con zona/provincia
+            if (prov && coordenadas[prov]) return coordenadas[prov];
+            
+            // Buscar coincidencia parcial
+            const normalizar = str => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            
+            if (loc) {
+                const locNorm = normalizar(loc);
+                const key = Object.keys(coordenadas).find(k => {
+                    const kNorm = normalizar(k);
+                    return kNorm.includes(locNorm) || locNorm.includes(kNorm);
+                });
+                if (key) return coordenadas[key];
+            }
+            
+            if (prov) {
+                const provNorm = normalizar(prov);
+                const key = Object.keys(coordenadas).find(k => {
+                    const kNorm = normalizar(k);
+                    return kNorm.includes(provNorm) || provNorm.includes(kNorm);
+                });
+                if (key) return coordenadas[key];
+            }
+            
+            return null;
+        }
+        
+        // Coordenadas del usuario
+        let userCoords = buscarCoordenadas(localidad, zona);
+        
+        if (!userCoords) {
+            console.warn('[WARN] No se encontraron coordenadas del usuario, usando Buenos Aires');
+            userCoords = coordenadas['Buenos Aires'];
         }
 
+        console.log('[DEBUG] Coordenadas del usuario:', userCoords);
+
         // Inicializar el mapa
-        const map = L.map('map').setView([coords.lat, coords.lng], 13);
+        const map = L.map('map').setView([userCoords.lat, userCoords.lng], 11);
 
         // Agregar capa de OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -856,7 +459,7 @@
             maxZoom: 19
         }).addTo(map);
 
-        // Icono personalizado para el usuario
+        // Iconos personalizados
         const userIcon = L.icon({
             iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -866,7 +469,6 @@
             shadowSize: [41, 41]
         });
 
-        // Icono personalizado para vendedores
         const vendedorIcon = L.icon({
             iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -877,53 +479,82 @@
         });
 
         // Marcador de tu ubicación
-        L.marker([coords.lat, coords.lng], {icon: userIcon})
+        const ubicacionDisplay = (localidad ? localidad : '') + (localidad && zona ? ', ' : '') + (zona ? zona : '');
+        const userMarker = L.marker([userCoords.lat, userCoords.lng], {icon: userIcon})
             .addTo(map)
-            .bindPopup('<b>Tu ubicación</b><br>' + ubicacionCompleta)
+            .bindPopup('<b>Tu ubicación</b><br>' + ubicacionDisplay)
             .openPopup();
 
-        // Vendedores cercanos simulados (ajustados según ubicación)
-        const vendedores = [
-            { 
-                lat: coords.lat + 0.01, 
-                lng: coords.lng + 0.01, 
-                nombre: 'Repuestos García',
-                direccion: 'Av. San Martín 1234',
-                telefono: '011-4567-8901'
-            },
-            { 
-                lat: coords.lat - 0.015, 
-                lng: coords.lng + 0.02, 
-                nombre: 'Auto Parts Central',
-                direccion: 'Calle Falsa 567',
-                telefono: '011-4567-8902'
-            },
-            { 
-                lat: coords.lat + 0.02, 
-                lng: coords.lng - 0.015, 
-                nombre: 'Desarmadero López',
-                direccion: 'Ruta Principal Km 25',
-                telefono: '011-4567-8903'
-            }
-        ];
+        const allMarkers = [userMarker];
 
-        // Agregar marcadores de vendedores
-        vendedores.forEach(vendedor => {
-            L.marker([vendedor.lat, vendedor.lng], {icon: vendedorIcon})
-                .addTo(map)
-                .bindPopup(`
-                    <b>${vendedor.nombre}</b><br>
-                    ${vendedor.direccion}<br>
-                    📱 ${vendedor.telefono}
-                `);
-        });
+        // ✅ AGREGAR MARCADORES DE VENDEDORES CON PRIORIDAD GPS
+        console.log('[DEBUG] Procesando vendedores:', vendedoresData.length);
+        
+        if (Array.isArray(vendedoresData) && vendedoresData.length > 0) {
+            vendedoresData.forEach((vendedor, index) => {
+                console.log(`[DEBUG] Vendedor ${index + 1}:`, vendedor);
+                
+                let vendedorCoords = null;
+                
+                // 🎯 PRIORIDAD 1: Usar coordenadas GPS EXACTAS si existen
+                if (vendedor.tiene_gps && vendedor.latitud && vendedor.longitud) {
+                    vendedorCoords = {
+                        lat: parseFloat(vendedor.latitud),
+                        lng: parseFloat(vendedor.longitud)
+                    };
+                    console.log(`[GPS EXACTO] ✓ ${vendedor.nombre}: ${vendedorCoords.lat}, ${vendedorCoords.lng}`);
+                } 
+                // ⚠️ FALLBACK: Usar base de datos local solo si NO tiene GPS
+                else {
+                    vendedorCoords = buscarCoordenadas(vendedor.localidad, vendedor.zona);
+                    if (vendedorCoords) {
+                        console.log(`[APROXIMADO] ⚠ ${vendedor.nombre}: ${vendedorCoords.lat}, ${vendedorCoords.lng}`);
+                    }
+                }
+                
+                if (vendedorCoords) {
+                    // Construir ubicación completa para el popup
+                    const ubicacionVendedor = [
+                        vendedor.direccion,
+                        vendedor.localidad,
+                        vendedor.zona
+                    ].filter(Boolean).join(', ');
+                    
+                    // Iconos y etiquetas según tipo de ubicación
+                    const gpsIcon = vendedor.tiene_gps ? '📍' : '📌';
+                    const gpsLabel = vendedor.tiene_gps ? '<span style="color: #27ae60; font-weight: bold;">GPS Exacto</span>' : '<span style="color: #f39c12;">Ubicación Aproximada</span>';
+                    
+                    const marker = L.marker([vendedorCoords.lat, vendedorCoords.lng], {icon: vendedorIcon})
+                        .addTo(map)
+                        .bindPopup(`
+                            <div style="min-width: 200px;">
+                                <b>${vendedor.nombre}</b><br>
+                                ${gpsIcon} ${ubicacionVendedor}<br>
+                                <small>${gpsLabel}</small><br>
+                                📦 ${vendedor.repuestos_count} repuesto${vendedor.repuestos_count > 1 ? 's' : ''} disponible${vendedor.repuestos_count > 1 ? 's' : ''}<br>
+                                📧 ${vendedor.email}<br>
+                                📱 ${vendedor.telefono}
+                            </div>
+                        `);
+                    
+                    allMarkers.push(marker);
+                    console.log(`✓ Marcador agregado: ${vendedor.nombre}`);
+                } else {
+                    console.warn(`✗ Sin coordenadas para: ${vendedor.nombre} (${vendedor.localidad}, ${vendedor.zona})`);
+                }
+            });
+        } else {
+            console.warn('[WARN] No hay vendedores para mostrar');
+        }
 
-        // Ajustar el mapa para mostrar todos los marcadores
-        const group = L.featureGroup(
-            [L.marker([coords.lat, coords.lng])]
-            .concat(vendedores.map(v => L.marker([v.lat, v.lng])))
-        );
-        map.fitBounds(group.getBounds().pad(0.1));
+        // Ajustar mapa para mostrar todos los marcadores
+        if (allMarkers.length > 1) {
+            const group = L.featureGroup(allMarkers);
+            map.fitBounds(group.getBounds().pad(0.1));
+            console.log('[DEBUG] Mapa ajustado para todos los marcadores');
+        }
+        
+        console.log('[DEBUG] Inicialización completada - Total marcadores:', allMarkers.length);
     </script>
 </body>
 </html>

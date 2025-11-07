@@ -4,6 +4,8 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from core.models import SolicitudCompra, PublicacionVenta
 from django.db.models import Q
+import requests
+import time
 
 
 def logout_vendedor(request):
@@ -15,7 +17,6 @@ def logout_vendedor(request):
 
 def login_vendedor(request):
     """Mostrar página de login para vendedores"""
-    # Si ya está autenticado, redirigir a ver solicitudes
     if request.user.is_authenticated:
         return redirect('ver_solicitudes')
     return render(request, 'login_vendedor.html')
@@ -62,17 +63,85 @@ def ver_solicitudes(request):
         'marcas_disponibles': marcas_disponibles,
         'categorias_disponibles': categorias_disponibles,
         'urgencias_disponibles': urgencias_disponibles,
-        # Filtros actuales
         'marca_actual': marca_filtro,
         'modelo_actual': modelo_filtro,
         'categoria_actual': categoria_filtro,
         'urgencia_actual': urgencia_filtro,
         'año_actual': año_filtro,
-        # Datos del usuario
         'usuario': request.user,
     }
     
     return render(request, 'listado_solicitudes.html', context)
+
+
+def geocodificar_direccion(direccion, localidad, zona):
+    """
+    Convierte una dirección en coordenadas GPS usando Nominatim (OpenStreetMap)
+    
+    Args:
+        direccion: calle y número (ej: "Escultor Santiago Parodi 5251")
+        localidad: ciudad/localidad (ej: "Tres de Febrero")
+        zona: provincia (ej: "Buenos Aires")
+    
+    Returns:
+        tuple: (latitud, longitud) o (None, None) si falla
+    """
+    try:
+        # Construir dirección completa
+        direccion_completa = f"{direccion}, {localidad}, {zona}, Argentina"
+        
+        # API de Nominatim (gratuita)
+        url = "https://nominatim.openstreetmap.org/search"
+        params = {
+            'q': direccion_completa,
+            'format': 'json',
+            'limit': 1,
+            'countrycodes': 'ar'  # Solo Argentina
+        }
+        
+        headers = {
+            'User-Agent': 'BuscoRepuesto/1.0'  # Nominatim requiere User-Agent
+        }
+        
+        print(f"[GEOCODING] Buscando: {direccion_completa}")
+        
+        response = requests.get(url, params=params, headers=headers, timeout=5)
+        
+        if response.status_code == 200:
+            data = response.json()
+            
+            if data and len(data) > 0:
+                lat = float(data[0]['lat'])
+                lon = float(data[0]['lon'])
+                print(f"[GEOCODING] ✓ Encontrado: lat={lat}, lon={lon}")
+                return lat, lon
+            else:
+                print(f"[GEOCODING] ✗ No se encontraron resultados para: {direccion_completa}")
+        else:
+            print(f"[GEOCODING] ✗ Error HTTP {response.status_code}")
+        
+        # Si falla, intentar solo con localidad y zona
+        direccion_fallback = f"{localidad}, {zona}, Argentina"
+        params['q'] = direccion_fallback
+        
+        print(f"[GEOCODING] Reintentando con: {direccion_fallback}")
+        time.sleep(1)  # Respetar rate limit de Nominatim
+        
+        response = requests.get(url, params=params, headers=headers, timeout=5)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data and len(data) > 0:
+                lat = float(data[0]['lat'])
+                lon = float(data[0]['lon'])
+                print(f"[GEOCODING] ✓ Encontrado (fallback): lat={lat}, lon={lon}")
+                return lat, lon
+        
+        return None, None
+        
+    except Exception as e:
+        print(f"[GEOCODING] ERROR: {str(e)}")
+        return None, None
 
 
 @login_required(login_url='login_vendedor')
@@ -99,10 +168,21 @@ def procesar_publicacion(request):
             if modelo_auto == 'Otro':
                 modelo_auto = request.POST.get('modelo_auto_otro', '')
             
-            # Obtener ubicación (puede ser del select o del campo "otro")
-            ubicacion = request.POST.get('ubicacion')
-            if ubicacion == 'Otro':
-                ubicacion = request.POST.get('ubicacion_otro', '')
+            # Obtener ubicación
+            zona = request.POST.get('zona', '')
+            localidad = request.POST.get('localidad', '')
+            direccion = request.POST.get('direccion', '')
+            
+            # Construir ubicación completa para compatibilidad
+            ubicacion_completa = f"{direccion}, {localidad}, {zona}" if direccion else f"{localidad}, {zona}" if localidad and zona else (localidad or zona or '')
+            
+            # GEOCODIFICAR LA DIRECCIÓN
+            latitud, longitud = geocodificar_direccion(direccion, localidad, zona)
+            
+            if latitud and longitud:
+                print(f"[INFO] Geocodificación exitosa: {latitud}, {longitud}")
+            else:
+                print(f"[WARN] No se pudo geocodificar la dirección, usando coordenadas aproximadas")
             
             # Obtener años (pueden ser vacíos)
             año_desde = request.POST.get('año_desde')
@@ -119,7 +199,12 @@ def procesar_publicacion(request):
                 descripcion=request.POST.get('descripcion'),
                 estado=request.POST.get('estado'),
                 precio=request.POST.get('precio'),
-                ubicacion=ubicacion,
+                zona=zona,
+                localidad=localidad,
+                direccion=direccion,
+                ubicacion=ubicacion_completa,
+                latitud=latitud,
+                longitud=longitud,
                 nombre_vendedor=request.POST.get('nombre_vendedor'),
                 email_vendedor=request.POST.get('email_vendedor'),
                 telefono_vendedor=request.POST.get('telefono_vendedor')
@@ -128,7 +213,10 @@ def procesar_publicacion(request):
             # Buscar solicitudes que coincidan con este repuesto
             solicitudes_coincidentes = buscar_solicitudes_compatibles(publicacion)
             
-            messages.success(request, '¡Tu repuesto ha sido publicado exitosamente!')
+            if latitud and longitud:
+                messages.success(request, '¡Tu repuesto ha sido publicado exitosamente con ubicación GPS!')
+            else:
+                messages.warning(request, 'Repuesto publicado, pero no se pudo obtener la ubicación exacta. Se usará la localidad aproximada.')
             
             context = {
                 'publicacion': publicacion,
@@ -141,6 +229,9 @@ def procesar_publicacion(request):
             return render(request, 'confirmacion_publicacion.html', context)
             
         except Exception as e:
+            print(f"[ERROR] Error en procesar_publicacion: {str(e)}")
+            import traceback
+            traceback.print_exc()
             messages.error(request, f'Error al publicar el repuesto: {str(e)}')
             return redirect('publicar_repuesto')
     
@@ -179,16 +270,13 @@ def buscar_solicitudes_compatibles(publicacion):
         query = Q()
         
         if publicacion.año_desde and publicacion.año_hasta:
-            # Repuesto con rango de años
             query = Q(año_auto__gte=publicacion.año_desde, año_auto__lte=publicacion.año_hasta)
         elif publicacion.año_desde:
             query = Q(año_auto__gte=publicacion.año_desde)
         elif publicacion.año_hasta:
             query = Q(año_auto__lte=publicacion.año_hasta)
         
-        # Incluir también solicitudes sin año especificado
         query |= Q(año_auto__isnull=True)
-        
         solicitudes = solicitudes.filter(query)
     
     return solicitudes.distinct().order_by('-fecha_solicitud')
