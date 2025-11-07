@@ -427,7 +427,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
         }
 
@@ -633,11 +632,13 @@
                                 </td>
                                 <td class="col-año">{{ solicitud.año_auto|default:"-" }}</td>
                                 <td class="col-urgencia">
-                                    {% if solicitud.urgencia == 'alta' %}
+                                    {% if solicitud.urgencia == 'super_alta' %}
+                                        <span class="badge urgencia-alta">🚨 Muy Urgente</span>
+                                    {% elif solicitud.urgencia == 'alta' %}
                                         <span class="badge urgencia-alta">⚠️ Urgente</span>
                                     {% elif solicitud.urgencia == 'media' %}
                                         <span class="badge urgencia-media">⏰ Pronto</span>
-                                    {% else %}
+                                    {% elif solicitud.urgencia == 'baja' %}
                                         <span class="badge urgencia-baja">⏳ Normal</span>
                                     {% endif %}
                                 </td>
