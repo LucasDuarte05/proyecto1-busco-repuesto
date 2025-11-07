@@ -3,6 +3,12 @@ from django.contrib import messages
 from core.models import SolicitudCompra, PublicacionVenta
 from django.db.models import Q
 
+
+
+def login_vendedor(request):
+    """Mostrar página de login para vendedores"""
+    return render(request, 'login_vendedor.html')
+
 def quiero_vender(request):
     """Mostrar opciones para vendedores"""
     return render(request, 'listado_solicitudes.html')

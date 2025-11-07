@@ -47,21 +47,21 @@
                         <label>Marca del Auto <span class="required">*</span></label>
                         <select name="marca_auto" id="marca_auto" required>
                             <option value="">Selecciona una marca</option>
-                        <option value="Chevrolet">Chevrolet</option>
-                        <option value="Ford">Ford</option>
-                        <option value="Volkswagen">Volkswagen</option>
-                        <option value="Fiat">Fiat</option>
-                        <option value="Peugeot">Peugeot</option>
-                        <option value="Renault">Renault</option>
-                        <option value="Toyota">Toyota</option>
-                        <option value="Honda">Honda</option>
-                        <option value="Nissan">Nissan</option>
-                        <option value="Citroen">Citroën</option>
-                        <option value="Hyundai">Hyundai</option>
-                        <option value="Kia">Kia</option>
-                        <option value="Mazda">Mazda</option>
-                        <option value="Mitsubishi">Mitsubishi</option>
-                        <option value="Suzuki">Suzuki</option>
+                            <option value="Chevrolet">Chevrolet</option>
+                            <option value="Ford">Ford</option>
+                            <option value="Volkswagen">Volkswagen</option>
+                            <option value="Fiat">Fiat</option>
+                            <option value="Peugeot">Peugeot</option>
+                            <option value="Renault">Renault</option>
+                            <option value="Toyota">Toyota</option>
+                            <option value="Honda">Honda</option>
+                            <option value="Nissan">Nissan</option>
+                            <option value="Citroen">Citroën</option>
+                            <option value="Hyundai">Hyundai</option>
+                            <option value="Kia">Kia</option>
+                            <option value="Mazda">Mazda</option>
+                            <option value="Mitsubishi">Mitsubishi</option>
+                            <option value="Suzuki">Suzuki</option>
                         </select>
                     </div>
 
@@ -86,6 +86,8 @@
                             <img src="{% static 'quiero_comprar/img/cedula.png' %}" alt="VIN" class="input-icon">
                         </div>
                     </div>
+                </div>
+
                 <!-- Paso 2: Información del Repuesto -->
                 <div class="step" data-step="2">
                     <h2 class="step-title">¿Qué repuesto necesitas?</h2>
@@ -179,8 +181,9 @@
             </div>
         </form>
     </div>
+
     <script>
-    // Datos de modelos por marca
+        // Datos de modelos por marca
         const modelosPorMarca = {
             'Chevrolet': ['Agile', 'Astra', 'Aveo', 'Blazer', 'Captiva', 'Classic', 'Cobalt', 'Corsa', 'Cruze', 'Montana', 'Onix', 'Prisma', 'S10', 'Sail', 'Sonic', 'Spark', 'Spin', 'Tracker', 'Trailblazer', 'Zafira'],
             'Ford': ['EcoSport', 'Edge', 'Escort', 'Explorer', 'F-100', 'F-150', 'Fiesta', 'Focus', 'Fusion', 'Ka', 'Kuga', 'Mondeo', 'Mustang', 'Ranger', 'Territory', 'Transit'],
@@ -351,10 +354,20 @@
             const requiredFields = currentStepElement.querySelectorAll('[required]');
             
             for (let field of requiredFields) {
-                if (!field.value.trim()) {
-                    field.focus();
-                    alert('Por favor completa todos los campos obligatorios');
-                    return false;
+                // Para campos select, verificar que el valor no sea vacío
+                if (field.tagName === 'SELECT') {
+                    if (!field.value || field.value === '') {
+                        field.focus();
+                        alert('Por favor completa todos los campos obligatorios');
+                        return false;
+                    }
+                } else {
+                    // Para inputs de texto
+                    if (!field.value || !field.value.trim()) {
+                        field.focus();
+                        alert('Por favor completa todos los campos obligatorios');
+                        return false;
+                    }
                 }
             }
             return true;

@@ -22,6 +22,7 @@ from busco_repuesto import views as busco_repuesto_views
 urlpatterns = [
     path('', busco_repuesto_views.index, name='index'),
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),  # 👈 Rutas de allauth
     path('comprar/', include('quiero_comprar.urls')),
     path('vender/', include('quiero_vender.urls')),
 ]
