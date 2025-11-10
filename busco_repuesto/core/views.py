@@ -24,7 +24,7 @@ def procesar_compra(request):
             else:
                 año_auto = None
             
-            # Crear la solicitud de compra con los campos CORRECTOS del modelo
+            # Crear la solicitud de compra SIN EMAIL
             solicitud = SolicitudCompra.objects.create(
                 marca_auto=request.POST.get('marca_auto', ''),
                 modelo_auto=request.POST.get('modelo_auto', ''),
@@ -33,10 +33,10 @@ def procesar_compra(request):
                 repuesto_especifico=request.POST.get('repuesto_especifico', ''),
                 descripcion_adicional=request.POST.get('descripcion_adicional', ''),
                 urgencia=request.POST.get('urgencia', 'baja'),
-                nombre_completo=request.POST.get('nombre', ''),  # CORREGIDO
-                email=request.POST.get('email', ''),
-                telefono=request.POST.get('celular', ''),  # CORREGIDO
-                dni=request.POST.get('dni', '')  # Nuevo campo opcional
+                nombre=request.POST.get('nombre', ''),
+                celular=request.POST.get('celular', ''),
+                localidad=request.POST.get('localidad', ''),
+                zona=request.POST.get('zona', '')
             )
             
             # Buscar repuestos con algoritmo de coincidencia mejorado
@@ -46,8 +46,8 @@ def procesar_compra(request):
                 'solicitud': solicitud,
                 'repuestos': repuestos_disponibles,
                 'total_encontrados': len(repuestos_disponibles),
-                'localidad': request.POST.get('localidad', 'Caseros'),  # Pasar a template
-                'zona': request.POST.get('zona', 'Buenos Aires')  # Pasar a template
+                'localidad': request.POST.get('localidad', 'Caseros'),
+                'zona': request.POST.get('zona', 'Buenos Aires')
             }
             
             return render(request, 'resultados_comprar.html', context)
@@ -72,7 +72,7 @@ def procesar_solicitud(request):
             else:
                 año_auto = None
             
-            # Crear la solicitud de compra con los campos CORRECTOS del modelo
+            # Crear la solicitud de compra SIN EMAIL
             solicitud = SolicitudCompra.objects.create(
                 marca_auto=request.POST.get('marca_auto', ''),
                 modelo_auto=request.POST.get('modelo_auto', ''),
@@ -81,10 +81,10 @@ def procesar_solicitud(request):
                 repuesto_especifico=request.POST.get('repuesto_especifico', ''),
                 descripcion_adicional=request.POST.get('descripcion_adicional', ''),
                 urgencia=request.POST.get('urgencia', 'baja'),
-                nombre_completo=request.POST.get('nombre', ''),  # CORREGIDO
-                email=request.POST.get('email', ''),
-                telefono=request.POST.get('celular', ''),  # CORREGIDO
-                dni=request.POST.get('dni', '')  # Nuevo campo opcional
+                nombre=request.POST.get('nombre', ''),
+                celular=request.POST.get('celular', ''),
+                localidad=request.POST.get('localidad', ''),
+                zona=request.POST.get('zona', '')
             )
             
             # Buscar repuestos que coincidan con la solicitud
@@ -98,8 +98,8 @@ def procesar_solicitud(request):
                 'repuestos': repuestos_disponibles,
                 'total_encontrados': len(repuestos_disponibles),
                 'hay_coincidencias': len(repuestos_disponibles) > 0,
-                'localidad': request.POST.get('localidad', 'Caseros'),  # Pasar a template
-                'zona': request.POST.get('zona', 'Buenos Aires')  # Pasar a template
+                'localidad': request.POST.get('localidad', 'Caseros'),
+                'zona': request.POST.get('zona', 'Buenos Aires')
             }
             
             return render(request, 'confirmacion_solicitud.html', context)

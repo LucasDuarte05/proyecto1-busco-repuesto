@@ -27,11 +27,7 @@
             </div>
             <div class="progress-step" data-step="3">
                 <div class="progress-circle">3</div>
-                <div class="progress-label">Urgencia</div>
-            </div>
-            <div class="progress-step" data-step="4">
-                <div class="progress-circle">4</div>
-                <div class="progress-label">Datos</div>
+                <div class="progress-label">Contacto</div>
             </div>
         </div>
 
@@ -80,12 +76,22 @@
                     </div>
 
                     <div class="form-group">
-                        <label>VIN/Número de Chasis</label>
-                        <div class="input-with-image">
-                            <input type="text" name="nro_chasis" id="nro_chasis" placeholder="Opcional" class="chasis-input">
-                            <img src="{% static 'quiero_comprar/img/cedula.png' %}" alt="VIN" class="input-icon">
-                        </div>
-                    </div>
+                <label>VIN/Número de Chasis <span class="required">*</span></label>
+                <div class="input-with-image">
+                    <input type="text" 
+                        name="nro_chasis" 
+                        id="nro_chasis" 
+                        placeholder="Ejemplo: 9BWZZZ377VT004251" 
+                        class="chasis-input"
+                        required
+                        minlength="17"
+                        maxlength="17"
+                        pattern="[A-HJ-NPR-Z0-9]{17}"
+                        title="El VIN debe tener exactamente 17 caracteres alfanuméricos (sin I, O, Q)">
+                    <img src="{% static 'quiero_comprar/img/cedula.png' %}" alt="VIN" class="input-icon">
+                </div>
+                
+            </div>
                 </div>
 
                 <!-- Paso 2: Información del Repuesto -->
@@ -121,26 +127,9 @@
                     </div>
                 </div>
 
-                <!-- Paso 3: Urgencia -->
-                <div class="step" data-step="3">
-                    <h2 class="step-title">Nivel de Urgencia</h2>
-                    <p class="step-description">¿Qué tan urgente necesitas este repuesto?</p>
-                    
-                    <div class="form-group">
-                        <label>Urgencia <span class="required">*</span></label>
-                        <select name="urgencia" required>
-                            <option value="">Selecciona el nivel</option>
-                            <option value="super_alta">Super Alta - Muy Urgente (en hora)</option>
-                            <option value="alta">Alta - Urgente (En 3 días)</option>
-                            <option value="media">Media - Lo necesito pronto (En 1 semana)</option>
-                            <option value="baja">Baja - Puedo esperar (En 2 semanas)</option>
-                        </select>
-                    </div>
-                </div>
-
                 <!-- Paso 4: Datos Personales -->
-                <div class="step" data-step="4">
-                    <h2 class="step-title">Tus Datos de Contacto</h2>
+                <div class="step" data-step="3">
+                    <h2 class="step-title">Datos de Contacto</h2>
                     <p class="step-description">Para que los vendedores puedan contactarte</p>
                     
                     <div class="form-group">
@@ -171,12 +160,24 @@
                             <option value="">Primero selecciona una provincia</option>
                         </select>
                     </div>
+
+                    <div class="form-group">
+                        <label>Urgencia <span class="required">*</span></label>
+                        <select name="urgencia" required>
+                            <option value="">Selecciona el nivel</option>
+                            <option value="super_alta">Super Alta - Muy Urgente (en hora)</option>
+                            <option value="alta">Alta - Urgente (En 3 días)</option>
+                            <option value="media">Media - Lo necesito pronto (En 1 semana)</option>
+                            <option value="baja">Baja - Puedo esperar (En 2 semanas)</option>
+                        </select>
+                    </div>
                 </div>
+
 
                 <div class="button-group">
                     <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">Anterior</button>
                     <button type="button" class="btn btn-primary " id="nextBtn">Siguiente</button>
-                    <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">Buscar Repuestos 🔍</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">Solicitar Repuestos 🔍</button>
                 </div>
             </div>
         </form>
@@ -328,7 +329,7 @@
 
         // Navegación entre pasos
         let currentStep = 1;
-        const totalSteps = 4;
+        const totalSteps = 3;
 
         function showStep(step) {
             document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
