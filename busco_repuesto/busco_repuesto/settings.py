@@ -138,6 +138,8 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_REDIRECT_URL = '/vender/ver-solicitudes/'  # O la URL que necesites/'      # a dónde redirigir después del login
 LOGOUT_REDIRECT_URL = '/'     # a dónde redirigir después del logout
 
+SOCIALACCOUNT_LOGIN_ON_GET = True  
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
