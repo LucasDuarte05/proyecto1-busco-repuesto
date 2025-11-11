@@ -213,14 +213,6 @@ def procesar_publicacion(request):
                 email_vendedor=email_vendedor,
                 telefono_vendedor=telefono_vendedor,
                 
-                # Campos vacíos por ahora (hasta que agregues el formulario completo)
-                titulo='Repuesto disponible',  # Título por defecto
-                marca_auto='',
-                modelo_auto='',
-                categoria='motor',  # Categoría por defecto
-                descripcion='',
-                estado='usado',
-                precio=0
             )
             
             print(f"[DEBUG] ✓ Publicación creada: ID={publicacion.id}")
