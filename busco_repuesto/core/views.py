@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.db.models import Q
 from .models import SolicitudCompra, PublicacionVenta
 from decimal import Decimal, InvalidOperation
+import json
 
 # ==================== VISTAS DE COMPRA ====================
 
@@ -11,7 +12,10 @@ def quiero_comprar(request):
     return render(request, 'quiero_comprar.html')
 
 def procesar_compra(request):
-    """Procesar formulario de búsqueda y mostrar resultados"""
+    """
+    ESTA ES LA FUNCIÓN QUE SE LLAMA AL ENVIAR EL FORMULARIO
+    Procesar solicitud de repuesto y mostrar confirmación con coincidencias
+    """
     if request.method == 'POST':
         try:
             # Obtener año, manejar vacío
@@ -24,91 +28,90 @@ def procesar_compra(request):
             else:
                 año_auto = None
             
-            # Crear la solicitud de compra SIN EMAIL
+            # Obtener el email del formulario
+            email = request.POST.get('email', '')
+            
+            # Crear la solicitud de compra CON EMAIL
             solicitud = SolicitudCompra.objects.create(
                 marca_auto=request.POST.get('marca_auto', ''),
                 modelo_auto=request.POST.get('modelo_auto', ''),
                 año_auto=año_auto,
+                nro_chasis=request.POST.get('nro_chasis', ''),
                 categoria_repuesto=request.POST.get('categoria_repuesto', ''),
                 repuesto_especifico=request.POST.get('repuesto_especifico', ''),
                 descripcion_adicional=request.POST.get('descripcion_adicional', ''),
                 urgencia=request.POST.get('urgencia', 'baja'),
                 nombre=request.POST.get('nombre', ''),
+                email=email,  # ✅ AGREGADO
                 celular=request.POST.get('celular', ''),
                 localidad=request.POST.get('localidad', ''),
                 zona=request.POST.get('zona', '')
             )
             
-            # Buscar repuestos con algoritmo de coincidencia mejorado
+            print(f"[INFO] Solicitud creada: {solicitud.id}")
+            
+            # Buscar repuestos que coincidan
             repuestos_disponibles = buscar_repuestos_compatibles(solicitud)
             
-            context = {
-                'solicitud': solicitud,
-                'repuestos': repuestos_disponibles,
-                'total_encontrados': len(repuestos_disponibles),
-                'localidad': request.POST.get('localidad', 'Caseros'),
-                'zona': request.POST.get('zona', 'Buenos Aires')
-            }
+            # Agrupar repuestos por vendedor y preparar para el mapa
+            vendedores_dict = {}
+            for repuesto in repuestos_disponibles:
+                vendedor_key = f"{repuesto.nombre_vendedor}_{repuesto.email_vendedor}"
+                
+                if vendedor_key not in vendedores_dict:
+                    vendedores_dict[vendedor_key] = {
+                        'nombre': repuesto.nombre_vendedor,
+                        'email': repuesto.email_vendedor,
+                        'telefono': repuesto.telefono_vendedor,
+                        'localidad': repuesto.localidad,
+                        'zona': repuesto.zona,
+                        'direccion': repuesto.direccion,
+                        'latitud': float(repuesto.latitud) if repuesto.latitud else None,
+                        'longitud': float(repuesto.longitud) if repuesto.longitud else None,
+                        'tiene_gps': bool(repuesto.latitud and repuesto.longitud),
+                        'repuestos_count': 0
+                    }
+                
+                vendedores_dict[vendedor_key]['repuestos_count'] += 1
             
-            return render(request, 'resultados_comprar.html', context)
+            vendedores_list = list(vendedores_dict.values())
+            vendedores_json = json.dumps(vendedores_list, ensure_ascii=False)
             
-        except Exception as e:
-            messages.error(request, f'Error al procesar la solicitud: {str(e)}')
-            return redirect('quiero_comprar')
-    
-    return redirect('quiero_comprar')
-
-def procesar_solicitud(request):
-    """Procesar solicitud de repuesto y mostrar confirmación con coincidencias"""
-    if request.method == 'POST':
-        try:
-            # Obtener año, manejar vacío
-            año_auto = request.POST.get('año_auto')
-            if año_auto:
-                try:
-                    año_auto = int(año_auto)
-                except (ValueError, TypeError):
-                    año_auto = None
-            else:
-                año_auto = None
-            
-            # Crear la solicitud de compra SIN EMAIL
-            solicitud = SolicitudCompra.objects.create(
-                marca_auto=request.POST.get('marca_auto', ''),
-                modelo_auto=request.POST.get('modelo_auto', ''),
-                año_auto=año_auto,
-                categoria_repuesto=request.POST.get('categoria_repuesto', ''),
-                repuesto_especifico=request.POST.get('repuesto_especifico', ''),
-                descripcion_adicional=request.POST.get('descripcion_adicional', ''),
-                urgencia=request.POST.get('urgencia', 'baja'),
-                nombre=request.POST.get('nombre', ''),
-                celular=request.POST.get('celular', ''),
-                localidad=request.POST.get('localidad', ''),
-                zona=request.POST.get('zona', '')
-            )
-            
-            # Buscar repuestos que coincidan con la solicitud
-            repuestos_disponibles = buscar_repuestos_compatibles(solicitud)
+            print(f"[INFO] Encontrados {len(repuestos_disponibles)} repuestos de {len(vendedores_list)} vendedores")
             
             messages.success(request, '¡Tu solicitud ha sido registrada exitosamente!')
             
-            # Contexto común
             context = {
                 'solicitud': solicitud,
                 'repuestos': repuestos_disponibles,
                 'total_encontrados': len(repuestos_disponibles),
                 'hay_coincidencias': len(repuestos_disponibles) > 0,
-                'localidad': request.POST.get('localidad', 'Caseros'),
-                'zona': request.POST.get('zona', 'Buenos Aires')
+                'vendedores_list': vendedores_list,
+                'vendedores_json': vendedores_json,
+                'localidad': request.POST.get('localidad', ''),
+                'zona': request.POST.get('zona', '')
             }
             
             return render(request, 'confirmacion_solicitud.html', context)
             
         except Exception as e:
+            import traceback
+            print(f"[ERROR] Error en procesar_compra: {str(e)}")
+            traceback.print_exc()
             messages.error(request, f'Error al procesar la solicitud: {str(e)}')
             return redirect('quiero_comprar')
-
+    
+    # Si no es POST, redirigir al formulario
     return redirect('quiero_comprar')
+
+
+def procesar_solicitud(request):
+    """
+    FUNCIÓN ALTERNATIVA (mantener por compatibilidad)
+    Redirige a procesar_compra
+    """
+    return procesar_compra(request)
+
 
 def listado_repuestos(request):
     """Mostrar todos los repuestos disponibles"""
@@ -170,12 +173,11 @@ def buscar_repuestos_compatibles(solicitud):
             )
             
             # Si hay resultados con filtro de marca, usarlos
-            # Si no, mantener todos los de la categoría
             if repuestos_marca.exists():
                 repuestos = repuestos_marca
                 print(f"[DEBUG] Después de filtrar por marca '{solicitud.marca_auto}': {repuestos.count()}")
         
-        # 4. FILTRO OPCIONAL POR MODELO (no eliminar si no coincide)
+        # 4. FILTRO OPCIONAL POR MODELO
         if solicitud.modelo_auto:
             repuestos_modelo = repuestos.filter(
                 Q(modelo_auto__icontains=solicitud.modelo_auto) |
@@ -183,7 +185,6 @@ def buscar_repuestos_compatibles(solicitud):
                 Q(modelo_auto__isnull=True)
             )
             
-            # Solo aplicar si hay resultados
             if repuestos_modelo.exists():
                 repuestos = repuestos_modelo
                 print(f"[DEBUG] Después de filtrar por modelo '{solicitud.modelo_auto}': {repuestos.count()}")
@@ -193,25 +194,20 @@ def buscar_repuestos_compatibles(solicitud):
             año = solicitud.año_auto
             repuestos_año = repuestos.filter(
                 Q(
-                    # El año está dentro del rango
                     (Q(año_desde__lte=año) | Q(año_desde__isnull=True)) &
                     (Q(año_hasta__gte=año) | Q(año_hasta__isnull=True))
                 ) |
                 Q(
-                    # Sin año especificado (compatible con todos)
                     año_desde__isnull=True,
                     año_hasta__isnull=True
                 )
             )
             
-            # Solo aplicar si hay resultados
             if repuestos_año.exists():
                 repuestos = repuestos_año
                 print(f"[DEBUG] Después de filtrar por año {año}: {repuestos.count()}")
         
-        # 6. BÚSQUEDA FLEXIBLE POR TÍTULO (NO OBLIGATORIA)
-        # NO eliminar repuestos si no coincide el título
-        # Solo destacar los que sí coinciden
+        # 6. BÚSQUEDA FLEXIBLE POR TÍTULO
         if solicitud.repuesto_especifico:
             palabras = solicitud.repuesto_especifico.split()
             query = Q()
@@ -221,7 +217,6 @@ def buscar_repuestos_compatibles(solicitud):
             
             if query:
                 repuestos_titulo = repuestos.filter(query)
-                # Solo aplicar si hay resultados
                 if repuestos_titulo.exists():
                     repuestos = repuestos_titulo
                     print(f"[DEBUG] Después de filtrar por título/descripción: {repuestos.count()}")
@@ -243,4 +238,6 @@ def buscar_repuestos_compatibles(solicitud):
         
     except Exception as e:
         print(f"[ERROR] Error en buscar_repuestos_compatibles: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return []

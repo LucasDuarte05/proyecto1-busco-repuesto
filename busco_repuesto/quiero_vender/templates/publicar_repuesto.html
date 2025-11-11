@@ -53,7 +53,7 @@
                         <option value="Universal">Universal / Compatible con varias marcas</option>
                         <option value="Otro">Otra marca</option>
                     </select>
-                    <input type="text" name="marca_auto_otro" id="marca_auto_otro" class="custom-input" placeholder="Especifica la marca">
+                    <input type="text" name="marca_auto_otro" id="marca_auto_otro" class="custom-input" placeholder="Especifica la marca" style="display: none; margin-top: 10px;">
                 </div>
 
                 <div class="form-group">
@@ -61,7 +61,7 @@
                     <select name="modelo_auto" id="modelo_auto">
                         <option value="">Primero selecciona una marca</option>
                     </select>
-                    <input type="text" name="modelo_auto_otro" id="modelo_auto_otro" class="custom-input" placeholder="Especifica el modelo">
+                    <input type="text" name="modelo_auto_otro" id="modelo_auto_otro" class="custom-input" placeholder="Especifica el modelo" style="display: none; margin-top: 10px;">
                 </div>
             </div>
 
@@ -125,25 +125,27 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Ubicación <span class="required">*</span></label>
-                    <select name="ubicacion" id="ubicacion" required>
-                        <option value="">Selecciona tu ubicación</option>
-                        <option value="CABA">CABA - Capital Federal</option>
-                        <option value="GBA Zona Norte">GBA - Zona Norte</option>
-                        <option value="GBA Zona Sur">GBA - Zona Sur</option>
-                        <option value="GBA Zona Oeste">GBA - Zona Oeste</option>
-                        <option value="La Plata">La Plata</option>
-                        <option value="Rosario">Rosario</option>
-                        <option value="Córdoba">Córdoba</option>
-                        <option value="Mendoza">Mendoza</option>
-                        <option value="Mar del Plata">Mar del Plata</option>
-                        <option value="Tucumán">Tucumán</option>
-                        <option value="Salta">Salta</option>
-                        <option value="Santa Fe">Santa Fe</option>
-                        <option value="Neuquén">Neuquén</option>
-                        <option value="Otro">Otra ubicación</option>
+                    <label>Zona/Provincia <span class="required">*</span></label>
+                    <select name="zona" id="zona_venta" required>
+                        <option value="">Selecciona una provincia</option>
                     </select>
-                    <input type="text" name="ubicacion_otro" id="ubicacion_otro" class="custom-input" placeholder="Especifica tu ubicación">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Localidad <span class="required">*</span></label>
+                <select name="localidad" id="localidad_venta" required>
+                    <option value="">Primero selecciona una provincia</option>
+                </select>
+            </div>
+
+            <!-- NUEVO CAMPO: Dirección exacta para geocodificación GPS -->
+            <div class="form-group">
+                <label>Dirección Exacta 📍</label>
+                <input type="text" name="direccion" id="direccion" placeholder="Ej: Escultor Santiago Parodi 5251">
+                <div class="helper-text">
+                    🗺️ <strong>Opcional pero recomendado:</strong> Ingresa tu dirección completa (calle y número) para aparecer con precisión en el mapa.
+                    Esto ayuda a los compradores a encontrarte más fácilmente.
                 </div>
             </div>
 
@@ -193,6 +195,34 @@
             'Suzuki': ['Alto', 'Baleno', 'Celerio', 'Fun', 'Grand Vitara', 'Swift', 'Vitara']
         };
 
+        // Provincias y localidades de Argentina
+        const localidadesPorProvincia = {
+            'Buenos Aires': ['La Plata', 'Mar del Plata', 'Bahía Blanca', 'Quilmes', 'Avellaneda', 'Lanús', 'San Isidro', 'Lomas de Zamora', 'Morón', 'San Miguel', 'Tigre', 'Vicente López', 'Tres de Febrero', 'La Matanza', 'Almirante Brown', 'Pilar', 'Escobar', 'General San Martín', 'Tandil', 'Olavarría'],
+            'CABA': ['Palermo', 'Recoleta', 'Belgrano', 'Caballito', 'Almagro', 'Villa Urquiza', 'Flores', 'Villa Crespo', 'San Telmo', 'Puerto Madero', 'Núñez', 'Colegiales', 'Retiro', 'Constitución'],
+            'Catamarca': ['San Fernando del Valle de Catamarca', 'Andalgalá', 'Belén', 'Santa María', 'Tinogasta'],
+            'Chaco': ['Resistencia', 'Barranqueras', 'Fontana', 'Sáenz Peña', 'Villa Ángela'],
+            'Chubut': ['Rawson', 'Puerto Madryn', 'Comodoro Rivadavia', 'Trelew', 'Esquel'],
+            'Córdoba': ['Córdoba', 'Villa Carlos Paz', 'Río Cuarto', 'Villa María', 'San Francisco', 'Alta Gracia', 'Río Tercero'],
+            'Corrientes': ['Corrientes', 'Goya', 'Mercedes', 'Paso de los Libres', 'Curuzú Cuatiá'],
+            'Entre Ríos': ['Paraná', 'Concordia', 'Gualeguaychú', 'Concepción del Uruguay', 'Gualeguay'],
+            'Formosa': ['Formosa', 'Clorinda', 'Pirané', 'El Colorado'],
+            'Jujuy': ['San Salvador de Jujuy', 'San Pedro', 'Libertador General San Martín', 'Palpalá'],
+            'La Pampa': ['Santa Rosa', 'General Pico', 'General Acha', 'Toay'],
+            'La Rioja': ['La Rioja', 'Chilecito', 'Arauco', 'Chamical'],
+            'Mendoza': ['Mendoza', 'San Rafael', 'Godoy Cruz', 'Guaymallén', 'Luján de Cuyo', 'Maipú'],
+            'Misiones': ['Posadas', 'Oberá', 'Eldorado', 'Puerto Iguazú', 'Apóstoles'],
+            'Neuquén': ['Neuquén', 'Plottier', 'Centenario', 'Cutral-Có', 'Plaza Huincul', 'Zapala', 'San Martín de los Andes'],
+            'Río Negro': ['Viedma', 'San Carlos de Bariloche', 'General Roca', 'Cipolletti', 'Villa Regina'],
+            'Salta': ['Salta', 'San Ramón de la Nueva Orán', 'Tartagal', 'Metán', 'General Güemes'],
+            'San Juan': ['San Juan', 'Rawson', 'Chimbas', 'Rivadavia', 'Santa Lucía'],
+            'San Luis': ['San Luis', 'Villa Mercedes', 'La Punta', 'Merlo'],
+            'Santa Cruz': ['Río Gallegos', 'Caleta Olivia', 'Pico Truncado', 'Puerto Deseado'],
+            'Santa Fe': ['Santa Fe', 'Rosario', 'Rafaela', 'Venado Tuerto', 'Reconquista', 'Villa Constitución'],
+            'Santiago del Estero': ['Santiago del Estero', 'La Banda', 'Termas de Río Hondo', 'Añatuya'],
+            'Tierra del Fuego': ['Ushuaia', 'Río Grande', 'Tolhuin'],
+            'Tucumán': ['San Miguel de Tucumán', 'Yerba Buena', 'Tafí Viejo', 'Banda del Río Salí', 'Concepción']
+        };
+
         // Generar años desde 1980 hasta 2025
         function generarAnios() {
             const selectDesde = document.getElementById('año_desde');
@@ -212,6 +242,19 @@
             }
         }
 
+        // Cargar provincias
+        function cargarProvincias() {
+            const zonaSelect = document.getElementById('zona_venta');
+            const provincias = Object.keys(localidadesPorProvincia).sort();
+            
+            provincias.forEach(provincia => {
+                const option = document.createElement('option');
+                option.value = provincia;
+                option.textContent = provincia;
+                zonaSelect.appendChild(option);
+            });
+        }
+
         // Actualizar modelos según la marca seleccionada
         document.getElementById('marca_auto').addEventListener('change', function() {
             const marca = this.value;
@@ -220,17 +263,17 @@
             const modeloOtro = document.getElementById('modelo_auto_otro');
             
             // Resetear campo "otro" de modelo
-            modeloOtro.classList.remove('show');
+            modeloOtro.style.display = 'none';
             modeloOtro.value = '';
             
             // Manejar campo "otro" de marca
             if (marca === 'Otro') {
-                marcaOtro.classList.add('show');
+                marcaOtro.style.display = 'block';
                 marcaOtro.required = true;
                 modeloSelect.innerHTML = '<option value="">Especifica marca primero</option>';
                 modeloSelect.disabled = true;
             } else {
-                marcaOtro.classList.remove('show');
+                marcaOtro.style.display = 'none';
                 marcaOtro.required = false;
                 marcaOtro.value = '';
                 modeloSelect.disabled = false;
@@ -263,26 +306,29 @@
             const modeloOtro = document.getElementById('modelo_auto_otro');
             
             if (this.value === 'Otro') {
-                modeloOtro.classList.add('show');
+                modeloOtro.style.display = 'block';
                 modeloOtro.required = true;
             } else {
-                modeloOtro.classList.remove('show');
+                modeloOtro.style.display = 'none';
                 modeloOtro.required = false;
                 modeloOtro.value = '';
             }
         });
 
-        // Manejar opción "Otro" en ubicación
-        document.getElementById('ubicacion').addEventListener('change', function() {
-            const ubicacionOtro = document.getElementById('ubicacion_otro');
+        // Cargar localidades según provincia
+        document.getElementById('zona_venta').addEventListener('change', function() {
+            const provincia = this.value;
+            const localidadSelect = document.getElementById('localidad_venta');
             
-            if (this.value === 'Otro') {
-                ubicacionOtro.classList.add('show');
-                ubicacionOtro.required = true;
-            } else {
-                ubicacionOtro.classList.remove('show');
-                ubicacionOtro.required = false;
-                ubicacionOtro.value = '';
+            localidadSelect.innerHTML = '<option value="">Selecciona una localidad</option>';
+            
+            if (provincia && localidadesPorProvincia[provincia]) {
+                localidadesPorProvincia[provincia].forEach(localidad => {
+                    const option = document.createElement('option');
+                    option.value = localidad;
+                    option.textContent = localidad;
+                    localidadSelect.appendChild(option);
+                });
             }
         });
 
@@ -297,38 +343,32 @@
             }
         });
 
-        // Inicializar
-        generarAnios();
-
         // Manejar envío del formulario
         document.getElementById('mainForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
             // Validar campos personalizados
             const marca = document.getElementById('marca_auto').value;
             const marcaOtro = document.getElementById('marca_auto_otro').value;
             const modelo = document.getElementById('modelo_auto').value;
             const modeloOtro = document.getElementById('modelo_auto_otro').value;
-            const ubicacion = document.getElementById('ubicacion').value;
-            const ubicacionOtro = document.getElementById('ubicacion_otro').value;
             
             if (marca === 'Otro' && !marcaOtro) {
+                e.preventDefault();
                 alert('Por favor especifica la marca');
                 return;
             }
             
             if (modelo === 'Otro' && !modeloOtro) {
+                e.preventDefault();
                 alert('Por favor especifica el modelo');
                 return;
             }
-            
-            if (ubicacion === 'Otro' && !ubicacionOtro) {
-                alert('Por favor especifica tu ubicación');
-                return;
-            }
-            
-            this.submit(); // Enviar el formulario
-            // Aquí iría: this.submit();
+        });
+
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            generarAnios();
+            cargarProvincias();
+            console.log('Formulario inicializado correctamente');
         });
     </script>
 </body>
