@@ -30,9 +30,9 @@ class SolicitudCompra(models.Model):
     urgencia = models.CharField(max_length=20, choices=URGENCIA_CHOICES, verbose_name="Nivel de Urgencia")
     
     # Datos personales
+   # Datos personales (SIN EMAIL)
     nombre = models.CharField(max_length=200, verbose_name="Nombre")
-    email = models.EmailField(verbose_name="Email")  # ✅ CAMPO EMAIL
-    celular = models.CharField(max_length=20, verbose_name="Celular")  # También puede ser "telefono"
+    celular = models.CharField(max_length=20, verbose_name="Celular")
     localidad = models.CharField(max_length=200, verbose_name="Localidad", blank=True, default='')
     zona = models.CharField(max_length=200, verbose_name="Zona/Provincia", blank=True, default='')
     

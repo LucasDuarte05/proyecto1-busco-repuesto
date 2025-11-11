@@ -18,6 +18,7 @@ def procesar_compra(request):
     """
     if request.method == 'POST':
         try:
+            print("[DEBUG] Datos POST:", dict(request.POST))
             # Obtener año, manejar vacío
             año_auto = request.POST.get('año_auto')
             if año_auto:
@@ -28,10 +29,8 @@ def procesar_compra(request):
             else:
                 año_auto = None
             
-            # Obtener el email del formulario
-            email = request.POST.get('email', '')
-            
-            # Crear la solicitud de compra CON EMAIL
+            # Crear la solicitud de compra SIN EMAIL
+            # Crear la solicitud de compra SIN EMAIL
             solicitud = SolicitudCompra.objects.create(
                 marca_auto=request.POST.get('marca_auto', ''),
                 modelo_auto=request.POST.get('modelo_auto', ''),
@@ -42,13 +41,10 @@ def procesar_compra(request):
                 descripcion_adicional=request.POST.get('descripcion_adicional', ''),
                 urgencia=request.POST.get('urgencia', 'baja'),
                 nombre=request.POST.get('nombre', ''),
-                email=email,  # ✅ AGREGADO
                 celular=request.POST.get('celular', ''),
                 localidad=request.POST.get('localidad', ''),
                 zona=request.POST.get('zona', '')
             )
-            
-            print(f"[INFO] Solicitud creada: {solicitud.id}")
             
             # Buscar repuestos que coincidan
             repuestos_disponibles = buscar_repuestos_compatibles(solicitud)

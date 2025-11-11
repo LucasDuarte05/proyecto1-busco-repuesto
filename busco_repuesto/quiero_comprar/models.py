@@ -5,6 +5,7 @@ class SolicitudCompra(models.Model):
         ('baja', 'Baja - Puedo esperar'),
         ('media', 'Media - Lo necesito pronto'),
         ('alta', 'Alta - Urgente'),
+        ('super_alta', 'Super Alta - Muy Urgente'),
     ]
     
     CATEGORIA_CHOICES = [
@@ -22,16 +23,17 @@ class SolicitudCompra(models.Model):
     marca_auto = models.CharField(max_length=100, verbose_name="Marca del Auto")
     modelo_auto = models.CharField(max_length=100, verbose_name="Modelo del Auto", blank=True)
     año_auto = models.IntegerField(verbose_name="Año del Auto", null=True, blank=True)
+    nro_chasis = models.CharField(max_length=100, verbose_name="VIN/Número de Chasis", blank=True, default='')
     categoria_repuesto = models.CharField(max_length=50, choices=CATEGORIA_CHOICES, verbose_name="Categoría del Repuesto")
     repuesto_especifico = models.CharField(max_length=200, verbose_name="Repuesto Específico")
     descripcion_adicional = models.TextField(verbose_name="Descripción Adicional", blank=True)
     urgencia = models.CharField(max_length=20, choices=URGENCIA_CHOICES, verbose_name="Nivel de Urgencia")
     
-    # Datos personales
-    nombre_completo = models.CharField(max_length=200, verbose_name="Nombre Completo")
-    email = models.EmailField(verbose_name="Email")
-    telefono = models.CharField(max_length=20, verbose_name="Teléfono")
-    dni = models.CharField(max_length=20, verbose_name="DNI")
+    # Datos personales (SIN EMAIL)
+    nombre = models.CharField(max_length=200, verbose_name="Nombre")
+    celular = models.CharField(max_length=20, verbose_name="Celular")
+    localidad = models.CharField(max_length=200, verbose_name="Localidad", blank=True, default='')
+    zona = models.CharField(max_length=200, verbose_name="Zona/Provincia", blank=True, default='')
     
     # Metadata
     fecha_solicitud = models.DateTimeField(auto_now_add=True)
@@ -43,7 +45,12 @@ class SolicitudCompra(models.Model):
         ordering = ['-fecha_solicitud']
     
     def __str__(self):
-        return f"{self.nombre_completo} - {self.repuesto_especifico}"
+        return f"{self.nombre} - {self.repuesto_especifico}"
+    
+    # Propiedad para compatibilidad con código antiguo
+    @property
+    def telefono(self):
+        return self.celular
 
 
 class PublicacionVenta(models.Model):
@@ -80,7 +87,16 @@ class PublicacionVenta(models.Model):
     nombre_vendedor = models.CharField(max_length=200, verbose_name="Nombre del Vendedor")
     email_vendedor = models.EmailField(verbose_name="Email")
     telefono_vendedor = models.CharField(max_length=20, verbose_name="Teléfono")
-    ubicacion = models.CharField(max_length=200, verbose_name="Ubicación")
+    
+    # CAMPOS DE UBICACIÓN CON DIRECCIÓN EXACTA
+    zona = models.CharField(max_length=200, verbose_name="Zona/Provincia", blank=True, default='')
+    localidad = models.CharField(max_length=200, verbose_name="Localidad", blank=True, default='')
+    direccion = models.CharField(max_length=300, verbose_name="Dirección", blank=True, default='')
+    ubicacion = models.CharField(max_length=200, verbose_name="Ubicación", blank=True, default='')
+    
+    # Coordenadas GPS
+    latitud = models.DecimalField(max_digits=10, decimal_places=7, verbose_name="Latitud", null=True, blank=True)
+    longitud = models.DecimalField(max_digits=10, decimal_places=7, verbose_name="Longitud", null=True, blank=True)
     
     # Metadata
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
@@ -94,3 +110,17 @@ class PublicacionVenta(models.Model):
     
     def __str__(self):
         return f"{self.titulo} - ${self.precio}"
+    
+    def get_ubicacion_completa(self):
+        """Retorna la ubicación completa en formato legible"""
+        partes = []
+        if self.direccion:
+            partes.append(self.direccion)
+        if self.localidad:
+            partes.append(self.localidad)
+        if self.zona:
+            partes.append(self.zona)
+        
+        if partes:
+            return ", ".join(partes)
+        return self.ubicacion
