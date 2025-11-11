@@ -24,7 +24,6 @@ def procesar_compra(request):
                 descripcion_adicional=request.POST.get('descripcion_adicional', ''),
                 urgencia=request.POST.get('urgencia'),
                 nombre=request.POST.get('nombre'),
-                email=request.POST.get('email'),
                 celular=request.POST.get('celular'),
                 localidad=request.POST.get('localidad', ''),
                 zona=request.POST.get('zona', '')
