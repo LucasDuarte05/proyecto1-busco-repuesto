@@ -5,21 +5,12 @@ from .models import PublicacionVenta, SolicitudCompra
 # --- ADMIN PARA PUBLICACIONES ---
 @admin.register(PublicacionVenta)
 class PublicacionVentaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'titulo', 'precio', 'disponible', 'categoria', 'fecha_publicacion')
-    list_filter = ('disponible', 'categoria', 'estado', 'zona')
-    search_fields = ('titulo', 'descripcion', 'marca_auto', 'modelo_auto', 'nombre_vendedor')
+    list_display = ('id', 'nombre_vendedor', 'fecha_publicacion', 'disponible')
+    list_filter = ('zona', 'disponible')  # ✅ Ahora es una tupla
+    search_fields = ('nombre_vendedor', 'direccion', 'ubicacion')
     ordering = ('-fecha_publicacion',)
-    list_editable = ('disponible',)
+    list_editable = ('disponible',)  # ✅ 'disponible' ahora está en list_display
     list_per_page = 25
-
-    # --- Filtro personalizado: precios inválidos o vacíos ---
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        # Si alguno tiene precio None o negativo, lo mostramos también
-        for rep in qs:
-            if rep.precio is None:
-                print(f"⚠️ Publicación con precio None: {rep.titulo}")
-        return qs
 
 
 # --- ADMIN PARA SOLICITUDES DE COMPRA ---

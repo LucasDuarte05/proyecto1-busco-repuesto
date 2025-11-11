@@ -62,28 +62,6 @@ class PublicacionVenta(models.Model):
         ('usado_regular', 'Usado - Regular'),
     ]
     
-    CATEGORIA_CHOICES = [
-        ('motor', 'Motor'),
-        ('transmision', 'Transmisión'),
-        ('suspension', 'Suspensión'),
-        ('frenos', 'Frenos'),
-        ('electrico', 'Sistema Eléctrico'),
-        ('carroceria', 'Carrocería'),
-        ('interior', 'Interior'),
-        ('otros', 'Otros'),
-    ]
-    
-    # Datos del repuesto
-    titulo = models.CharField(max_length=200, verbose_name="Título del Repuesto")
-    marca_auto = models.CharField(max_length=100, verbose_name="Marca del Auto Compatible")
-    modelo_auto = models.CharField(max_length=100, verbose_name="Modelo Compatible", blank=True)
-    año_desde = models.IntegerField(verbose_name="Año Desde", null=True, blank=True)
-    año_hasta = models.IntegerField(verbose_name="Año Hasta", null=True, blank=True)
-    categoria = models.CharField(max_length=50, choices=CATEGORIA_CHOICES, verbose_name="Categoría")
-    descripcion = models.TextField(verbose_name="Descripción del Repuesto")
-    estado = models.CharField(max_length=30, choices=ESTADO_CHOICES, verbose_name="Estado")
-    precio = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Precio")
-    
     # Datos del vendedor
     nombre_vendedor = models.CharField(max_length=200, verbose_name="Nombre del Vendedor")
     email_vendedor = models.EmailField(verbose_name="Email")
@@ -110,7 +88,7 @@ class PublicacionVenta(models.Model):
         ordering = ['-fecha_publicacion']
     
     def __str__(self):
-        return f"{self.titulo} - ${self.precio}"
+        return f"{self.nombre_vendedor} - {self.direccion or self.ubicacion}"
     
     def get_ubicacion_completa(self):
         """Retorna la ubicación completa en formato legible"""
