@@ -87,8 +87,11 @@ def geocodificar_direccion(direccion, localidad, zona):
         tuple: (latitud, longitud) o (None, None) si falla
     """
     try:
-        # Construir dirección completa
-        direccion_completa = f"{direccion}, {localidad}, {zona}, Argentina"
+        # Si no hay dirección específica, geocodificar solo localidad
+        if not direccion or direccion.strip() == '':
+            direccion_completa = f"{localidad}, {zona}, Argentina"
+        else:
+            direccion_completa = f"{direccion}, {localidad}, {zona}, Argentina"
         
         # API de Nominatim (gratuita)
         url = "https://nominatim.openstreetmap.org/search"
@@ -121,21 +124,22 @@ def geocodificar_direccion(direccion, localidad, zona):
             print(f"[GEOCODING] ✗ Error HTTP {response.status_code}")
         
         # Si falla, intentar solo con localidad y zona
-        direccion_fallback = f"{localidad}, {zona}, Argentina"
-        params['q'] = direccion_fallback
-        
-        print(f"[GEOCODING] Reintentando con: {direccion_fallback}")
-        time.sleep(1)  # Respetar rate limit de Nominatim
-        
-        response = requests.get(url, params=params, headers=headers, timeout=5)
-        
-        if response.status_code == 200:
-            data = response.json()
-            if data and len(data) > 0:
-                lat = float(data[0]['lat'])
-                lon = float(data[0]['lon'])
-                print(f"[GEOCODING] ✓ Encontrado (fallback): lat={lat}, lon={lon}")
-                return lat, lon
+        if direccion:  # Solo hacer fallback si había dirección específica
+            direccion_fallback = f"{localidad}, {zona}, Argentina"
+            params['q'] = direccion_fallback
+            
+            print(f"[GEOCODING] Reintentando con: {direccion_fallback}")
+            time.sleep(1)  # Respetar rate limit de Nominatim
+            
+            response = requests.get(url, params=params, headers=headers, timeout=5)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data and len(data) > 0:
+                    lat = float(data[0]['lat'])
+                    lon = float(data[0]['lon'])
+                    print(f"[GEOCODING] ✓ Encontrado (fallback): lat={lat}, lon={lon}")
+                    return lat, lon
         
         return None, None
         
@@ -144,103 +148,118 @@ def geocodificar_direccion(direccion, localidad, zona):
         return None, None
 
 
-@login_required(login_url='login_vendedor')
+# ✅ ELIMINADO @login_required - Ahora cualquiera puede publicar
 def publicar_repuesto(request):
-    """Mostrar formulario para publicar repuesto - requiere login"""
-    context = {
-        'usuario': request.user,
-    }
-    return render(request, 'publicar_repuesto.html', context)
+    """Mostrar formulario para publicar repuesto - ABIERTO A TODOS"""
+    return render(request, 'publicar_repuesto.html')
 
 
-@login_required(login_url='login_vendedor')
+# ✅ ELIMINADO @login_required - Ahora cualquiera puede publicar
 def procesar_publicacion(request):
-    """Procesar publicación de repuesto y buscar solicitudes coincidentes - requiere login"""
+    """Procesar publicación de repuesto - SIMPLIFICADO (solo datos de contacto)"""
     if request.method == 'POST':
         try:
-            # Obtener marca (puede ser del select o del campo "otro")
-            marca_auto = request.POST.get('marca_auto')
-            if marca_auto == 'Otro':
-                marca_auto = request.POST.get('marca_auto_otro', '')
-            
-            # Obtener modelo (puede ser del select o del campo "otro")
-            modelo_auto = request.POST.get('modelo_auto', '')
-            if modelo_auto == 'Otro':
-                modelo_auto = request.POST.get('modelo_auto_otro', '')
+            print("[DEBUG] ========== INICIO PROCESAMIENTO ==========")
             
             # Obtener ubicación
-            zona = request.POST.get('zona', '')
-            localidad = request.POST.get('localidad', '')
-            direccion = request.POST.get('direccion', '')
+            zona = request.POST.get('zona', '').strip()
+            localidad = request.POST.get('localidad', '').strip()
+            direccion = request.POST.get('direccion', '').strip()
             
-            # Construir ubicación completa para compatibilidad
-            ubicacion_completa = f"{direccion}, {localidad}, {zona}" if direccion else f"{localidad}, {zona}" if localidad and zona else (localidad or zona or '')
+            # Obtener datos de contacto
+            nombre_vendedor = request.POST.get('nombre_vendedor', '').strip()
+            email_vendedor = request.POST.get('email_vendedor', '').strip()
+            telefono_vendedor = request.POST.get('telefono_vendedor', '').strip()
+            
+            print(f"[DEBUG] Ubicación: {zona} | {localidad} | {direccion}")
+            print(f"[DEBUG] Contacto: {nombre_vendedor} | {email_vendedor} | {telefono_vendedor}")
+            
+            # Validar campos obligatorios
+            if not zona or not localidad:
+                messages.error(request, 'Zona y Localidad son obligatorios')
+                return redirect('publicar_repuesto')
+            
+            if not nombre_vendedor or not email_vendedor or not telefono_vendedor:
+                messages.error(request, 'Todos los datos de contacto son obligatorios')
+                return redirect('publicar_repuesto')
+            
+            # Construir ubicación completa
+            if direccion:
+                ubicacion_completa = f"{direccion}, {localidad}, {zona}"
+            else:
+                ubicacion_completa = f"{localidad}, {zona}"
             
             # GEOCODIFICAR LA DIRECCIÓN
+            print(f"[DEBUG] Iniciando geocodificación...")
             latitud, longitud = geocodificar_direccion(direccion, localidad, zona)
             
             if latitud and longitud:
-                print(f"[INFO] Geocodificación exitosa: {latitud}, {longitud}")
+                print(f"[INFO] ✓ Geocodificación exitosa: {latitud}, {longitud}")
             else:
-                print(f"[WARN] No se pudo geocodificar la dirección, usando coordenadas aproximadas")
+                print(f"[WARN] ✗ No se pudo geocodificar, se guardará sin coordenadas")
             
-            # Obtener años (pueden ser vacíos)
-            año_desde = request.POST.get('año_desde')
-            año_hasta = request.POST.get('año_hasta')
-            
-            # Crear la publicación de venta
+            # Crear la publicación de venta (SOLO CON DATOS DISPONIBLES)
             publicacion = PublicacionVenta.objects.create(
-                titulo=request.POST.get('titulo'),
-                marca_auto=marca_auto,
-                modelo_auto=modelo_auto,
-                año_desde=int(año_desde) if año_desde else None,
-                año_hasta=int(año_hasta) if año_hasta else None,
-                categoria=request.POST.get('categoria'),
-                descripcion=request.POST.get('descripcion'),
-                estado=request.POST.get('estado'),
-                precio=request.POST.get('precio'),
+                # Datos de ubicación
                 zona=zona,
                 localidad=localidad,
-                direccion=direccion,
+                direccion=direccion if direccion else '',
                 ubicacion=ubicacion_completa,
                 latitud=latitud,
                 longitud=longitud,
-                nombre_vendedor=request.POST.get('nombre_vendedor'),
-                email_vendedor=request.POST.get('email_vendedor'),
-                telefono_vendedor=request.POST.get('telefono_vendedor')
+                
+                # Datos de contacto
+                nombre_vendedor=nombre_vendedor,
+                email_vendedor=email_vendedor,
+                telefono_vendedor=telefono_vendedor,
+                
+                # Campos vacíos por ahora (hasta que agregues el formulario completo)
+                titulo='Repuesto disponible',  # Título por defecto
+                marca_auto='',
+                modelo_auto='',
+                categoria='motor',  # Categoría por defecto
+                descripcion='',
+                estado='usado',
+                precio=0
             )
             
-            # Buscar solicitudes que coincidan con este repuesto
-            solicitudes_coincidentes = buscar_solicitudes_compatibles(publicacion)
+            print(f"[DEBUG] ✓ Publicación creada: ID={publicacion.id}")
             
+            # Mensaje de éxito
             if latitud and longitud:
-                messages.success(request, '¡Tu repuesto ha sido publicado exitosamente con ubicación GPS!')
+                messages.success(request, '¡Tu contacto ha sido registrado exitosamente con ubicación GPS! 🎉')
             else:
-                messages.warning(request, 'Repuesto publicado, pero no se pudo obtener la ubicación exacta. Se usará la localidad aproximada.')
+                messages.success(request, '¡Tu contacto ha sido registrado exitosamente! 📍')
             
+            # Contexto para la confirmación
             context = {
                 'publicacion': publicacion,
-                'solicitudes': solicitudes_coincidentes,
-                'total_solicitudes': solicitudes_coincidentes.count(),
-                'hay_coincidencias': solicitudes_coincidentes.exists(),
-                'usuario': request.user,
+                'total_solicitudes': 0,
+                'hay_coincidencias': False,
             }
+            
+            print("[DEBUG] ========== FIN PROCESAMIENTO ==========")
             
             return render(request, 'confirmacion_publicacion.html', context)
             
         except Exception as e:
-            print(f"[ERROR] Error en procesar_publicacion: {str(e)}")
+            print(f"[ERROR] ========== ERROR EN PROCESAMIENTO ==========")
+            print(f"[ERROR] {str(e)}")
             import traceback
             traceback.print_exc()
-            messages.error(request, f'Error al publicar el repuesto: {str(e)}')
+            print("[ERROR] ========================================")
+            
+            messages.error(request, f'Error al registrar: {str(e)}')
             return redirect('publicar_repuesto')
     
+    # Si no es POST, redirigir al formulario
+    print("[DEBUG] Redirigiendo a formulario (método no es POST)")
     return redirect('publicar_repuesto')
 
 
-@login_required(login_url='login_vendedor')
+# ✅ ELIMINADO @login_required
 def procesar_venta(request):
-    """Alias para procesar_publicacion (mantener compatibilidad) - requiere login"""
+    """Alias para procesar_publicacion (mantener compatibilidad)"""
     return procesar_publicacion(request)
 
 
@@ -251,7 +270,8 @@ def buscar_solicitudes_compatibles(publicacion):
     solicitudes = SolicitudCompra.objects.filter(activa=True)
     
     # 1. FILTRO POR CATEGORÍA (debe coincidir)
-    solicitudes = solicitudes.filter(categoria_repuesto=publicacion.categoria)
+    if publicacion.categoria:
+        solicitudes = solicitudes.filter(categoria_repuesto=publicacion.categoria)
     
     # 2. FILTRO POR MARCA
     if publicacion.marca_auto and publicacion.marca_auto.lower() != 'universal':
