@@ -13,158 +13,62 @@
     <div class="container">
         <div class="header">
             <h1>💰 Publicar Repuesto</h1>
-            <p>Completa el formulario para que los compradores encuentren tu repuesto</p>
+            <p>Completa tus datos de contacto y ubicación para que los compradores te encuentren</p>
         </div>
 
         <form method="POST" action="{% url 'procesar_publicacion' %}" class="form-content" id="mainForm">
             {% csrf_token %}
-            <div class="info-box">
-                <p><strong>💡 Tip:</strong> Cuanta más información proporciones, más fácil será que los compradores encuentren tu repuesto.</p>
-            </div>
-
-            <h2 class="section-title">Información del Repuesto</h2>
             
-            <div class="form-group">
-                <label>Título de la Publicación <span class="required">*</span></label>
-                <input type="text" name="titulo" required placeholder="Ej: Alternador Chevrolet Corsa 1.6 Original">
-                <div class="helper-text">Sé específico y claro en el título</div>
+            <div class="info-box">
+                <p><strong>💡 Tip:</strong> Proporciona tu ubicación exacta para que los compradores puedan encontrarte fácilmente en el mapa.</p>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Marca Compatible <span class="required">*</span></label>
-                    <select name="marca_auto" id="marca_auto" required>
-                        <option value="">Selecciona una marca</option>
-                        <option value="Chevrolet">Chevrolet</option>
-                        <option value="Ford">Ford</option>
-                        <option value="Volkswagen">Volkswagen</option>
-                        <option value="Fiat">Fiat</option>
-                        <option value="Peugeot">Peugeot</option>
-                        <option value="Renault">Renault</option>
-                        <option value="Toyota">Toyota</option>
-                        <option value="Honda">Honda</option>
-                        <option value="Nissan">Nissan</option>
-                        <option value="Citroen">Citroën</option>
-                        <option value="Hyundai">Hyundai</option>
-                        <option value="Kia">Kia</option>
-                        <option value="Mazda">Mazda</option>
-                        <option value="Mitsubishi">Mitsubishi</option>
-                        <option value="Suzuki">Suzuki</option>
-                        <option value="Universal">Universal / Compatible con varias marcas</option>
-                        <option value="Otro">Otra marca</option>
-                    </select>
-                    <input type="text" name="marca_auto_otro" id="marca_auto_otro" class="custom-input" placeholder="Especifica la marca" style="display: none; margin-top: 10px;">
+            <div class="form-grid">
+                <!-- COLUMNA IZQUIERDA: UBICACIÓN -->
+                <div class="form-column">
+                    <h2 class="section-title">📍 Tu Ubicación</h2>
+
+                    <div class="form-group">
+                        <label>Zona/Provincia <span class="required">*</span></label>
+                        <select name="zona" id="zona_venta" required>
+                            <option value="">Selecciona una provincia</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Localidad <span class="required">*</span></label>
+                        <select name="localidad" id="localidad_venta" required>
+                            <option value="">Primero selecciona una provincia</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dirección Exacta 📍</label>
+                        <input type="text" name="direccion" id="direccion" placeholder="Ej: Escultor Santiago Parodi 5251">
+                        <div class="helper-text">
+                            🗺️ <strong>Opcional pero recomendado:</strong> Ingresa tu dirección completa (calle y número) para aparecer con precisión en el mapa. Esto ayuda a los compradores a encontrarte más fácilmente.
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Modelo Compatible</label>
-                    <select name="modelo_auto" id="modelo_auto">
-                        <option value="">Primero selecciona una marca</option>
-                    </select>
-                    <input type="text" name="modelo_auto_otro" id="modelo_auto_otro" class="custom-input" placeholder="Especifica el modelo" style="display: none; margin-top: 10px;">
-                </div>
-            </div>
+                <!-- COLUMNA DERECHA: DATOS DE CONTACTO -->
+                <div class="form-column">
+                    <h2 class="section-title">👤 Tus Datos de Contacto</h2>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Año Desde</label>
-                    <select name="año_desde" id="año_desde">
-                        <option value="">Seleccionar año</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label>Nombre Completo / Razón Social <span class="required">*</span></label>
+                        <input type="text" name="nombre_vendedor" required placeholder="Tu nombre o nombre de tu negocio">
+                    </div>
 
-                <div class="form-group">
-                    <label>Año Hasta</label>
-                    <select name="año_hasta" id="año_hasta">
-                        <option value="">Seleccionar año</option>
-                    </select>
-                </div>
-            </div>
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" name="email_vendedor" required placeholder="tu@email.com">
+                    </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Categoría <span class="required">*</span></label>
-                    <select name="categoria" id="categoria" required>
-                        <option value="">Selecciona una categoría</option>
-                        <option value="motor">Motor</option>
-                        <option value="transmision">Transmisión</option>
-                        <option value="suspension">Suspensión</option>
-                        <option value="frenos">Frenos</option>
-                        <option value="electrico">Sistema Eléctrico</option>
-                        <option value="carroceria">Carrocería</option>
-                        <option value="interior">Interior</option>
-                        <option value="neumaticos">Neumáticos</option>
-                        <option value="escape">Sistema de Escape</option>
-                        <option value="climatizacion">Climatización</option>
-                        <option value="otros">Otros</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Estado <span class="required">*</span></label>
-                    <select name="estado" required>
-                        <option value="">Selecciona el estado</option>
-                        <option value="nuevo">Nuevo</option>
-                        <option value="usado_excelente">Usado - Excelente estado</option>
-                        <option value="usado_bueno">Usado - Buen estado</option>
-                        <option value="usado_regular">Usado - Estado regular</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Descripción Detallada <span class="required">*</span></label>
-                <textarea name="descripcion" required placeholder="Describe el repuesto: condición, funcionamiento, si tiene desgaste, motivo de venta, etc."></textarea>
-                <div class="helper-text">Sé honesto sobre el estado del repuesto</div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Precio (ARS) <span class="required">*</span></label>
-                    <input type="number" name="precio" required min="0" step="0.01" placeholder="Ej: 25000">
-                </div>
-
-                <div class="form-group">
-                    <label>Zona/Provincia <span class="required">*</span></label>
-                    <select name="zona" id="zona_venta" required>
-                        <option value="">Selecciona una provincia</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Localidad <span class="required">*</span></label>
-                <select name="localidad" id="localidad_venta" required>
-                    <option value="">Primero selecciona una provincia</option>
-                </select>
-            </div>
-
-            <!-- NUEVO CAMPO: Dirección exacta para geocodificación GPS -->
-            <div class="form-group">
-                <label>Dirección Exacta 📍</label>
-                <input type="text" name="direccion" id="direccion" placeholder="Ej: Escultor Santiago Parodi 5251">
-                <div class="helper-text">
-                    🗺️ <strong>Opcional pero recomendado:</strong> Ingresa tu dirección completa (calle y número) para aparecer con precisión en el mapa.
-                    Esto ayuda a los compradores a encontrarte más fácilmente.
-                </div>
-            </div>
-
-            <h2 class="section-title">Tus Datos de Contacto</h2>
-
-            <div class="form-group">
-                <label>Nombre Completo / Razón Social <span class="required">*</span></label>
-                <input type="text" name="nombre_vendedor" required placeholder="Tu nombre o nombre de tu negocio">
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Email <span class="required">*</span></label>
-                    <input type="email" name="email_vendedor" required placeholder="tu@email.com">
-                </div>
-
-                <div class="form-group">
-                    <label>Teléfono <span class="required">*</span></label>
-                    <input type="text" name="telefono_vendedor" required placeholder="Ej: +54 11 1234-5678">
+                    <div class="form-group">
+                        <label>Teléfono <span class="required">*</span></label>
+                        <input type="text" name="telefono_vendedor" required placeholder="Ej: +54 11 1234-5678">
+                    </div>
                 </div>
             </div>
 
@@ -176,25 +80,6 @@
     </div>
 
     <script>
-        // Base de datos de modelos por marca
-        const modelosPorMarca = {
-            'Chevrolet': ['Agile', 'Astra', 'Aveo', 'Blazer', 'Captiva', 'Classic', 'Cobalt', 'Corsa', 'Cruze', 'Montana', 'Onix', 'Prisma', 'S10', 'Sail', 'Sonic', 'Spark', 'Spin', 'Tracker', 'Trailblazer', 'Zafira'],
-            'Ford': ['EcoSport', 'Edge', 'Escort', 'Explorer', 'F-100', 'F-150', 'Fiesta', 'Focus', 'Fusion', 'Ka', 'Kuga', 'Mondeo', 'Mustang', 'Ranger', 'Territory', 'Transit'],
-            'Volkswagen': ['Amarok', 'Beetle', 'Bora', 'Caddy', 'Fox', 'Gol', 'Golf', 'Jetta', 'Passat', 'Polo', 'Saveiro', 'Suran', 'T-Cross', 'Tiguan', 'Touareg', 'Up', 'Vento', 'Virtus'],
-            'Fiat': ['500', 'Argo', 'Bravo', 'Cronos', 'Doblo', 'Ducato', 'Fiorino', 'Idea', 'Linea', 'Mobi', 'Palio', 'Punto', 'Siena', 'Strada', 'Toro', 'Uno', 'Weekend'],
-            'Peugeot': ['106', '205', '206', '207', '208', '2008', '301', '307', '308', '3008', '405', '406', '407', '408', '5008', '504', '505', 'Partner', 'Boxer'],
-            'Renault': ['Alaskan', 'Captur', 'Clio', 'Duster', 'Fluence', 'Kangoo', 'Koleos', 'Kwid', 'Logan', 'Master', 'Megane', 'Oroch', 'Sandero', 'Scenic', 'Stepway', 'Symbol', 'Talisman', 'Twingo'],
-            'Toyota': ['Camry', 'Corolla', 'Etios', 'Hilux', 'Land Cruiser', 'Prius', 'RAV4', 'SW4', 'Yaris'],
-            'Honda': ['Accord', 'City', 'Civic', 'CR-V', 'Fit', 'HR-V', 'Pilot'],
-            'Nissan': ['Frontier', 'Kicks', 'March', 'Murano', 'Pathfinder', 'Sentra', 'Tiida', 'Versa', 'X-Trail'],
-            'Citroen': ['C3', 'C4', 'C4 Cactus', 'C4 Lounge', 'C5', 'Berlingo', 'Jumper'],
-            'Hyundai': ['Accent', 'Creta', 'Elantra', 'i10', 'i30', 'Ioniq', 'Kona', 'Santa Fe', 'Tucson', 'Veloster'],
-            'Kia': ['Carnival', 'Cerato', 'Picanto', 'Rio', 'Seltos', 'Sorento', 'Sportage', 'Soul'],
-            'Mazda': ['2', '3', '6', 'CX-3', 'CX-5', 'CX-9'],
-            'Mitsubishi': ['ASX', 'Eclipse', 'L200', 'Lancer', 'Montero', 'Outlander', 'Pajero'],
-            'Suzuki': ['Alto', 'Baleno', 'Celerio', 'Fun', 'Grand Vitara', 'Swift', 'Vitara']
-        };
-
         // Provincias y localidades de Argentina
         const localidadesPorProvincia = {
             'Buenos Aires': ['La Plata', 'Mar del Plata', 'Bahía Blanca', 'Quilmes', 'Avellaneda', 'Lanús', 'San Isidro', 'Lomas de Zamora', 'Morón', 'San Miguel', 'Tigre', 'Vicente López', 'Tres de Febrero', 'La Matanza', 'Almirante Brown', 'Pilar', 'Escobar', 'General San Martín', 'Tandil', 'Olavarría'],
@@ -223,25 +108,6 @@
             'Tucumán': ['San Miguel de Tucumán', 'Yerba Buena', 'Tafí Viejo', 'Banda del Río Salí', 'Concepción']
         };
 
-        // Generar años desde 1980 hasta 2025
-        function generarAnios() {
-            const selectDesde = document.getElementById('año_desde');
-            const selectHasta = document.getElementById('año_hasta');
-            const añoActual = 2025;
-            
-            for (let año = añoActual; año >= 1980; año--) {
-                const optionDesde = document.createElement('option');
-                optionDesde.value = año;
-                optionDesde.textContent = año;
-                selectDesde.appendChild(optionDesde);
-
-                const optionHasta = document.createElement('option');
-                optionHasta.value = año;
-                optionHasta.textContent = año;
-                selectHasta.appendChild(optionHasta);
-            }
-        }
-
         // Cargar provincias
         function cargarProvincias() {
             const zonaSelect = document.getElementById('zona_venta');
@@ -254,66 +120,6 @@
                 zonaSelect.appendChild(option);
             });
         }
-
-        // Actualizar modelos según la marca seleccionada
-        document.getElementById('marca_auto').addEventListener('change', function() {
-            const marca = this.value;
-            const modeloSelect = document.getElementById('modelo_auto');
-            const marcaOtro = document.getElementById('marca_auto_otro');
-            const modeloOtro = document.getElementById('modelo_auto_otro');
-            
-            // Resetear campo "otro" de modelo
-            modeloOtro.style.display = 'none';
-            modeloOtro.value = '';
-            
-            // Manejar campo "otro" de marca
-            if (marca === 'Otro') {
-                marcaOtro.style.display = 'block';
-                marcaOtro.required = true;
-                modeloSelect.innerHTML = '<option value="">Especifica marca primero</option>';
-                modeloSelect.disabled = true;
-            } else {
-                marcaOtro.style.display = 'none';
-                marcaOtro.required = false;
-                marcaOtro.value = '';
-                modeloSelect.disabled = false;
-                
-                // Limpiar select de modelos
-                modeloSelect.innerHTML = '<option value="">Selecciona un modelo</option>';
-                
-                if (marca && marca !== 'Universal' && modelosPorMarca[marca]) {
-                    // Agregar modelos de la marca
-                    modelosPorMarca[marca].forEach(modelo => {
-                        const option = document.createElement('option');
-                        option.value = modelo;
-                        option.textContent = modelo;
-                        modeloSelect.appendChild(option);
-                    });
-                    
-                    // Agregar opción "Otro"
-                    const optionOtro = document.createElement('option');
-                    optionOtro.value = 'Otro';
-                    optionOtro.textContent = 'Otro modelo';
-                    modeloSelect.appendChild(optionOtro);
-                } else if (marca === 'Universal') {
-                    modeloSelect.innerHTML = '<option value="">No aplica (Universal)</option>';
-                }
-            }
-        });
-
-        // Manejar opción "Otro" en modelo
-        document.getElementById('modelo_auto').addEventListener('change', function() {
-            const modeloOtro = document.getElementById('modelo_auto_otro');
-            
-            if (this.value === 'Otro') {
-                modeloOtro.style.display = 'block';
-                modeloOtro.required = true;
-            } else {
-                modeloOtro.style.display = 'none';
-                modeloOtro.required = false;
-                modeloOtro.value = '';
-            }
-        });
 
         // Cargar localidades según provincia
         document.getElementById('zona_venta').addEventListener('change', function() {
@@ -332,41 +138,8 @@
             }
         });
 
-        // Validar que año_hasta sea mayor que año_desde
-        document.getElementById('año_hasta').addEventListener('change', function() {
-            const añoDesde = document.getElementById('año_desde').value;
-            const añoHasta = this.value;
-            
-            if (añoDesde && añoHasta && parseInt(añoHasta) < parseInt(añoDesde)) {
-                alert('El año "hasta" no puede ser menor que el año "desde"');
-                this.value = '';
-            }
-        });
-
-        // Manejar envío del formulario
-        document.getElementById('mainForm').addEventListener('submit', function(e) {
-            // Validar campos personalizados
-            const marca = document.getElementById('marca_auto').value;
-            const marcaOtro = document.getElementById('marca_auto_otro').value;
-            const modelo = document.getElementById('modelo_auto').value;
-            const modeloOtro = document.getElementById('modelo_auto_otro').value;
-            
-            if (marca === 'Otro' && !marcaOtro) {
-                e.preventDefault();
-                alert('Por favor especifica la marca');
-                return;
-            }
-            
-            if (modelo === 'Otro' && !modeloOtro) {
-                e.preventDefault();
-                alert('Por favor especifica el modelo');
-                return;
-            }
-        });
-
         // Inicializar al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
-            generarAnios();
             cargarProvincias();
             console.log('Formulario inicializado correctamente');
         });
