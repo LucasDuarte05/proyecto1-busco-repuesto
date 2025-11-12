@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud Registrada - Busco Repuesto</title>
+
+    
+    <link rel="stylesheet" href="{% static 'quiero_comprar/confirmacion_solicitud.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="success-header">
+            <div class="success-icon">✅</div>
+            <h1>¡Solicitud Registrada!</h1>
+            <p>Los vendedores podrán ver tu solicitud y contactarte</p>
+        </div>
+
+        <div class="content">
+            <!-- En la sección del resumen (alrededor de la línea 146-180), reemplaza con: -->
+
+        <div class="solicitud-summary">
+            <div class="summary-title">Resumen de tu solicitud:</div>
+            
+            <div class="summary-item">
+                <span class="summary-label">Vehículo:</span>
+                <span class="summary-value">
+                    {{ solicitud.marca_auto }} 
+                    {% if solicitud.modelo_auto %}{{ solicitud.modelo_auto }}{% endif %}
+                    {% if solicitud.año_auto %}({{ solicitud.año_auto }}){% endif %}
+                </span>
+            </div>
+            
+            <div class="summary-item">
+                <span class="summary-label">Repuesto:</span>
+                <span class="summary-value">{{ solicitud.repuesto_especifico }}</span>
+            </div>
+            
+            <div class="summary-item">
+                <span class="summary-label">Categoría:</span>
+                <span class="summary-value">{{ solicitud.get_categoria_repuesto_display }}</span>
+            </div>
+            
+            {% if solicitud.descripcion_adicional %}
+            <div class="summary-item">
+                <span class="summary-label">Descripción:</span>
+                <span class="summary-value">{{ solicitud.descripcion_adicional }}</span>
+            </div>
+            {% endif %}
+            
+            <div class="summary-item">
+                <span class="summary-label">Urgencia:</span>
+                <span class="summary-value">
+                    {% if solicitud.urgencia == 'super_alta' %}
+                        <span class="urgencia-badge urgencia-alta">⚡ Super Alta - Muy Urgente</span>
+                    {% elif solicitud.urgencia == 'alta' %}
+                        <span class="urgencia-badge urgencia-alta">⚠️ Alta - Urgente</span>
+                    {% elif solicitud.urgencia == 'media' %}
+                        <span class="urgencia-badge urgencia-media">⏰ Media - Pronto</span>
+                    {% else %}
+                        <span class="urgencia-badge urgencia-baja">⏳ Baja - Puede esperar</span>
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="summary-item">
+                <span class="summary-label">Nombre:</span>
+                <span class="summary-value">{{ solicitud.nombre}}</span>
+            </div>
+            
+            <div class="summary-item">
+                <span class="summary-label">Contacto:</span>
+                <span class="summary-value">
+                    📱 {{ solicitud.telefono }}
+                </span>
+            </div>
+            
+            {% if localidad %}
+            <div class="summary-item">
+                <span class="summary-label">Localidad:</span>
+                <span class="summary-value">{{ localidad }}</span>
+            </div>
+            {% endif %}
+            
+            {% if zona %}
+            <div class="summary-item">
+                <span class="summary-label">Zona/Provincia:</span>
+                <span class="summary-value">{{ zona }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+            {% if hay_coincidencias %}
+            <div class="coincidencias-section">
+                <h2 class="coincidencias-title">
+                    🎯 ¡Buenas noticias! 
+                    <span class="coincidencias-badge">{{ total_encontrados }} coincidencia{{ total_encontrados|pluralize }}</span>
+                </h2>
+                
+                {% for repuesto in repuestos %}
+                <div class="repuesto-mini-card">
+                    <div class="mini-card-header">
+                        <div class="mini-card-title">{{ repuesto.titulo }}</div>
+                        <div class="mini-card-price">${{ repuesto.precio }}</div>
+                    </div>
+                    <div class="mini-card-info">
+                        📍 {{ repuesto.ubicacion }} • {{ repuesto.get_estado_display }}
+                    </div>
+                    <div class="mini-card-info">
+                        👤 {{ repuesto.nombre_vendedor }}
+                    </div>
+                    <div class="mini-card-info">
+                        📧 {{ repuesto.email_vendedor }} • 📱 {{ repuesto.telefono_vendedor }}
+                    </div>
+                    <a href="mailto:{{ repuesto.email_vendedor }}?subject=Consulta sobre {{ repuesto.titulo }}" class="btn-ver-repuesto">
+                        💬 Contactar Vendedor
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="info-box">
+                <h3>¿Qué sigue ahora?</h3>
+                <ul>
+                    <li>Tu solicitud está visible para todos los vendedores</li>
+                    {% if hay_coincidencias %}
+                    <li>¡Ya encontramos {{ total_encontrados }} repuesto{{ total_encontrados|pluralize }} compatible{{ total_encontrados|pluralize }}!</li>
+                    {% endif %}
+                    <li>Los vendedores que tengan el repuesto te contactarán directamente</li>
+                    <li>Puedes explorar más repuestos disponibles</li>
+                    <li>Revisa tu email y teléfono regularmente</li>
+                </ul>
+            </div>
+
+            <div class="button-group">
+                <a href="{% url 'listado_repuestos' %}" class="btn btn-primary">
+                    <span>🔍</span>
+                    Ver Más Repuestos
+                </a>
+                <a href="{% url 'index' %}" class="btn btn-secondary">
+                    <span>🏠</span>
+                    Ir al Inicio
+                </a>
+                <a href="{% url 'quiero_comprar' %}" class="btn btn-secondary">
+                    <span>➕</span>
+                    Nueva Solicitud
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

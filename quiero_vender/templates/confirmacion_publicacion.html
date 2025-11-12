@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Exitoso - Busco Repuesto</title>
+    <link rel="stylesheet" href="{% static 'quiero_vender/confirmacion_publicacion.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="success-header">
+            <div class="success-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 6L9 17L4 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h1>¡Registro Exitoso!</h1>
+            <p>Tus datos de contacto han sido guardados correctamente</p>
+        </div>
+
+        <div class="content">
+            <div class="publication-summary">
+                <div class="summary-title">Resumen de tu registro:</div>
+                
+                <div class="summary-item">
+                    <span class="summary-label">Nombre/Negocio:</span>
+                    <span class="summary-value">{{ publicacion.nombre_vendedor }}</span>
+                </div>
+                
+                <div class="summary-item">
+                    <span class="summary-label">Email:</span>
+                    <span class="summary-value">{{ publicacion.email_vendedor }}</span>
+                </div>
+                
+                <div class="summary-item">
+                    <span class="summary-label">Teléfono:</span>
+                    <span class="summary-value">{{ publicacion.telefono_vendedor }}</span>
+                </div>
+                
+                <div class="summary-item">
+                    <span class="summary-label">Ubicación:</span>
+                    <span class="summary-value">
+                        📍 
+                        {% if publicacion.direccion %}
+                            {{ publicacion.direccion }}, 
+                        {% endif %}
+                        {{ publicacion.localidad }}, {{ publicacion.zona }}
+                    </span>
+                </div>
+                
+                {% if publicacion.latitud and publicacion.longitud %}
+                <div class="summary-item">
+                    <span class="summary-label">Coordenadas GPS:</span>
+                    <span class="summary-value">✓ Ubicación verificada en el mapa</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="info-box">
+                <h3>¿Qué sigue ahora?</h3>
+                <ul>
+                    <li>Los compradores podrán ver tu repuesto cuando busquen productos similares</li>
+                    <li>Te contactarán directamente por email o teléfono si están interesados</li>
+                    <li>Asegúrate de responder rápido para no perder ventas</li>
+                </ul>
+            </div>
+
+            <div class="button-group">
+                <a href="{% url 'index' %}" class="btn btn-primary">
+                    <span>🏠</span>
+                    Ir al Inicio
+                </a>
+                <a href="{% url 'publicar_repuesto' %}" class="btn btn-secondary">
+                    <span>➕</span>
+                    Registrar Otro Vendedor
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

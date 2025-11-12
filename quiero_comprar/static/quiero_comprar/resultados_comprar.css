@@ -1,0 +1,302 @@
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .search-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .search-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .search-detail {
+            color: #718096;
+            margin: 5px 0;
+        }
+
+        .results-header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .results-count {
+            font-size: 1.3em;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .results-count span {
+            color: #3498db;
+        }
+
+        .no-results {
+            background: white;
+            border-radius: 15px;
+            padding: 60px 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .no-results-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .no-results h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .no-results p {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .repuesto-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .repuesto-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f1f1f1;
+        }
+
+        .card-title {
+            flex: 1;
+        }
+
+        .card-title h2 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+
+        .card-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-categoria {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-estado {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge-usado {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .price {
+            font-size: 2em;
+            color: #27ae60;
+            font-weight: 700;
+        }
+
+        .card-body {
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin: 10px 0;
+            color: #4a5568;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            min-width: 150px;
+            color: #2c3e50;
+        }
+
+        .descripcion {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            line-height: 1.6;
+            color: #4a5568;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 2px solid #f1f1f1;
+        }
+
+        .vendedor-info {
+            flex: 1;
+        }
+
+        .vendedor-info h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .contacto {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .contacto-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #718096;
+            font-size: 0.95em;
+        }
+
+        .btn-contactar {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 15px 35px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-contactar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-volver {
+            background: white;
+            color: #3498db;
+            padding: 12px 25px;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-volver:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .urgencia-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .urgencia-alta {
+            background: #fee;
+            color: #c00;
+        }
+
+        .urgencia-media {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .urgencia-baja {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+
+            .results-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .price {
+                font-size: 1.5em;
+            }
+
+            .card-footer {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .contacto {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
