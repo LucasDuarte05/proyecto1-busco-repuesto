@@ -132,7 +132,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',  # login social
 ]
 
-LOGIN_REDIRECT_URL = 'https://proyecto1-busco-repuesto.onrender.com/vender/ver-solicitudes/'  # O la URL que necesites/'      # a dónde redirigir después del login
+LOGIN_REDIRECT_URL = '/vender/ver-solicitudes/'  # O la URL que necesites/'      # a dónde redirigir después del login
 LOGOUT_REDIRECT_URL = '/'     # a dónde redirigir después del logout
 
 
