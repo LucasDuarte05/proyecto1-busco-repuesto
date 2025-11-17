@@ -25,7 +25,15 @@ SECRET_KEY = 'django-insecure-!c3ss9@wt_zdkea3%)-^yjr1n%7akwxs!(f(s@9&16!0dzn_&*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "buscorepuesto.com.ar",
+    "www.buscorepuesto.com.ar",
+    "46.202.144.11",             # IPv4 del VPS
+    "2a02:4780:14:a098::1",      # IPv6 del VPS
+    "127.0.0.1",
+    "localhost",
+]
+
 
 
 # Application definition
