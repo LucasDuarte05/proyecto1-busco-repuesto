@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="{% static 'quiero_comprar/quiero_comprar.css' %}">
 </head>
 <body>
-    <a href="{% url 'index' %}" class="home-link">← Volver al inicio</a>
     
     <div class="container">
         <div class="header">
+            <a href="{% url 'ver_solicitudes' %}" class="btn-volverinicio">Soy Vendedor</a>
+
             <h1>🔍 Buscar Repuesto</h1>
             <p>Completa el formulario y te mostraremos los repuestos disponibles</p>
         </div>
@@ -31,8 +32,7 @@
             </div>
         </div>
 
-        <!-- ✅ CORREGIDO: URL apunta a 'procesar_compra' -->
-        <form method="POST" action="{% url 'procesar_compra' %}" id="compraForm">
+        <form method="POST" action="{% url 'procesar_compra' %}" enctype="multipart/form-data" id="compraForm">
             {% csrf_token %}
             <div class="form-content">
                 <!-- Paso 1: Información del Vehículo -->
@@ -82,11 +82,11 @@
                             <input type="text" 
                                 name="nro_chasis" 
                                 id="nro_chasis" 
-                                placeholder="Ejemplo: 9BWZZZ377VT004251" 
-                                class="chasis-input"
-                                required
                                 minlength="17"
                                 maxlength="17"
+                                required
+                                placeholder="Ejemplo: 9BWZZZ377VT004251" 
+                                class="chasis-input"
                                 pattern="[A-HJ-NPR-Z0-9]{17}"
                                 title="El VIN debe tener exactamente 17 caracteres alfanuméricos (sin I, O, Q)">
                             <img src="{% static 'quiero_comprar/img/cedula.png' %}" alt="VIN" class="input-icon">
@@ -125,6 +125,23 @@
                         <label>Descripción Adicional</label>
                         <textarea name="descripcion_adicional" placeholder="Cualquier detalle adicional que ayude a encontrar el repuesto exacto"></textarea>
                     </div>
+
+                    <div class="form-group">
+                        <label>Fotos del Repuesto (Opcional - Máximo 5)</label>
+                        <input type="file" 
+                            name="fotos_repuesto" 
+                            id="fotos_repuesto" 
+                            accept="image/*"
+                            multiple
+                            class="file-input">
+                        <p style="font-size: 0.85em; color: #718096; margin-top: 5px;">
+                            📷 Puedes subir hasta 5 fotos del repuesto para ayudar a los vendedores
+                        </p>
+                        <div id="preview_fotos" style="margin-top: 10px; display: none;">
+                            <div id="imagenes_preview" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+                            <p id="contador_imagenes" style="font-size: 0.9em; color: #4a5568; margin-top: 10px;"></p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Paso 3: Datos Personales -->
@@ -139,30 +156,30 @@
 
                     <div class="form-group">
                         <label>Celular <span class="required">*</span></label>
-                        <input type="text" name="celular" required placeholder="Ej: +54 11 1234-5678">
+                        <input type="text" name="celular" required placeholder="Ej: 1112345678" pattern="[0-9]{10,15}" title="Ingresa un número de celular válido">
                     </div>
 
                     <div class="form-group">
-                        <label>Zona/Provincia</label>
-                        <select name="zona" id="zona">
+                        <label>Zona/Provincia <span class="required">*</span></label>
+                        <select name="zona" id="zona" required>
                             <option value="">Selecciona una provincia</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Localidad</label>
-                        <select name="localidad" id="localidad">
+                        <label>Localidad <span class="required">*</span></label>
+                        <select name="localidad" id="localidad" required>
                             <option value="">Primero selecciona una provincia</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Urgencia <span class="required">*</span></label>
+                        <label>Nivel de Urgencia <span class="required">*</span></label>
                         <select name="urgencia" required>
                             <option value="">Selecciona el nivel</option>
                             <option value="super_alta">Super Alta - Muy Urgente (en hora)</option>
                             <option value="alta">Alta - Urgente (En 3 días)</option>
-                            <option value="media">Media - Lo necesito pronto (En 1 semana)</option>
+                            <option value="media" selected>Media - Lo necesito pronto (En 1 semana)</option>
                             <option value="baja">Baja - Puedo esperar (En 2 semanas)</option>
                         </select>
                     </div>
@@ -178,7 +195,10 @@
     </div>
 
     <script>
-        // Datos de modelos por marca
+        // ===== CONSTANTES Y DATOS =====
+        const MAX_IMAGENES = 5;
+        let imagenesSeleccionadas = [];
+
         const modelosPorMarca = {
             'Chevrolet': ['Agile', 'Astra', 'Aveo', 'Blazer', 'Captiva', 'Classic', 'Cobalt', 'Corsa', 'Cruze', 'Montana', 'Onix', 'Prisma', 'S10', 'Sail', 'Sonic', 'Spark', 'Spin', 'Tracker', 'Trailblazer', 'Zafira'],
             'Ford': ['EcoSport', 'Edge', 'Escort', 'Explorer', 'F-100', 'F-150', 'Fiesta', 'Focus', 'Fusion', 'Ka', 'Kuga', 'Mondeo', 'Mustang', 'Ranger', 'Territory', 'Transit'],
@@ -236,8 +256,7 @@
             'Tierra del Fuego': ['Ushuaia', 'Río Grande', 'Tolhuin'],
             'Tucumán': ['San Miguel de Tucumán', 'Yerba Buena', 'Tafí Viejo', 'Banda del Río Salí', 'Concepción', 'Aguilares', 'Monteros', 'Famaillá', 'Alderetes', 'Simoca', 'Juan Bautista Alberdi', 'Bella Vista', 'Trancas', 'Burruyacú', 'Tafí del Valle', 'Graneros', 'La Cocha']
         };
-
-        // Generar años (desde 1980 hasta 2025)
+        // ===== INICIALIZACIÓN =====
         const añoSelect = document.getElementById('año_auto');
         for (let año = 2025; año >= 1980; año--) {
             const option = document.createElement('option');
@@ -246,11 +265,10 @@
             añoSelect.appendChild(option);
         }
 
-        // Cambiar modelos según la marca seleccionada
+        // ===== FUNCIONES DE DATOS =====
         document.getElementById('marca_auto').addEventListener('change', function() {
             const marca = this.value;
             const modeloSelect = document.getElementById('modelo_auto');
-            
             modeloSelect.innerHTML = '<option value="">Selecciona un modelo</option>';
             
             if (marca && modelosPorMarca[marca]) {
@@ -263,11 +281,9 @@
             }
         });
 
-        // Cambiar repuestos según la categoría seleccionada
         document.getElementById('categoria_repuesto').addEventListener('change', function() {
             const categoria = this.value;
             const repuestoSelect = document.getElementById('repuesto_especifico');
-            
             repuestoSelect.innerHTML = '<option value="">Selecciona un repuesto</option>';
             
             if (categoria && repuestosPorCategoria[categoria]) {
@@ -280,13 +296,9 @@
             }
         });
 
-        // ===== FUNCIONES PARA PROVINCIAS Y LOCALIDADES =====
-        const provincias = Object.keys(localidadesPorProvincia).sort();
-
-        // Función para cargar provincias en un select
         function cargarProvincias(selectElement) {
             selectElement.innerHTML = '<option value="">Selecciona una provincia</option>';
-            provincias.forEach(provincia => {
+            Object.keys(localidadesPorProvincia).sort().forEach(provincia => {
                 const option = document.createElement('option');
                 option.value = provincia;
                 option.textContent = provincia;
@@ -294,10 +306,8 @@
             });
         }
 
-        // Función para cargar localidades según la provincia seleccionada
         function cargarLocalidades(provincia, selectElement) {
             selectElement.innerHTML = '<option value="">Selecciona una localidad</option>';
-            
             if (provincia && localidadesPorProvincia[provincia]) {
                 localidadesPorProvincia[provincia].forEach(localidad => {
                     const option = document.createElement('option');
@@ -308,20 +318,84 @@
             }
         }
 
-        // Inicializar selectores de provincia y localidad
         const zonaSelect = document.getElementById('zona');
         const localidadSelect = document.getElementById('localidad');
-
-        // Cargar provincias al iniciar
         cargarProvincias(zonaSelect);
-
-        // Evento para cambiar localidades cuando se selecciona una provincia
         zonaSelect.addEventListener('change', function() {
-            const provinciaSeleccionada = this.value;
-            cargarLocalidades(provinciaSeleccionada, localidadSelect);
+            cargarLocalidades(this.value, localidadSelect);
         });
 
-        // Navegación entre pasos
+        // ===== MANEJO DE IMÁGENES =====
+        document.getElementById('fotos_repuesto').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            
+            if (files.length > MAX_IMAGENES) {
+                alert(`Solo puedes subir un máximo de ${MAX_IMAGENES} imágenes`);
+                e.target.value = '';
+                return;
+            }
+            
+            imagenesSeleccionadas = files;
+            mostrarVistaPrevia(files);
+        });
+
+        function mostrarVistaPrevia(files) {
+            const previewContainer = document.getElementById('imagenes_preview');
+            const previewDiv = document.getElementById('preview_fotos');
+            const contador = document.getElementById('contador_imagenes');
+            
+            previewContainer.innerHTML = '';
+            
+            if (files.length === 0) {
+                previewDiv.style.display = 'none';
+                return;
+            }
+            
+            previewDiv.style.display = 'block';
+            contador.textContent = `${files.length} de ${MAX_IMAGENES} imágenes seleccionadas`;
+            
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const container = document.createElement('div');
+                    container.className = 'preview-image-container';
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = `Vista previa ${index + 1}`;
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-image-btn';
+                    removeBtn.innerHTML = '×';
+                    removeBtn.type = 'button';
+                    removeBtn.onclick = () => eliminarImagen(index);
+                    
+                    container.appendChild(img);
+                    container.appendChild(removeBtn);
+                    previewContainer.appendChild(container);
+                };
+                
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function eliminarImagen(index) {
+            const input = document.getElementById('fotos_repuesto');
+            const dt = new DataTransfer();
+            
+            imagenesSeleccionadas.forEach((file, i) => {
+                if (i !== index) {
+                    dt.items.add(file);
+                }
+            });
+            
+            input.files = dt.files;
+            imagenesSeleccionadas = Array.from(dt.files);
+            mostrarVistaPrevia(imagenesSeleccionadas);
+        }
+
+        // ===== NAVEGACIÓN ENTRE PASOS =====
         let currentStep = 1;
         const totalSteps = 3;
 
@@ -349,20 +423,10 @@
             const requiredFields = currentStepElement.querySelectorAll('[required]');
             
             for (let field of requiredFields) {
-                // Para campos select, verificar que el valor no sea vacío
-                if (field.tagName === 'SELECT') {
-                    if (!field.value || field.value === '') {
-                        field.focus();
-                        alert('Por favor completa todos los campos obligatorios');
-                        return false;
-                    }
-                } else {
-                    // Para inputs de texto
-                    if (!field.value || !field.value.trim()) {
-                        field.focus();
-                        alert('Por favor completa todos los campos obligatorios');
-                        return false;
-                    }
+                if (!field.checkValidity()) {
+                    alert(field.title || 'Por favor completa correctamente los campos obligatorios');
+                    field.focus();
+                    return false;
                 }
             }
             return true;
@@ -384,23 +448,15 @@
             }
         });
 
-        // IMPORTANTE: Manejar el submit del formulario
-        document.getElementById('submitBtn').addEventListener('click', function(e) {
-            e.preventDefault(); // Prevenir el comportamiento por defecto
-            
-            if (validateStep(currentStep)) {
-                // Si la validación pasa, enviar el formulario
-                document.getElementById('compraForm').submit();
+        // ===== SUBMIT DEL FORMULARIO =====
+        document.getElementById('compraForm').addEventListener('submit', function(e) {
+            if (!validateStep(currentStep)) {
+                e.preventDefault();
             }
         });
 
-        // Inicializar en el paso 1
+        // Inicializar
         showStep(1);
     </script>
 </body>
 </html>
-    
-
-
-
-

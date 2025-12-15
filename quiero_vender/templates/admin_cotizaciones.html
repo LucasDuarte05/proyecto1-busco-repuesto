@@ -1,0 +1,390 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Cotizaciones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-back {
+            padding: 10px 20px;
+            background: #e2e8f0;
+            color: #2d3748;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            background: #cbd5e0;
+        }
+
+        /* CONTADORES */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 600;
+        }
+
+        .stat-total { color: #667eea; }
+        .stat-pendiente { color: #f59e0b; }
+        .stat-enviada { color: #48bb78; }
+        .stat-rechazada { color: #e53e3e; }
+        .stat-interesado { color: #3182ce; }
+
+        /* FILTROS */
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .filters h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #2d3748;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #4a5568;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* TABLA */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f7fafc;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            color: #2d3748;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        tbody tr:hover {
+            background: #f7fafc;
+        }
+
+        /* BADGES */
+        .badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-pendiente {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-enviada {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-rechazada {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-interesado {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* BOTONES */
+        .btn-action {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 13px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+
+        /* VACÍO */
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: #718096;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🔧 Panel de Administración</h1>
+            <a href="{% url 'index' %}" class="btn-back">← Volver al inicio</a>
+        </div>
+
+        <!-- ESTADÍSTICAS -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number stat-total">{{ contadores.total }}</div>
+                <div class="stat-label">Total Cotizaciones</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number stat-pendiente">{{ contadores.pendiente }}</div>
+                <div class="stat-label">⏳ Pendientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number stat-enviada">{{ contadores.enviada }}</div>
+                <div class="stat-label">✅ Enviadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number stat-rechazada">{{ contadores.rechazada }}</div>
+                <div class="stat-label">❌ Rechazadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number stat-interesado">{{ contadores.cliente_interesado }}</div>
+                <div class="stat-label">💙 Con Interés</div>
+            </div>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filters">
+            <h3>🔍 Filtrar por estado:</h3>
+            <div class="filter-buttons">
+                <a href="?estado=todas" class="filter-btn {% if estado_actual == 'todas' %}active{% endif %}">
+                    Todas ({{ contadores.total }})
+                </a>
+                <a href="?estado=pendiente" class="filter-btn {% if estado_actual == 'pendiente' or not estado_actual %}active{% endif %}">
+                    ⏳ Pendientes ({{ contadores.pendiente }})
+                </a>
+                <a href="?estado=enviada" class="filter-btn {% if estado_actual == 'enviada' %}active{% endif %}">
+                    ✅ Enviadas ({{ contadores.enviada }})
+                </a>
+                <a href="?estado=rechazada" class="filter-btn {% if estado_actual == 'rechazada' %}active{% endif %}">
+                    ❌ Rechazadas ({{ contadores.rechazada }})
+                </a>
+                <a href="?estado=cliente_interesado" class="filter-btn {% if estado_actual == 'cliente_interesado' %}active{% endif %}">
+                    💙 Con Interés ({{ contadores.cliente_interesado }})
+                </a>
+            </div>
+        </div>
+
+        <!-- TABLA DE COTIZACIONES -->
+        <div class="table-container">
+            {% if cotizaciones %}
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Vendedor</th>
+                            <th>Cliente</th>
+                            <th>Repuesto</th>
+                            <th>Precio</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cotizacion in cotizaciones %}
+                        <tr>
+                            <td><strong>#{{ cotizacion.id }}</strong></td>
+                            <td>
+                                <a href="{% url 'perfil_vendedor_admin' cotizacion.vendedor.id %}" 
+                                   style="color: #667eea; text-decoration: none; font-weight: 600;">
+                                    {{ cotizacion.vendedor.nombre_empresa }}
+                                </a>
+                                <br>
+                                <small style="color: #718096;">{{ cotizacion.vendedor.localidad }}</small>
+                            </td>
+                            <td>
+                                <strong>{{ cotizacion.solicitud.nombre }}</strong><br>
+                                <small style="color: #718096;">📱 {{ cotizacion.solicitud.celular }}</small>
+                            </td>
+                            <td>
+                                <strong>{{ cotizacion.solicitud.repuesto_especifico }}</strong><br>
+                                <small style="color: #718096;">
+                                    {{ cotizacion.solicitud.marca_auto }} {{ cotizacion.solicitud.modelo_auto }}
+                                </small>
+                            </td>
+                            <td>
+                                <strong style="color: #2d3748; font-size: 16px;">${{ cotizacion.precio }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ cotizacion.estado }}">
+                                    {{ cotizacion.get_estado_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <small>{{ cotizacion.fecha_creacion|date:"d/m/Y H:i" }}</small>
+                            </td>
+                            <td>
+                                <a href="{% url 'detalle_cotizacion' cotizacion.id %}" 
+                                   class="btn-action btn-primary">
+                                    👁️ Ver Detalle
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <h3>No hay cotizaciones {{ estado_actual|default:"pendientes" }}</h3>
+                <p>Cambia el filtro para ver otras cotizaciones</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

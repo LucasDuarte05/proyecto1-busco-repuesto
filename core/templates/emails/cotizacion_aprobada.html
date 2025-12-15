@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Cotización - Busco Repuesto</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    
+    <!-- HEADER -->
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; border-radius: 12px; text-align: center; margin-bottom: 30px;">
+        <h1 style="margin: 0; font-size: 28px;">🔧 Busco Repuesto</h1>
+        <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">¡Tenés una nueva cotización!</p>
+    </div>
+
+    <!-- SALUDO -->
+    <div style="margin-bottom: 25px;">
+        <h2 style="color: #2d3748; font-size: 22px; margin-bottom: 10px;">¡Hola {{ solicitud.nombre }}!</h2>
+        <p style="font-size: 16px; color: #4a5568; margin: 0;">
+            Tenemos buenas noticias. La empresa <strong>{{ cotizacion.vendedor.nombre_empresa }}</strong> 
+            cotizó el repuesto que buscás.
+        </p>
+    </div>
+
+    <!-- INFO DEL REPUESTO -->
+    <div style="background: #f7fafc; border-left: 4px solid #667eea; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+        <h3 style="color: #2d3748; font-size: 18px; margin-top: 0;">📦 Tu solicitud:</h3>
+        <p style="margin: 8px 0;"><strong>Repuesto:</strong> {{ solicitud.repuesto_especifico }}</p>
+        <p style="margin: 8px 0;"><strong>Vehículo:</strong> {{ solicitud.marca_auto }} {{ solicitud.modelo_auto }} {% if solicitud.año_auto %}({{ solicitud.año_auto }}){% endif %}</p>
+        {% if solicitud.nro_chasis %}
+        <p style="margin: 8px 0;"><strong>Chasis:</strong> <code style="background: white; padding: 4px 8px; border-radius: 4px;">{{ solicitud.nro_chasis }}</code></p>
+        {% endif %}
+    </div>
+
+    <!-- COTIZACIÓN -->
+    <div style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 25px; border-radius: 12px; margin-bottom: 25px; text-align: center;">
+        <h3 style="margin: 0 0 15px 0; font-size: 20px;">💰 Cotización</h3>
+        <div style="font-size: 48px; font-weight: bold; margin: 15px 0;">${{ cotizacion.precio }}</div>
+        {% if cotizacion.comentarios %}
+        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px; margin-top: 20px; text-align: left;">
+            <p style="margin: 0; font-size: 14px; font-style: italic;">
+                <strong>Comentario del vendedor:</strong><br>
+                "{{ cotizacion.comentarios }}"
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- DATOS DEL VENDEDOR -->
+    <div style="background: white; border: 2px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+        <h3 style="color: #2d3748; font-size: 18px; margin-top: 0;">🏢 Datos del vendedor:</h3>
+        <p style="margin: 8px 0;"><strong>Empresa:</strong> {{ cotizacion.vendedor.nombre_empresa }}</p>
+        <p style="margin: 8px 0;"><strong>📞 Teléfono:</strong> <a href="tel:{{ cotizacion.vendedor.telefono }}" style="color: #667eea; text-decoration: none;">{{ cotizacion.vendedor.telefono }}</a></p>
+        <p style="margin: 8px 0;"><strong>📍 Dirección:</strong> {{ cotizacion.vendedor.direccion }}, {{ cotizacion.vendedor.localidad }}, {{ cotizacion.vendedor.provincia }}</p>
+        {% if cotizacion.vendedor.web_ig %}
+        <p style="margin: 8px 0;"><strong>🌐 Web/Instagram:</strong> {{ cotizacion.vendedor.web_ig }}</p>
+        {% endif %}
+    </div>
+
+    <!-- BOTONES DE ACCIÓN -->
+    <div style="text-align: center; margin: 30px 0;">
+        <h3 style="color: #2d3748; font-size: 18px; margin-bottom: 20px;">¿Te interesa esta cotización?</h3>
+        
+        <!-- BOTÓN SÍ ME INTERESA -->
+        <a href="{{ url_interes }}" 
+           style="display: inline-block; background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; text-decoration: none; padding: 18px 40px; border-radius: 12px; font-size: 18px; font-weight: bold; margin: 10px;">
+            ✅ SÍ, ME INTERESA
+        </a>
+        
+        <!-- BOTÓN WHATSAPP -->
+        <a href="{{ url_whatsapp }}" 
+           style="display: inline-block; background: #25D366; color: white; text-decoration: none; padding: 18px 40px; border-radius: 12px; font-size: 18px; font-weight: bold; margin: 10px;">
+            💬 Contactar por WhatsApp
+        </a>
+    </div>
+
+    <!-- NOTA IMPORTANTE -->
+    <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 8px; margin: 25px 0;">
+        <p style="margin: 0; font-size: 14px; color: #856404;">
+            <strong>💡 Importante:</strong> Al hacer clic en "SÍ, ME INTERESA", el vendedor recibirá tus datos de contacto para coordinarse con vos.
+        </p>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #e2e8f0;">
+        <p style="font-size: 14px; color: #718096; margin: 5px 0;">
+            Este email es una respuesta a tu solicitud en <strong>Busco Repuesto</strong>
+        </p>
+        <p style="font-size: 12px; color: #a0aec0; margin: 5px 0;">
+            Si no solicitaste esta cotización, por favor ignorá este mensaje.
+        </p>
+    </div>
+
+</body>
+</html>

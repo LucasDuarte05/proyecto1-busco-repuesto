@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cliente Interesado - Busco Repuesto</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    
+    <!-- HEADER -->
+    <div style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 30px 20px; border-radius: 12px; text-align: center; margin-bottom: 30px;">
+        <h1 style="margin: 0; font-size: 32px;">🎉 ¡Excelente noticia!</h1>
+        <p style="margin: 10px 0 0 0; font-size: 18px; opacity: 0.9;">Un cliente está interesado en tu cotización</p>
+    </div>
+
+    <!-- SALUDO -->
+    <div style="margin-bottom: 25px;">
+        <h2 style="color: #2d3748; font-size: 22px; margin-bottom: 10px;">¡Hola {{ vendedor.nombre_empresa }}!</h2>
+        <p style="font-size: 16px; color: #4a5568; margin: 0;">
+            <strong>{{ solicitud.nombre }}</strong> vio tu cotización y quiere que lo contactes.
+        </p>
+    </div>
+
+    <!-- INFO DE LA COTIZACIÓN -->
+    <div style="background: #f7fafc; border-left: 4px solid #48bb78; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+        <h3 style="color: #2d3748; font-size: 18px; margin-top: 0;">💰 Tu cotización:</h3>
+        <p style="margin: 8px 0;"><strong>Repuesto:</strong> {{ solicitud.repuesto_especifico }}</p>
+        <p style="margin: 8px 0;"><strong>Vehículo:</strong> {{ solicitud.marca_auto }} {{ solicitud.modelo_auto }} {% if solicitud.año_auto %}({{ solicitud.año_auto }}){% endif %}</p>
+        <p style="margin: 8px 0;"><strong>Precio cotizado:</strong> <span style="font-size: 24px; font-weight: bold; color: #48bb78;">${{ cotizacion.precio }}</span></p>
+    </div>
+
+    <!-- DATOS DEL CLIENTE -->
+    <div style="background: white; border: 2px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+        <h3 style="color: #2d3748; font-size: 18px; margin-top: 0;">👤 Datos del cliente:</h3>
+        <p style="margin: 8px 0;"><strong>Nombre:</strong> {{ solicitud.nombre }}</p>
+        <p style="margin: 8px 0;"><strong>📱 Celular:</strong> <a href="tel:{{ solicitud.celular }}" style="color: #667eea; text-decoration: none; font-size: 18px; font-weight: bold;">{{ solicitud.celular }}</a></p>
+        <p style="margin: 8px 0;"><strong>📍 Ubicación:</strong> {{ solicitud.localidad }}, {{ solicitud.zona }}</p>
+        {% if solicitud.descripcion_adicional %}
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+            <p style="margin: 0;"><strong>Comentario adicional del cliente:</strong></p>
+            <p style="margin: 5px 0; font-style: italic; color: #4a5568;">"{{ solicitud.descripcion_adicional }}"</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- BOTÓN WHATSAPP -->
+    <div style="text-align: center; margin: 30px 0;">
+        <h3 style="color: #2d3748; font-size: 18px; margin-bottom: 20px;">¡Contactalo ahora!</h3>
+        
+        <a href="{{ url_whatsapp }}" 
+           style="display: inline-block; background: #25D366; color: white; text-decoration: none; padding: 20px 45px; border-radius: 12px; font-size: 20px; font-weight: bold;">
+            💬 Contactar por WhatsApp
+        </a>
+        
+        <p style="font-size: 14px; color: #718096; margin-top: 15px;">
+            El mensaje ya está preparado para que solo tengas que enviarlo
+        </p>
+    </div>
+
+    <!-- TIPS -->
+    <div style="background: #e6fffa; border-left: 4px solid #38b2ac; padding: 20px; border-radius: 8px; margin: 25px 0;">
+        <h4 style="color: #2d3748; margin-top: 0; font-size: 16px;">💡 Consejos para cerrar la venta:</h4>
+        <ul style="margin: 10px 0; padding-left: 20px;">
+            <li style="margin: 8px 0;">Respondé rápido, el cliente está esperando tu contacto</li>
+            <li style="margin: 8px 0;">Confirmá disponibilidad y tiempo de entrega</li>
+            <li style="margin: 8px 0;">Coordiná forma de pago y envío/retiro</li>
+            <li style="margin: 8px 0;">Enviá foto del repuesto si es posible</li>
+        </ul>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #e2e8f0;">
+        <p style="font-size: 14px; color: #718096; margin: 5px 0;">
+            <strong>Busco Repuesto</strong> - Conectando compradores y vendedores
+        </p>
+        <p style="font-size: 12px; color: #a0aec0; margin: 5px 0;">
+            Recibiste este email porque un cliente mostró interés en tu cotización
+        </p>
+    </div>
+
+</body>
+</html>

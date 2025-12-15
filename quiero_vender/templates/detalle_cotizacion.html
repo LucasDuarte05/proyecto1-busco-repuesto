@@ -1,0 +1,508 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Cotización #{{ cotizacion.id }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        .header {
+            padding: 25px 30px;
+            border-radius: 12px 12px 0 0;
+            background-color: white;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #2d3748;
+            text-align: center;
+            margin: 0;
+        }
+
+        .btn-back {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 8px 16px;
+            background: #e2e8f0;
+            color: #2d3748;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-back:hover {
+            background: #cbd5e0;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .main-content {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* GRID */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 500px;
+        }
+        
+        @media (max-width: 968px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* COLUMNAS */
+        .column-left {
+            padding: 25px;
+            border-right: 2px solid #e2e8f0;
+        }
+
+        .column-right {
+            padding: 25px;
+        }
+
+        @media (max-width: 968px) {
+            .column-left {
+                border-right: none;
+                border-bottom: 2px solid #e2e8f0;
+            }
+        }
+
+        .info-card h2 {
+            font-size: 20px;
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-row {
+            display: flex;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f7fafc;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #718096;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .info-value {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .info-card-client {
+            margin-bottom: 0;
+        }
+
+        .info-card-client h2 {
+            font-size: 20px;
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* REPUESTO SECTION */
+        .repuesto-section {
+            margin-bottom: 20px;
+        }
+
+        .repuesto-section h2 {
+            font-size: 20px;
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* FOTO */
+        .foto-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .foto-repuesto {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* COTIZACIÓN CARD */
+        .cotizacion-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .cotizacion-card h2 {
+            color: white;
+            border-bottom-color: rgba(255,255,255,0.3);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .precio-grande {
+            font-size: 38px;
+            font-weight: 700;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .comentarios-box {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        /* BADGE */
+        .badge {
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-pendiente {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-enviada {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-rechazada {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-interesado {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* ACCIONES */
+        .actions-card {
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .btn-action {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin: 10px;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-aprobar {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-aprobar:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn-rechazar {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-rechazar:hover {
+            background: #c53030;
+            transform: translateY(-2px);
+        }
+
+        .btn-disabled {
+            background: #cbd5e0;
+            color: #718096;
+            cursor: not-allowed;
+        }
+
+        /* ALERT */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="{% url 'admin_cotizaciones' %}" class="btn-back">← Volver al panel</a>
+            <h1>📋 Cotización #{{ cotizacion.id }}</h1>
+        </div>
+        
+        <!-- MENSAJES -->
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- ESTADO ACTUAL -->
+        {% if cotizacion.estado != 'pendiente' %}
+        <div class="alert {% if cotizacion.estado == 'enviada' %}alert-info{% else %}alert-warning{% endif %}">
+            {% if cotizacion.estado == 'enviada' %}
+                ✅ Esta cotización ya fue <strong>APROBADA Y ENVIADA</strong> al cliente el {{ cotizacion.fecha_envio|date:"d/m/Y H:i" }}
+            {% elif cotizacion.estado == 'rechazada' %}
+                ❌ Esta cotización fue <strong>RECHAZADA</strong>
+            {% elif cotizacion.estado == 'cliente_interesado' %}
+                💙 ¡El cliente mostró <strong>INTERÉS</strong> en esta cotización!
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- GRID DE INFORMACIÓN -->
+        <div class="main-content">
+            <div class="details-grid">
+                <!-- COLUMNA IZQUIERDA: CLIENTE + VENDEDOR -->
+                <div class="column-left">
+                    <!-- INFO DEL CLIENTE -->
+                    <div class="info-card-client">
+                        <h2>👤 Información del Cliente</h2>
+                        <div class="info-row">
+                            <span class="info-label">Nombre:</span>
+                            <span class="info-value">{{ solicitud.nombre }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Celular:</span>
+                            <span class="info-value">{{ solicitud.celular }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Localidad:</span>
+                            <span class="info-value">{{ solicitud.localidad }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Provincia:</span>
+                            <span class="info-value">{{ solicitud.zona }}</span>
+                        </div>
+                        
+                        <!-- INFO DEL VENDEDOR -->
+                        <h2 style="margin-top: 30px;">🏢 Información del Vendedor</h2>
+                        <div class="info-row">
+                            <span class="info-label">Empresa:</span>
+                            <span class="info-value">{{ vendedor.nombre_empresa }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">CUIT:</span>
+                            <span class="info-value">{{ vendedor.cuit }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Teléfono:</span>
+                            <span class="info-value">{{ vendedor.telefono }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Dirección:</span>
+                            <span class="info-value">{{ vendedor.direccion }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Localidad:</span>
+                            <span class="info-value">{{ vendedor.localidad }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Provincia:</span>
+                            <span class="info-value">{{ vendedor.provincia }}</span>
+                        </div>
+                        {% if vendedor.web_ig %}
+                        <div class="info-row">
+                            <span class="info-label">Web/Instagram:</span>
+                            <span class="info-value">{{ vendedor.web_ig }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        <div style="margin-top: 15px; text-align: center;">
+                            <a href="{% url 'perfil_vendedor_admin' vendedor.id %}" 
+                               style="color: #667eea; text-decoration: none; font-weight: 600;">
+                                📊 Ver historial del vendedor →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA: REPUESTO + COTIZACIÓN -->
+                <div class="column-right">
+                    <!-- INFO DEL REPUESTO -->
+                    <div class="repuesto-section">
+                        <h2>🔧 Información del Repuesto</h2>
+                        <div class="info-row">
+                            <span class="info-label">Repuesto:</span>
+                            <span class="info-value">{{ solicitud.repuesto_especifico }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Categoría:</span>
+                            <span class="info-value">{{ solicitud.get_categoria_repuesto_display }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Marca:</span>
+                            <span class="info-value">{{ solicitud.marca_auto }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Modelo:</span>
+                            <span class="info-value">{{ solicitud.modelo_auto|default:"-" }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Año:</span>
+                            <span class="info-value">{{ solicitud.año_auto|default:"-" }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Chasis:</span>
+                            <span class="info-value" style="font-family: monospace;">{{ solicitud.nro_chasis|default:"-" }}</span>
+                        </div>
+                        
+                        {% if solicitud.descripcion_adicional %}
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+                            <span class="info-label">Descripción adicional:</span>
+                            <p style="margin-top: 8px; color: #4a5568;">{{ solicitud.descripcion_adicional }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if solicitud.foto_repuesto %}
+                        <div class="foto-container">
+                            <img src="{{ solicitud.foto_repuesto.url }}" alt="Foto del repuesto" class="foto-repuesto">
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- COTIZACIÓN -->
+                    <div class="cotizacion-card">
+                        <h2>💰 Cotización</h2>
+                        <div class="precio-grande">${{ cotizacion.precio }}</div>
+                        
+                        <div style="text-align: center; margin: 10px 0;">
+                            <span class="badge badge-{{ cotizacion.estado }}">
+                                {{ cotizacion.get_estado_display }}
+                            </span>
+                        </div>
+
+                        {% if cotizacion.comentarios %}
+                        <div class="comentarios-box">
+                            <strong>💬 Comentarios del vendedor:</strong><br>
+                            "{{ cotizacion.comentarios }}"
+                        </div>
+                        {% endif %}
+
+                        <div style="text-align:center; font-size: 13px; opacity: 0.9; margin-top: 15px;">
+                            <div>📅 Creada: {{ cotizacion.fecha_creacion|date:"d/m/Y H:i" }}</div>
+                            {% if cotizacion.fecha_envio %}
+                            <div>📤 Enviada: {{ cotizacion.fecha_envio|date:"d/m/Y H:i" }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- ACCIONES -->
+                        {% if cotizacion.estado == 'pendiente' %}
+                        <div class="actions-card">
+                            <form method="POST" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="accion" value="aprobar">
+                                <button type="submit" class="btn-action btn-aprobar">
+                                    ✅ Aprobar y Enviar al Cliente
+                                </button>
+                            </form>
+
+                            <form method="POST" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="accion" value="rechazar">
+                                <button type="submit" class="btn-action btn-rechazar" 
+                                        onclick="return confirm('¿Estás seguro de rechazar esta cotización?')">
+                                    ❌ Rechazar Cotización
+                                </button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <div class="actions-card" style="margin-top: 20px;">
+                            <p style="color: rgba(255,255,255,0.9); margin-bottom: 10px;">
+                                Esta cotización ya fue procesada.
+                            </p>
+                            <button class="btn-action btn-disabled" disabled>
+                                {{ cotizacion.get_estado_display }}
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

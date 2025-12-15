@@ -227,6 +227,29 @@
             font-weight: 600;
         }
 
+        .btn-action {
+            flex: 1;
+            min-width: 140px;
+            padding: 14px 20px;
+            font-size: 1.3em;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.6);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 40px 24px;
@@ -309,14 +332,25 @@
                 </a>
             {% endif %}
         </div>
+            {% if user.is_authenticated %}
+            <div style="margin-top: 30px; padding-top: 30px; border-top: 2px solid #e2e8f0;">
+                <a href="{% url 'admin_login' %}" class="btn btn-action" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); max-width: 400px; margin: 0 auto;color:white;">
+                    <span>
+                        <span>🔧</span>
+                        Panel de Administración
+                    </span>
+                </a>
+            </div>
+            {% endif %}
 
+            <div class="features">
         <div class="features">
             <div class="feature">
                 <div class="feature-icon">⚡</div>
                 <div class="feature-text">Rápido y Fácil</div>
             </div>
             <div class="feature">
-                <div class="feature-icon">✔</div>
+                <div class="feature-icon">✓</div>
                 <div class="feature-text">Seguro</div>
             </div>
             <div class="feature">

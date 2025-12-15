@@ -1,0 +1,313 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Interés Registrado! - Busco Repuesto</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 2.2em;
+            margin-bottom: 15px;
+        }
+
+        .tagline {
+            color: #48bb78;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background: #f7fafc;
+            border-left: 4px solid #48bb78;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            color: #2d3748;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #718096;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #2d3748;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .price {
+            font-size: 2em;
+            color: #48bb78;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .whatsapp-section {
+            background: linear-gradient(135deg, #25D366 0%, #20ba5a 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 16px;
+            margin: 25px 0;
+        }
+
+        .whatsapp-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .btn-whatsapp {
+            display: inline-block;
+            background: white;
+            color: #25D366;
+            padding: 15px 35px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-whatsapp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .steps {
+            background: #e6fffa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .steps h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .step-number {
+            background: #48bb78;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        .btn-home {
+            display: inline-block;
+            background: #e2e8f0;
+            color: #2d3748;
+            padding: 12px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-home:hover {
+            background: #cbd5e0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .price {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">🎉</div>
+        
+        <h1>¡Interés Registrado!</h1>
+        <div class="tagline">El vendedor recibirá tus datos</div>
+
+        <p style="color: #718096; font-size: 1.1em; margin-bottom: 30px;">
+            Gracias por tu interés. <strong>{{ vendedor.nombre_empresa }}</strong> se pondrá en contacto con vos pronto.
+        </p>
+
+        <!-- RESUMEN DE LA COTIZACIÓN -->
+        <div class="info-box">
+            <h3>📦 Resumen de tu solicitud:</h3>
+            <div class="info-row">
+                <span class="info-label">Repuesto:</span>
+                <span class="info-value">{{ solicitud.repuesto_especifico }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Vehículo:</span>
+                <span class="info-value">{{ solicitud.marca_auto }} {{ solicitud.modelo_auto }}</span>
+            </div>
+            {% if solicitud.año_auto %}
+            <div class="info-row">
+                <span class="info-label">Año:</span>
+                <span class="info-value">{{ solicitud.año_auto }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="price">${{ cotizacion.precio }}</div>
+
+        <!-- WHATSAPP -->
+        <div class="whatsapp-section">
+            <h3>💬 ¿Querés contactar al vendedor ahora?</h3>
+            <p style="opacity: 0.9; margin-bottom: 15px;">
+                También podés escribirle directamente por WhatsApp
+            </p>
+            <a href="https://wa.me/549{{ vendedor.telefono|cut:'-'|cut:' ' }}?text=Hola! Vi tu cotización de ${{ cotizacion.precio }} para {{ solicitud.repuesto_especifico }}. Me interesa!" 
+               class="btn-whatsapp" 
+               target="_blank">
+                💬 Abrir WhatsApp
+            </a>
+        </div>
+
+        <!-- PRÓXIMOS PASOS -->
+        <div class="steps">
+            <h3>📋 ¿Qué sigue ahora?</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-text">
+                    <strong>{{ vendedor.nombre_empresa }}</strong> recibió tu nombre y celular
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-text">
+                    El vendedor te contactará en las próximas horas para coordinar
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-text">
+                    Podrán acordar forma de pago, envío o retiro del repuesto
+                </div>
+            </div>
+        </div>
+
+        <!-- DATOS DEL VENDEDOR -->
+        <div class="info-box">
+            <h3>🏢 Datos del vendedor:</h3>
+            <div class="info-row">
+                <span class="info-label">Empresa:</span>
+                <span class="info-value">{{ vendedor.nombre_empresa }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Teléfono:</span>
+                <span class="info-value">{{ vendedor.telefono }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Ubicación:</span>
+                <span class="info-value">{{ vendedor.localidad }}, {{ vendedor.provincia }}</span>
+            </div>
+            {% if vendedor.web_ig %}
+            <div class="info-row">
+                <span class="info-label">Web/Instagram:</span>
+                <span class="info-value">{{ vendedor.web_ig }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <a href="{% url 'index' %}" class="btn-home">← Volver al inicio</a>
+    </div>
+</body>
+</html>

@@ -15,7 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 from busco_repuesto import views as busco_repuesto_views
 
@@ -25,4 +27,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),  # 👈 Rutas de allauth
     path('comprar/', include('quiero_comprar.urls')),
     path('vender/', include('quiero_vender.urls')),
+    
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

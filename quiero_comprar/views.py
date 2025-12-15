@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db.models import Q
-from core.models import SolicitudCompra, PublicacionVenta
+from core.models import SolicitudCompra, PublicacionVenta, VendedorEmpresa, ImagenRepuesto
 from decimal import Decimal, InvalidOperation
 import json
 
@@ -29,14 +29,24 @@ def procesar_compra(request):
                 zona=request.POST.get('zona', '')
             )
             
-            # Obtener vendedores de la zona (no buscar repuestos específicos)
+            # ✅ PROCESAR MÚLTIPLES IMÁGENES
+            imagenes = request.FILES.getlist('fotos_repuesto')
+            for imagen in imagenes:
+                ImagenRepuesto.objects.create(
+                    solicitud=solicitud,
+                    imagen=imagen
+                )
+            
+            print(f"[DEBUG] Solicitud creada con {len(imagenes)} imágenes")
+            
+            # Obtener vendedores de la zona
             vendedores_ubicaciones = obtener_vendedores_zona(solicitud)
             
             print(f"[DEBUG] Total vendedores encontrados: {len(vendedores_ubicaciones)}")
             
             context = {
                 'solicitud': solicitud,
-                'total_encontrados': 0,  # No buscamos repuestos específicos
+                'total_encontrados': 0,
                 'vendedores_json': json.dumps(vendedores_ubicaciones),
                 'vendedores_list': vendedores_ubicaciones
             }
@@ -55,66 +65,51 @@ def procesar_compra(request):
 
 def obtener_vendedores_zona(solicitud):
     """
-    Obtener TODOS los vendedores de la zona del usuario
-    No filtra por repuestos, solo muestra vendedores disponibles
+    Obtener TODOS los vendedores con su ubicación GPS
+    Prioriza vendedores con coordenadas exactas
     """
     vendedores_ubicaciones = []
-    vendedores_vistos = set()
     
     try:
-        # Buscar TODOS los vendedores disponibles en la zona
-        vendedores = PublicacionVenta.objects.filter(disponible=True)
+        # Obtener TODOS los vendedores activos
+        vendedores = VendedorEmpresa.objects.filter(activo=True)
         
-        # Filtrar por zona/localidad si están disponibles
+        # Filtrar por zona/provincia si están disponibles
         if solicitud.zona or solicitud.localidad:
             query_geo = Q()
             if solicitud.zona:
-                query_geo |= Q(zona__icontains=solicitud.zona)
+                query_geo |= Q(provincia__icontains=solicitud.zona)
             if solicitud.localidad:
                 query_geo |= Q(localidad__icontains=solicitud.localidad)
             
             vendedores = vendedores.filter(query_geo)
         
-        # Eliminar duplicados y crear la lista de vendedores
-        for vendedor in vendedores:
-            vendedor_key = f"{vendedor.email_vendedor}_{vendedor.zona}_{vendedor.localidad}_{vendedor.direccion}"
-            
-            if vendedor_key not in vendedores_vistos:
-                vendedores_vistos.add(vendedor_key)
-                
-                # Contar cuántas publicaciones tiene este vendedor en esta ubicación
-                publicaciones_count = PublicacionVenta.objects.filter(
-                    email_vendedor=vendedor.email_vendedor,
-                    zona=vendedor.zona,
-                    localidad=vendedor.localidad,
-                    direccion=vendedor.direccion,
-                    disponible=True
-                ).count()
-                
-                vendedor_data = {
-                    'nombre': vendedor.nombre_vendedor,
-                    'email': vendedor.email_vendedor,
-                    'telefono': vendedor.telefono_vendedor,
-                    'zona': vendedor.zona,
-                    'localidad': vendedor.localidad,
-                    'direccion': vendedor.direccion if vendedor.direccion else '',
-                    'repuestos_count': publicaciones_count,
-                    'tiene_repuesto_exacto': False  # No buscamos repuestos específicos
-                }
-                
-                # Convertir Decimal a float para coordenadas GPS
-                if vendedor.latitud and vendedor.longitud:
-                    vendedor_data['latitud'] = float(vendedor.latitud)
-                    vendedor_data['longitud'] = float(vendedor.longitud)
-                    vendedor_data['tiene_gps'] = True
-                    print(f"[GPS] ✓ {vendedor.nombre_vendedor}: {vendedor_data['latitud']}, {vendedor_data['longitud']}")
-                else:
-                    vendedor_data['tiene_gps'] = False
-                    print(f"[WARN] {vendedor.nombre_vendedor}: Sin coordenadas GPS")
-                
-                vendedores_ubicaciones.append(vendedor_data)
+        print(f"[DEBUG] Vendedores encontrados: {vendedores.count()}")
         
-        print(f"[RESUMEN] Vendedores: {len(vendedores_ubicaciones)}, Con GPS: {sum(1 for v in vendedores_ubicaciones if v.get('tiene_gps'))}")
+        # Crear lista de vendedores con coordenadas
+        for vendedor in vendedores:
+            vendedor_data = {
+                'nombre': vendedor.nombre_empresa,
+                'email': vendedor.user.email,
+                'telefono': vendedor.telefono,
+                'zona': vendedor.provincia,
+                'localidad': vendedor.localidad,
+                'direccion': vendedor.direccion,
+            }
+            
+            # 🎯 PRIORIDAD: Usar coordenadas GPS si existen
+            if vendedor.latitud and vendedor.longitud:
+                vendedor_data['latitud'] = float(vendedor.latitud)
+                vendedor_data['longitud'] = float(vendedor.longitud)
+                vendedor_data['tiene_gps'] = True
+                print(f"[GPS] ✅ {vendedor.nombre_empresa}: {vendedor_data['latitud']}, {vendedor_data['longitud']}")
+            else:
+                vendedor_data['tiene_gps'] = False
+                print(f"[WARN] ⚠️ {vendedor.nombre_empresa}: Sin coordenadas GPS")
+            
+            vendedores_ubicaciones.append(vendedor_data)
+        
+        print(f"[RESUMEN] Total vendedores: {len(vendedores_ubicaciones)}, Con GPS: {sum(1 for v in vendedores_ubicaciones if v.get('tiene_gps'))}")
         return vendedores_ubicaciones
         
     except Exception as e:

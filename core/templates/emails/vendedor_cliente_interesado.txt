@@ -1,0 +1,43 @@
+========================================
+🎉 ¡CLIENTE INTERESADO!
+========================================
+
+¡Hola {{ vendedor.nombre_empresa }}!
+
+{{ solicitud.nombre }} vio tu cotización y quiere que lo contactes.
+
+----------------------------------------
+💰 TU COTIZACIÓN:
+----------------------------------------
+Repuesto: {{ solicitud.repuesto_especifico }}
+Vehículo: {{ solicitud.marca_auto }} {{ solicitud.modelo_auto }} {% if solicitud.año_auto %}({{ solicitud.año_auto }}){% endif %}
+Precio cotizado: ${{ cotizacion.precio }}
+
+----------------------------------------
+👤 DATOS DEL CLIENTE:
+----------------------------------------
+Nombre: {{ solicitud.nombre }}
+Celular: {{ solicitud.celular }}
+Ubicación: {{ solicitud.localidad }}, {{ solicitud.zona }}
+{% if solicitud.descripcion_adicional %}
+Comentario adicional:
+"{{ solicitud.descripcion_adicional }}"
+{% endif %}
+
+----------------------------------------
+¡CONTACTALO AHORA!
+----------------------------------------
+
+WhatsApp directo:
+{{ url_whatsapp }}
+
+💡 CONSEJOS PARA CERRAR LA VENTA:
+- Respondé rápido, el cliente está esperando
+- Confirmá disponibilidad y tiempo de entrega
+- Coordiná forma de pago y envío/retiro
+- Enviá foto del repuesto si es posible
+
+========================================
+Busco Repuesto - Conectando compradores y vendedores
+Recibiste este email porque un cliente mostró interés en tu cotización
+========================================

@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -143,9 +143,26 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_REDIRECT_URL = '/vender/ver-solicitudes/'  # O la URL que necesites/'      # a dónde redirigir después del login
 LOGOUT_REDIRECT_URL = '/'     # a dónde redirigir después del logout
 
+# Configuración para archivos subidos (imágenes)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Para producción con Gmail (comentar en desarrollo)
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'tu-email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'tu-app-password'  # Contraseña de aplicación de Google
+# DEFAULT_FROM_EMAIL = 'Busco Repuesto <tu-email@gmail.com>'
+
+# Email de prueba para desarrollo
+DEFAULT_FROM_EMAIL = 'noreply@buscorepuesto.com'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

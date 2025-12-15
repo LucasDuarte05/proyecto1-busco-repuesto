@@ -1,0 +1,48 @@
+========================================
+🔧 BUSCO REPUESTO - NUEVA COTIZACIÓN
+========================================
+
+¡Hola {{ solicitud.nombre }}!
+
+Tenemos buenas noticias. La empresa {{ cotizacion.vendedor.nombre_empresa }} cotizó el repuesto que buscás.
+
+----------------------------------------
+📦 TU SOLICITUD:
+----------------------------------------
+Repuesto: {{ solicitud.repuesto_especifico }}
+Vehículo: {{ solicitud.marca_auto }} {{ solicitud.modelo_auto }} {% if solicitud.año_auto %}({{ solicitud.año_auto }}){% endif %}
+{% if solicitud.nro_chasis %}Chasis: {{ solicitud.nro_chasis }}{% endif %}
+
+----------------------------------------
+💰 COTIZACIÓN: ${{ cotizacion.precio }}
+----------------------------------------
+{% if cotizacion.comentarios %}
+Comentario del vendedor:
+"{{ cotizacion.comentarios }}"
+{% endif %}
+
+----------------------------------------
+🏢 DATOS DEL VENDEDOR:
+----------------------------------------
+Empresa: {{ cotizacion.vendedor.nombre_empresa }}
+Teléfono: {{ cotizacion.vendedor.telefono }}
+Dirección: {{ cotizacion.vendedor.direccion }}, {{ cotizacion.vendedor.localidad }}, {{ cotizacion.vendedor.provincia }}
+{% if cotizacion.vendedor.web_ig %}Web/Instagram: {{ cotizacion.vendedor.web_ig }}{% endif %}
+
+----------------------------------------
+¿TE INTERESA ESTA COTIZACIÓN?
+----------------------------------------
+
+Opción 1: Mostrar interés
+Ingresá a este link para que el vendedor reciba tus datos:
+{{ url_interes }}
+
+Opción 2: Contactar por WhatsApp
+{{ url_whatsapp }}
+
+💡 IMPORTANTE: Al hacer clic en "SÍ, ME INTERESA", el vendedor recibirá tus datos de contacto para coordinarse con vos.
+
+========================================
+Este email es una respuesta a tu solicitud en Busco Repuesto.
+Si no solicitaste esta cotización, por favor ignorá este mensaje.
+========================================

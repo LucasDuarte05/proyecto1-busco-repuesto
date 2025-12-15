@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class SolicitudCompra(models.Model):
     URGENCIA_CHOICES = [
@@ -30,9 +31,8 @@ class SolicitudCompra(models.Model):
     urgencia = models.CharField(max_length=20, choices=URGENCIA_CHOICES, verbose_name="Nivel de Urgencia")
     
     # Datos personales
-   # Datos personales (SIN EMAIL)
     nombre = models.CharField(max_length=200, verbose_name="Nombre")
-    celular = models.CharField(max_length=20, verbose_name="Celular")
+    celular = models.CharField(max_length=20, verbose_name="Celular", default='')
     localidad = models.CharField(max_length=200, verbose_name="Localidad", blank=True, default='')
     zona = models.CharField(max_length=200, verbose_name="Zona/Provincia", blank=True, default='')
     
@@ -48,10 +48,31 @@ class SolicitudCompra(models.Model):
     def __str__(self):
         return f"{self.nombre} - {self.repuesto_especifico}"
     
-    # Propiedad para compatibilidad con código antiguo
     @property
     def telefono(self):
         return self.celular
+
+
+# ✅ NUEVO MODELO PARA MÚLTIPLES IMÁGENES
+class ImagenRepuesto(models.Model):
+    solicitud = models.ForeignKey(
+        SolicitudCompra, 
+        on_delete=models.CASCADE, 
+        related_name='imagenes'
+    )
+    imagen = models.ImageField(
+        upload_to='repuestos_fotos/',
+        verbose_name="Imagen del Repuesto"
+    )
+    fecha_subida = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = "Imagen de Repuesto"
+        verbose_name_plural = "Imágenes de Repuestos"
+        ordering = ['fecha_subida']
+    
+    def __str__(self):
+        return f"Imagen de {self.solicitud.repuesto_especifico}"
 
 
 class PublicacionVenta(models.Model):
@@ -73,7 +94,7 @@ class PublicacionVenta(models.Model):
     direccion = models.CharField(max_length=300, verbose_name="Dirección", blank=True, default='')
     ubicacion = models.CharField(max_length=200, verbose_name="Ubicación", blank=True, default='')
     
-    # Coordenadas GPS (se calculan automáticamente desde la dirección)
+    # Coordenadas GPS
     latitud = models.DecimalField(max_digits=10, decimal_places=7, verbose_name="Latitud", null=True, blank=True)
     longitud = models.DecimalField(max_digits=10, decimal_places=7, verbose_name="Longitud", null=True, blank=True)
     
@@ -91,7 +112,6 @@ class PublicacionVenta(models.Model):
         return f"{self.nombre_vendedor} - {self.direccion or self.ubicacion}"
     
     def get_ubicacion_completa(self):
-        """Retorna la ubicación completa en formato legible"""
         partes = []
         if self.direccion:
             partes.append(self.direccion)
@@ -103,3 +123,70 @@ class PublicacionVenta(models.Model):
         if partes:
             return ", ".join(partes)
         return self.ubicacion
+
+
+class VendedorEmpresa(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='vendedor_empresa')
+    nombre_empresa = models.CharField(max_length=200, verbose_name="Nombre de la Empresa")
+    cuit = models.CharField(max_length=13, verbose_name="CUIT", unique=True)
+    telefono = models.CharField(max_length=20, verbose_name="Teléfono")
+    direccion = models.CharField(max_length=300, verbose_name="Dirección")
+    localidad = models.CharField(max_length=200, verbose_name="Localidad")
+    provincia = models.CharField(max_length=200, verbose_name="Provincia")
+    web_ig = models.CharField(max_length=200, verbose_name="Web/Instagram", blank=True)
+    
+    latitud = models.DecimalField(max_digits=10, decimal_places=7, verbose_name="Latitud", null=True, blank=True)
+    longitud = models.DecimalField(max_digits=10, decimal_places=7, verbose_name="Longitud", null=True, blank=True)
+    
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+    activo = models.BooleanField(default=True)
+    
+    class Meta:
+        verbose_name = "Vendedor Empresa"
+        verbose_name_plural = "Vendedores Empresas"
+    
+    def __str__(self):
+        return f"{self.nombre_empresa} - {self.cuit}"
+
+
+class Cotizacion(models.Model):
+    ESTADOS = [
+        ("pendiente", "Pendiente de revisión"),
+        ("enviada", "Enviada al cliente"),
+        ("rechazada", "Rechazada"),
+        ("cliente_interesado", "Cliente interesado"),
+    ]
+
+    solicitud = models.ForeignKey(
+        SolicitudCompra,
+        on_delete=models.CASCADE,
+        related_name="cotizaciones"
+    )
+    
+    vendedor = models.ForeignKey(
+        VendedorEmpresa,
+        on_delete=models.CASCADE,
+        related_name="cotizaciones"
+    )
+    
+    precio = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Precio")
+    comentarios = models.TextField(blank=True, verbose_name="Comentarios")
+    
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADOS,
+        default="pendiente",
+        verbose_name="Estado"
+    )
+    
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_envio = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        verbose_name = "Cotización"
+        verbose_name_plural = "Cotizaciones"
+        unique_together = ['solicitud', 'vendedor']
+        ordering = ['-fecha_creacion']
+    
+    def __str__(self):
+        return f"Cotización #{self.id} - {self.vendedor.nombre_empresa} - ${self.precio}"

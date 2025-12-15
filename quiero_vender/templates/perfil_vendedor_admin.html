@@ -1,0 +1,429 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil: {{ vendedor.nombre_empresa }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #2d3748;
+        }
+
+        .btn-back {
+            padding: 10px 20px;
+            background: #e2e8f0;
+            color: #2d3748;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            background: #cbd5e0;
+        }
+
+        /* PERFIL */
+        .perfil-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .perfil-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .perfil-icon {
+            font-size: 64px;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            color: white;
+        }
+
+        .perfil-info h2 {
+            font-size: 28px;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .perfil-info p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: left;
+            padding: 15px;
+            
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .info-value {
+            color: #2d3748;
+            font-weight: 600;
+            text-align: left;
+            padding-left: 10px ;
+        }
+
+        /* ESTADÍSTICAS */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 600;
+        }
+
+        .stat-total { color: #667eea; }
+        .stat-aprobadas { color: #48bb78; }
+        .stat-rechazadas { color: #e53e3e; }
+        .stat-pendientes { color: #f59e0b; }
+        .stat-interes { color: #3182ce; }
+
+        /* HISTORIAL */
+        .historial-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .historial-card h2 {
+            font-size: 24px;
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f7fafc;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 700;
+            color: #2d3748;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f7fafc;
+            color: #4a5568;
+        }
+
+        tbody tr:hover {
+            background: #f7fafc;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-pendiente {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-enviada {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-rechazada {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-interesado {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .btn-ver {
+            padding: 6px 12px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-ver:hover {
+            background: #5568d3;
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: #718096;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>👤 Perfil del Vendedor</h1>
+            <a href="{% url 'admin_cotizaciones' %}" class="btn-back">← Volver al panel</a>
+        </div>
+
+        <!-- PERFIL -->
+        <div class="perfil-card">
+            <div class="perfil-header">
+                <div class="perfil-icon">🏢</div>
+                <div class="perfil-info">
+                    <h2>{{ vendedor.nombre_empresa }}</h2>
+                    <p>Miembro desde {{ vendedor.fecha_registro|date:"d/m/Y" }}</p>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">CUIT:</span>
+                    <span class="info-value">{{ vendedor.cuit }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Teléfono:</span>
+                    <span class="info-value">{{ vendedor.telefono }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Dirección:</span>
+                    <span class="info-value">{{ vendedor.direccion }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Localidad:</span>
+                    <span class="info-value">{{ vendedor.localidad }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Provincia:</span>
+                    <span class="info-value">{{ vendedor.provincia }}</span>
+                </div>
+                {% if vendedor.web_ig %}
+                <div class="info-item">
+                    <span class="info-label">Web/Instagram:</span>
+                    <span class="info-value">{{ vendedor.web_ig }}</span>
+                </div>
+                {% endif %}
+                <div class="info-item">
+                    <span class="info-label">Usuario:</span>
+                    <span class="info-value">{{ vendedor.user.email }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Estado:</span>
+                    <span class="info-value">
+                        {% if vendedor.activo %}
+                            <span style="color: #48bb78;">✅ Activo</span>
+                        {% else %}
+                            <span style="color: #e53e3e;">❌ Inactivo</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESTADÍSTICAS -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number stat-total">{{ estadisticas.total_cotizaciones }}</div>
+                <div class="stat-label">Total Cotizaciones</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-number stat-aprobadas">{{ estadisticas.aprobadas }}</div>
+                <div class="stat-label">Aprobadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-number stat-pendientes">{{ estadisticas.pendientes }}</div>
+                <div class="stat-label">Pendientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">❌</div>
+                <div class="stat-number stat-rechazadas">{{ estadisticas.rechazadas }}</div>
+                <div class="stat-label">Rechazadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💙</div>
+                <div class="stat-number stat-interes">{{ estadisticas.con_interes }}</div>
+                <div class="stat-label">Con Interés del Cliente</div>
+            </div>
+        </div>
+
+        <!-- HISTORIAL -->
+        <div class="historial-card">
+            <h2>📋 Historial de Cotizaciones</h2>
+            
+            {% if cotizaciones %}
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Repuesto</th>
+                            <th>Precio</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cotizacion in cotizaciones %}
+                        <tr>
+                            <td><strong>#{{ cotizacion.id }}</strong></td>
+                            <td>
+                                <strong>{{ cotizacion.solicitud.nombre }}</strong><br>
+                                <small style="color: #718096;">{{ cotizacion.solicitud.localidad }}</small>
+                            </td>
+                            <td>
+                                <strong>{{ cotizacion.solicitud.repuesto_especifico }}</strong><br>
+                                <small style="color: #718096;">
+                                    {{ cotizacion.solicitud.marca_auto }} {{ cotizacion.solicitud.modelo_auto }}
+                                </small>
+                            </td>
+                            <td>
+                                <strong style="color: #2d3748; font-size: 16px;">${{ cotizacion.precio }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ cotizacion.estado }}">
+                                    {{ cotizacion.get_estado_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <small>{{ cotizacion.fecha_creacion|date:"d/m/Y" }}</small>
+                            </td>
+                            <td>
+                                <a href="{% url 'detalle_cotizacion' cotizacion.id %}" class="btn-ver">
+                                    👁️ Ver
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <h3>Sin cotizaciones aún</h3>
+                <p>Este vendedor no ha enviado cotizaciones todavía</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
