@@ -70,7 +70,6 @@
         .details-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            min-height: 500px;
         }
         
         @media (max-width: 968px) {
@@ -207,6 +206,16 @@
             border-radius: 8px;
             margin-top: 15px;
             font-style: italic;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.5;
+            text-align:center;
+        }
+        
+        .comentarios-box strong {
+            display: block;
+            margin-bottom: 8px;
+            font-style: normal;
         }
 
         /* BADGE */
@@ -285,22 +294,27 @@
 
         /* ALERT */
         .alert {
+	    text-align: center;
             padding: 15px 20px;
-            border-radius: 8px;
             margin-bottom: 20px;
             font-weight: 600;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            line-height: 1.5;
+            min-height: fit-content;
         }
 
         .alert-warning {
             background: #fef3c7;
             color: #92400e;
-            border-left: 4px solid #f59e0b;
+            text-align:center;
         }
 
         .alert-info {
             background: #dbeafe;
             color: #1e40af;
-            border-left: 4px solid #3b82f6;
+            text-align:center;
         }
     </style>
 </head>
@@ -311,7 +325,9 @@
             <h1>📋 Cotización #{{ cotizacion.id }}</h1>
         </div>
         
-        <!-- MENSAJES -->
+        <!-- GRID DE INFORMACIÓN -->
+        <div class="main-content">
+		        <!-- MENSAJES -->
         {% if messages %}
             {% for message in messages %}
             <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
@@ -331,10 +347,8 @@
                 💙 ¡El cliente mostró <strong>INTERÉS</strong> en esta cotización!
             {% endif %}
         </div>
-        {% endif %}
+        {% endif %}               		
 
-        <!-- GRID DE INFORMACIÓN -->
-        <div class="main-content">
             <div class="details-grid">
                 <!-- COLUMNA IZQUIERDA: CLIENTE + VENDEDOR -->
                 <div class="column-left">
@@ -457,8 +471,8 @@
 
                         {% if cotizacion.comentarios %}
                         <div class="comentarios-box">
-                            <strong>💬 Comentarios del vendedor:</strong><br>
-                            "{{ cotizacion.comentarios }}"
+                            <strong>💬 Comentarios del vendedor:</strong>
+                            {{ cotizacion.comentarios }}
                         </div>
                         {% endif %}
 

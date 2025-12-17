@@ -514,7 +514,9 @@ def admin_cotizaciones(request):
     if not request.user.is_superuser:
         messages.error(request, 'No tienes permisos de administrador')
         return redirect('admin_login')
-    
+
+    storage = messages.get_messages(request)
+    storage.used = True
     # Obtener filtros
     estado_filtro = request.GET.get('estado', 'pendiente')
     
@@ -556,28 +558,22 @@ def detalle_cotizacion(request, cotizacion_id):
         Cotizacion.objects.select_related('solicitud', 'vendedor', 'vendedor__user'),
         id=cotizacion_id
     )
-    
     # Procesar acciones
     if request.method == 'POST':
         accion = request.POST.get('accion')
-        
         if accion == 'aprobar':
             cotizacion.estado = 'enviada'
             cotizacion.fecha_envio = timezone.now()
             cotizacion.save()
-            
             # ✅ ENVIAR EMAIL AL CLIENTE
             try:
                 enviar_email_cotizacion(cotizacion, request)
-                messages.success(request, '✅ Cotización aprobada y email enviado al cliente')
             except Exception as e:
                 messages.warning(request, f'⚠️ Cotización aprobada pero hubo un error al enviar el email: {str(e)}')
-            
         elif accion == 'rechazar':
             cotizacion.estado = 'rechazada'
             cotizacion.save()
             messages.warning(request, '❌ Cotización rechazada')
-        
         return redirect('detalle_cotizacion', cotizacion_id=cotizacion.id)
     
     context = {
@@ -622,6 +618,10 @@ def admin_login(request):
     # Si ya está autenticado y es superuser, ir al panel
     if request.user.is_authenticated and request.user.is_superuser:
         return redirect('admin_cotizaciones')
+    
+    # ✅ LIMPIAR MENSAJES ANTIGUOS
+    storage = messages.get_messages(request)
+    storage.used = True
     
     return render(request, 'admin_login.html')
 

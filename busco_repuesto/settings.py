@@ -92,8 +92,12 @@ WSGI_APPLICATION = 'busco_repuesto.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'buscorepuesto',
+        'USER': 'buscorepuesto_user',
+        'PASSWORD': 'Passrepuesto',
+        'HOST': '127.0.0.1',
+        'PORT': '5433',
     }
 }
 
@@ -168,3 +172,9 @@ DEFAULT_FROM_EMAIL = 'noreply@buscorepuesto.com'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CSRF_TRUSTED_ORIGINS = [
+    "https://buscorepuesto.com.ar",
+    "https://www.buscorepuesto.com.ar",
+]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+

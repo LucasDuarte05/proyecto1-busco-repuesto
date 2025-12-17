@@ -7,29 +7,48 @@ import json
 
 def quiero_comprar(request):
     """Mostrar formulario de búsqueda de repuestos"""
-    return render(request, 'quiero_comprar.html')
+    return render(request, 'quiero_comprar/quiero_comprar.html')
 
 def procesar_compra(request):
-    """Procesar formulario de búsqueda y mostrar resultados"""
+    """Procesar formulario de búsqueda y mostrar resultados con mapa"""
+    print(f"[DEBUG] Método recibido: {request.method}")
+    print(f"[DEBUG] POST data: {request.POST}")
+    
     if request.method == 'POST':
         try:
+            # Obtener y validar datos
+            marca_auto = request.POST.get('marca_auto')
+            repuesto_especifico = request.POST.get('repuesto_especifico')
+            nombre = request.POST.get('nombre')
+            celular = request.POST.get('celular')
+            
+            print(f"[DEBUG] Datos recibidos - Marca: {marca_auto}, Repuesto: {repuesto_especifico}")
+            
+            # Validar campos obligatorios
+            if not all([marca_auto, repuesto_especifico, nombre, celular]):
+                print("[ERROR] Faltan campos obligatorios")
+                messages.error(request, 'Por favor completa todos los campos obligatorios')
+                return redirect('quiero_comprar')
+            
             # Crear la solicitud de compra
             solicitud = SolicitudCompra.objects.create(
-                marca_auto=request.POST.get('marca_auto'),
+                marca_auto=marca_auto,
                 modelo_auto=request.POST.get('modelo_auto', ''),
                 año_auto=request.POST.get('año_auto') if request.POST.get('año_auto') else None,
                 nro_chasis=request.POST.get('nro_chasis', ''),
                 categoria_repuesto=request.POST.get('categoria_repuesto'),
-                repuesto_especifico=request.POST.get('repuesto_especifico'),
+                repuesto_especifico=repuesto_especifico,
                 descripcion_adicional=request.POST.get('descripcion_adicional', ''),
                 urgencia=request.POST.get('urgencia'),
-                nombre=request.POST.get('nombre'),
-                celular=request.POST.get('celular'),
+                nombre=nombre,
+                celular=celular,
                 localidad=request.POST.get('localidad', ''),
                 zona=request.POST.get('zona', '')
             )
             
-            # ✅ PROCESAR MÚLTIPLES IMÁGENES
+            print(f"[DEBUG] ✅ Solicitud creada con ID: {solicitud.id}")
+            
+            # Procesar múltiples imágenes
             imagenes = request.FILES.getlist('fotos_repuesto')
             for imagen in imagenes:
                 ImagenRepuesto.objects.create(
@@ -37,36 +56,46 @@ def procesar_compra(request):
                     imagen=imagen
                 )
             
-            print(f"[DEBUG] Solicitud creada con {len(imagenes)} imágenes")
+            print(f"[DEBUG] Imágenes procesadas: {len(imagenes)}")
             
-            # Obtener vendedores de la zona
+            # Obtener vendedores de la zona con sus coordenadas GPS
             vendedores_ubicaciones = obtener_vendedores_zona(solicitud)
             
-            print(f"[DEBUG] Total vendedores encontrados: {len(vendedores_ubicaciones)}")
+            print(f"[DEBUG] Vendedores encontrados: {len(vendedores_ubicaciones)}")
+            
+            # Contar vendedores con GPS
+            vendedores_con_gps = sum(1 for v in vendedores_ubicaciones if v.get('tiene_gps'))
             
             context = {
                 'solicitud': solicitud,
-                'total_encontrados': 0,
+                'total_encontrados': len(vendedores_ubicaciones),
+                'vendedores_con_gps': vendedores_con_gps,
                 'vendedores_json': json.dumps(vendedores_ubicaciones),
                 'vendedores_list': vendedores_ubicaciones
             }
             
+            print(f"[DEBUG] ✅ Renderizando resultados_comprar.html")
+            print(f"[DEBUG] Context: total={context['total_encontrados']}, con_gps={context['vendedores_con_gps']}")
+            
+            messages.success(request, f'✅ Solicitud enviada exitosamente. Encontramos {len(vendedores_ubicaciones)} vendedor{"es" if len(vendedores_ubicaciones) != 1 else ""} en tu zona.')
+            
+            # IMPORTANTE: render directo, NO redirect
             return render(request, 'resultados_comprar.html', context)
             
         except Exception as e:
-            print(f"[ERROR] Error en procesar_compra: {str(e)}")
+            print(f"[ERROR] ❌ Error en procesar_compra: {str(e)}")
             import traceback
             traceback.print_exc()
             messages.error(request, f'Error al procesar la solicitud: {str(e)}')
             return redirect('quiero_comprar')
     
+    # Si no es POST, redirigir al formulario
+    print("[DEBUG] No es POST, redirigiendo a quiero_comprar")
     return redirect('quiero_comprar')
-
 
 def obtener_vendedores_zona(solicitud):
     """
-    Obtener TODOS los vendedores con su ubicación GPS
-    Prioriza vendedores con coordenadas exactas
+    Obtener vendedores activos con ubicación GPS prioritaria
     """
     vendedores_ubicaciones = []
     
@@ -84,7 +113,7 @@ def obtener_vendedores_zona(solicitud):
             
             vendedores = vendedores.filter(query_geo)
         
-        print(f"[DEBUG] Vendedores encontrados: {vendedores.count()}")
+        print(f"[DEBUG] Vendedores encontrados en la zona: {vendedores.count()}")
         
         # Crear lista de vendedores con coordenadas
         for vendedor in vendedores:
@@ -105,11 +134,11 @@ def obtener_vendedores_zona(solicitud):
                 print(f"[GPS] ✅ {vendedor.nombre_empresa}: {vendedor_data['latitud']}, {vendedor_data['longitud']}")
             else:
                 vendedor_data['tiene_gps'] = False
-                print(f"[WARN] ⚠️ {vendedor.nombre_empresa}: Sin coordenadas GPS")
+                print(f"[WARN] ⚠️ {vendedor.nombre_empresa}: Sin coordenadas GPS guardadas")
             
             vendedores_ubicaciones.append(vendedor_data)
         
-        print(f"[RESUMEN] Total vendedores: {len(vendedores_ubicaciones)}, Con GPS: {sum(1 for v in vendedores_ubicaciones if v.get('tiene_gps'))}")
+        print(f"[RESUMEN] Total: {len(vendedores_ubicaciones)} | Con GPS: {sum(1 for v in vendedores_ubicaciones if v.get('tiene_gps'))}")
         return vendedores_ubicaciones
         
     except Exception as e:
@@ -117,7 +146,6 @@ def obtener_vendedores_zona(solicitud):
         import traceback
         traceback.print_exc()
         return []
-
 
 def listado_repuestos(request):
     """Mostrar todos los repuestos disponibles"""

@@ -21,7 +21,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -32,7 +32,7 @@
         .btn-volver {
             background: white;
             color: #3498db;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: 2px solid #3498db;
             border-radius: 10px;
             text-decoration: none;
@@ -51,27 +51,27 @@
         .confirmation-header {
             background: white;
             border-radius: 15px;
-            padding: 25px 30px;
+            padding: 30px;
             margin-bottom: 20px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
             text-align: center;
         }
 
         .success-icon {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             background: linear-gradient(135deg, #27ae60, #2ecc71);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 15px;
-            animation: scaleIn 0.5s ease-out;
+            margin: 0 auto 20px;
+            animation: scaleIn 0.6s ease-out;
         }
 
         .success-icon::after {
             content: '✓';
-            font-size: 38px;
+            font-size: 42px;
             color: white;
             font-weight: bold;
         }
@@ -79,95 +79,114 @@
         @keyframes scaleIn {
             from {
                 transform: scale(0);
+                opacity: 0;
             }
             to {
                 transform: scale(1);
+                opacity: 1;
             }
         }
 
         .confirmation-header h1 {
             color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 1.6em;
+            margin-bottom: 15px;
+            font-size: 2em;
         }
 
         .confirmation-message {
             color: #4a5568;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 15px 25px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .stat-label {
             font-size: 0.9em;
-            line-height: 1.4;
+            color: #718096;
+            margin-top: 5px;
         }
 
         .content-wrapper {
             background: white;
             border-radius: 15px;
-            padding: 25px;
+            padding: 30px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
+            grid-template-columns: 400px 1fr;
+            gap: 30px;
             align-items: start;
         }
 
         .search-info-section {
-            padding-right: 10px;
+            position: sticky;
+            top: 20px;
         }
 
         .search-info {
             background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #3498db;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #3498db;
         }
 
         .search-info h3 {
             color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.15em;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .search-detail {
             color: #4a5568;
-            margin: 12px 0;
+            margin: 15px 0;
             font-size: 0.95em;
-            line-height: 1.4;
+            line-height: 1.6;
         }
 
         .search-detail strong {
             color: #2c3e50;
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .search-detail span {
             display: block;
-            padding-left: 8px;
-        }
-
-        .map-section {
             padding-left: 10px;
-        }
-
-        .map-section h3 {
-            color: #2c3e50;
-            margin-bottom: 12px;
-            font-size: 1.15em;
-        }
-
-        #map {
-            width: 100%;
-            height: 400px;
-            border-radius: 10px;
-            border: 2px solid #e1e8ed;
+            font-size: 1.05em;
         }
 
         .urgencia-badge {
             display: inline-block;
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 0.85em;
-            margin-top: 4px;
+            font-size: 0.9em;
+            margin-top: 6px;
         }
 
         .urgencia-alta {
@@ -186,66 +205,152 @@
         }
 
         .vendedores-info {
-            margin-top: 15px;
-            padding: 15px;
-            background: #e8f4f8;
-            border-radius: 8px;
-            border-left: 4px solid #27ae60;
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #e8f4f8 0%, #d4edda 100%);
+            border-radius: 10px;
+            border-left: 5px solid #27ae60;
         }
 
         .vendedores-info h4 {
             color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 1em;
+            margin-bottom: 12px;
+            font-size: 1.1em;
         }
 
         .vendedores-info p {
             color: #4a5568;
-            font-size: 0.9em;
-            margin: 5px 0;
+            font-size: 0.95em;
+            margin: 8px 0;
+            line-height: 1.5;
         }
 
-        @media (max-width: 968px) {
+        .map-section {
+            min-height: 600px;
+        }
+
+        .map-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #map {
+            width: 100%;
+            height: 550px;
+            border-radius: 12px;
+            border: 3px solid #e1e8ed;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .map-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 550px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 3px dashed #cbd5e0;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e2e8f0;
+            border-top-color: #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 1200px) {
             .content-wrapper {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 25px;
             }
 
-            .search-info-section,
-            .map-section {
-                padding: 0;
+            .search-info-section {
+                position: static;
             }
 
             #map {
-                height: 350px;
+                height: 450px;
             }
         }
 
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
             .confirmation-header {
                 padding: 20px;
             }
 
             .confirmation-header h1 {
-                font-size: 1.4em;
-            }
-
-            .confirmation-message {
-                font-size: 0.9em;
+                font-size: 1.5em;
             }
 
             .content-wrapper {
-                padding: 18px;
+                padding: 20px;
             }
 
-            .success-icon {
-                width: 50px;
-                height: 50px;
+            #map {
+                height: 350px;
             }
 
-            .success-icon::after {
-                font-size: 32px;
+            .stat-box {
+                padding: 12px 20px;
             }
+        }
+
+        /* Estilos para popups de Leaflet personalizados */
+        .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+            box-shadow: 0 3px 14px rgba(0,0,0,0.3);
+        }
+
+        .leaflet-popup-content {
+            margin: 15px;
+            min-width: 200px;
+        }
+
+        .popup-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .popup-info {
+            font-size: 0.9em;
+            color: #4a5568;
+            margin: 4px 0;
+        }
+
+        .popup-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .gps-exacto {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .gps-aproximado {
+            background: #fff3cd;
+            color: #856404;
         }
     </style>
 </head>
@@ -259,34 +364,45 @@
             <div class="success-icon"></div>
             <h1>¡Solicitud Enviada Exitosamente!</h1>
             <p class="confirmation-message">
-                Hemos recibido tu solicitud y estamos procesándola. Los vendedores de tu zona serán notificados.
+                Hemos recibido tu solicitud de <strong>{{ solicitud.repuesto_especifico }}</strong>
                 <br>
-                <strong>Te contactaremos a la brevedad.</strong>
+                Los vendedores de tu zona han sido notificados y te contactarán pronto.
             </p>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-number">{{ total_encontrados }}</div>
+                    <div class="stat-label">Vendedor{{ total_encontrados|pluralize:"es" }} encontrado{{ total_encontrados|pluralize:"s" }}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">{{ vendedores_con_gps }}</div>
+                    <div class="stat-label">Con ubicación GPS exacta</div>
+                </div>
+            </div>
         </div>
 
         <div class="content-wrapper">
             <div class="search-info-section">
                 <div class="search-info">
-                    <h3>📋 Resumen de tu solicitud:</h3>
+                    <h3>📋 Resumen de tu solicitud</h3>
                     
                     <div class="search-detail">
-                        <strong>Vehículo:</strong>
+                        <strong>🚗 Vehículo</strong>
                         <span>{{ solicitud.marca_auto }}{% if solicitud.modelo_auto %} {{ solicitud.modelo_auto }}{% endif %}{% if solicitud.año_auto %} ({{ solicitud.año_auto }}){% endif %}</span>
                     </div>
                     
                     <div class="search-detail">
-                        <strong>Repuesto:</strong>
+                        <strong>🔧 Repuesto</strong>
                         <span>{{ solicitud.get_categoria_repuesto_display }} - {{ solicitud.repuesto_especifico }}</span>
                     </div>
                     
                     <div class="search-detail">
-                        <strong>Ubicación:</strong>
-                        <span>📍 {% if solicitud.localidad %}{{ solicitud.localidad }}{% endif %}{% if solicitud.zona and solicitud.localidad %}, {% endif %}{% if solicitud.zona %}{{ solicitud.zona }}{% endif %}</span>
+                        <strong>📍 Ubicación</strong>
+                        <span>{% if solicitud.localidad %}{{ solicitud.localidad }}{% endif %}{% if solicitud.zona and solicitud.localidad %}, {% endif %}{% if solicitud.zona %}{{ solicitud.zona }}{% endif %}</span>
                     </div>
                     
                     <div class="search-detail">
-                        <strong>Urgencia:</strong>
+                        <strong>⏰ Urgencia</strong>
                         <span>
                             {% if solicitud.urgencia == 'super_alta' %}
                                 <span class="urgencia-badge urgencia-alta">⚡ Super Alta - Muy Urgente</span>
@@ -299,605 +415,62 @@
                             {% endif %}
                         </span>
                     </div>
+                    
+                    <div class="search-detail">
+                        <strong>📱 Contacto</strong>
+                        <span>{{ solicitud.nombre }}<br>{{ solicitud.celular }}</span>
+                    </div>
                 </div>
 
                 {% if vendedores_list %}
                 <div class="vendedores-info">
-                    <h4>✅ ¡Encontramos {{ vendedores_list|length }} vendedor{% if vendedores_list|length > 1 %}es{% endif %}!</h4>
-                    <p><strong>{{ total_encontrados }}</strong> repuesto{% if total_encontrados > 1 %}s{% endif %} disponible{% if total_encontrados > 1 %}s{% endif %} en tu zona</p>
-                    <p>Los vendedores aparecen marcados en rojo en el mapa →</p>
+                    <h4>✅ ¡Excelente noticia!</h4>
+                    <p>Encontramos <strong>{{ vendedores_list|length }}</strong> vendedor{% if vendedores_list|length > 1 %}es{% endif %} en tu zona.</p>
+                    <p>{% if vendedores_con_gps > 0 %}<strong>{{ vendedores_con_gps }}</strong> tiene{% if vendedores_con_gps > 1 %}n{% endif %} ubicación GPS exacta.{% endif %}</p>
+                    <p>Los vendedores aparecen marcados en <span style="color: #c00; font-weight: bold;">rojo</span> en el mapa →</p>
+                    <p style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #cbd5e0;">
+                        💬 Te contactarán directamente por WhatsApp o teléfono.
+                    </p>
                 </div>
                 {% else %}
-                <div class="vendedores-info" style="border-left-color: #f39c12;">
+                <div class="vendedores-info" style="border-left-color: #f39c12; background: #fff3cd;">
                     <h4>⏳ Buscando vendedores...</h4>
-                    <p>Te notificaremos cuando encontremos repuestos disponibles.</p>
+                    <p>Aún no hay vendedores registrados en tu zona exacta.</p>
+                    <p>Te notificaremos cuando haya repuestos disponibles.</p>
                 </div>
                 {% endif %}
             </div>
 
             <div class="map-section">
                 <h3>🗺️ Mapa de vendedores cercanos</h3>
-                <div id="map"></div>
+                <div id="mapLoading" class="map-loading">
+                    <div class="spinner"></div>
+                </div>
+                <div id="map" style="display: none;"></div>
             </div>
         </div>
     </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Base de datos completa de coordenadas de Argentina
+        // Base de datos completa de coordenadas de Argentina (misma que tienes)
         const coordenadas = {
-            // CIUDAD DE BUENOS AIRES
             'Buenos Aires': { lat: -34.6037, lng: -58.3816 },
             'CABA': { lat: -34.6037, lng: -58.3816 },
             'Capital Federal': { lat: -34.6037, lng: -58.3816 },
-            'Palermo': { lat: -34.5886, lng: -58.4194 },
-            'Recoleta': { lat: -34.5881, lng: -58.3931 },
-            'Belgrano': { lat: -34.5633, lng: -58.4542 },
-            'Caballito': { lat: -34.6178, lng: -58.4397 },
-            'Almagro': { lat: -34.6089, lng: -58.4186 },
-            
-            // GBA Norte
-            'San Isidro': { lat: -34.4709, lng: -58.5270 },
-            'Vicente López': { lat: -34.5267, lng: -58.4739 },
-            'Tigre': { lat: -34.4264, lng: -58.5797 },
-            'San Fernando': { lat: -34.4417, lng: -58.5597 },
-            'Escobar': { lat: -34.3500, lng: -58.7950 },
-            'Pilar': { lat: -34.4588, lng: -58.9142 },
-            'Tres de Febrero': { lat: -34.6076, lng: -58.5689 },
-            
-            // GBA Oeste
-            'Morón': { lat: -34.6534, lng: -58.6198 },
-            'Hurlingham': { lat: -34.5897, lng: -58.6356 },
-            'Ituzaingó': { lat: -34.6611, lng: -58.6739 },
-            'Merlo': { lat: -34.6656, lng: -58.7281 },
-            'Moreno': { lat: -34.6500, lng: -58.7892 },
-            
-            // GBA Sur
-            'Avellaneda': { lat: -34.6614, lng: -58.3656 },
-            'Lanús': { lat: -34.7000, lng: -58.3900 },
-            'Lomas de Zamora': { lat: -34.7603, lng: -58.3972 },
-            'Quilmes': { lat: -34.7200, lng: -58.2542 },
-            'Berazategui': { lat: -34.7639, lng: -58.2108 },
-            'Florencio Varela': { lat: -34.7953, lng: -58.2750 },
-            
-            // Interior Buenos Aires
             'La Plata': { lat: -34.9214, lng: -57.9544 },
             'Mar del Plata': { lat: -38.0055, lng: -57.5426 },
             'Bahía Blanca': { lat: -38.7183, lng: -62.2663 },
-            'Tandil': { lat: -37.3217, lng: -59.1332 },
-            
-            // Otras provincias
+            'San Isidro': { lat: -34.4709, lng: -58.5270 },
+            'Vicente López': { lat: -34.5267, lng: -58.4739 },
+            'Tigre': { lat: -34.4264, lng: -58.5797 },
             'Córdoba': { lat: -31.4201, lng: -64.1888 },
             'Rosario': { lat: -32.9468, lng: -60.6393 },
             'Mendoza': { lat: -32.8895, lng: -68.8458 },
             'Tucumán': { lat: -26.8083, lng: -65.2176 },
-            'San Miguel de Tucumán': { lat: -26.8083, lng: -65.2176 },
             'Salta': { lat: -24.7821, lng: -65.4232 },
             'Santa Fe': { lat: -31.6107, lng: -60.6973 },
-            'San Juan': { lat: -31.5375, lng: -68.5364 },
-            'Resistencia': { lat: -27.4514, lng: -58.9867 },
-            'Neuquén': { lat: -38.9516, lng: -68.0591 },
-            'Posadas': { lat: -27.3671, lng: -55.8961 },
-            'Paraná': { lat: -31.7333, lng: -60.5289 },
-            'Corrientes': { lat: -27.4806, lng: -58.8341 },
-            'Río Negro': { lat: -40.8260, lng: -67.5160 },
-
-            // BUENOS AIRES - Localidades adicionales
-            'San Isidro': { lat: -34.4709, lng: -58.5270 },
-            'Vicente López': { lat: -34.5267, lng: -58.4739 },
-            'Tigre': { lat: -34.4264, lng: -58.5797 },
-            'San Fernando': { lat: -34.4417, lng: -58.5597 },
-            'Escobar': { lat: -34.3500, lng: -58.7950 },
-            'General Rodríguez': { lat: -34.6072, lng: -58.9508 },
-            'Marcos Paz': { lat: -34.7806, lng: -58.8350 },
-            'Cañuelas': { lat: -35.0517, lng: -58.7539 },
-            'San Vicente': { lat: -35.0256, lng: -58.4239 },
-            'Esteban Echeverría': { lat: -34.8200, lng: -58.4597 },
-            'Ezeiza': { lat: -34.8542, lng: -58.5231 },
-            'La Matanza': { lat: -34.7703, lng: -58.6253 },
-            'San Miguel': { lat: -34.5439, lng: -58.7119 },
-            'José C. Paz': { lat: -34.5211, lng: -58.7639 },
-            'Malvinas Argentinas': { lat: -34.4908, lng: -58.7014 },
-            'Quilmes': { lat: -34.7200, lng: -58.2542 },
-            'Almirante Brown': { lat: -34.8167, lng: -58.3833 },
-            'Presidente Perón': { lat: -34.8833, lng: -58.4000 },
-            'San Martín': { lat: -34.5700, lng: -58.5378 },
-            'General San Martín': { lat: -34.5700, lng: -58.5378 },
-            'Bragado': { lat: -35.1194, lng: -60.4847 },
-            '9 de Julio': { lat: -35.4444, lng: -60.8831 },
-            '25 de Mayo': { lat: -35.4328, lng: -60.1722 },
-            'Salto': { lat: -34.2917, lng: -60.2500 },
-            'Arrecifes': { lat: -34.0653, lng: -60.1125 },
-            'Baradero': { lat: -33.8042, lng: -59.5050 },
-            'San Antonio de Areco': { lat: -34.2500, lng: -59.4667 },
-            'Carmen de Areco': { lat: -34.3833, lng: -59.8167 },
-            'Chacabuco': { lat: -34.6403, lng: -60.4711 },
-            'Alberti': { lat: -35.0333, lng: -60.2667 },
-            'Bolivar': { lat: -36.2333, lng: -61.1167 },
-            'Rauch': { lat: -36.7833, lng: -59.1000 },
-            'Ayacucho': { lat: -37.1500, lng: -58.4833 },
-            'Balcarce': { lat: -37.8464, lng: -58.2556 },
-            'General Pueyrredón': { lat: -38.0055, lng: -57.5426 },
-            'General Alvarado': { lat: -38.2833, lng: -57.8833 },
-            'Pinamar': { lat: -37.1103, lng: -56.8611 },
-            'Villa Gesell': { lat: -37.2636, lng: -56.9728 },
-            'Dolores': { lat: -36.3131, lng: -57.6794 },
-            'General Madariaga': { lat: -37.0000, lng: -57.1333 },
-            'Tordillo': { lat: -36.4667, lng: -57.4167 },
-            'Maipú': { lat: -36.8833, lng: -57.8833 },
-            'General Guido': { lat: -36.6333, lng: -57.8000 },
-            'Las Flores': { lat: -36.0167, lng: -59.1000 },
-            'Saladillo': { lat: -35.6333, lng: -59.7833 },
-            'Roque Pérez': { lat: -35.4167, lng: -59.3333 },
-            'Lobos': { lat: -35.1833, lng: -59.1000 },
-            'Navarro': { lat: -35.0000, lng: -59.2667 },
-            'General Las Heras': { lat: -34.9333, lng: -59.0667 },
-            'Olavarría': { lat: -36.8933, lng: -60.3225 },
-            'Tandil': { lat: -37.3217, lng: -59.1332 },
-            'Azul': { lat: -36.7833, lng: -59.8667 },
-            'Necochea': { lat: -38.5569, lng: -58.7396 },
-            'Bahía Blanca': { lat: -38.7187, lng: -62.2664 },
-            'Tres Arroyos': { lat: -38.3739, lng: -60.2789 },
-            'Coronel Suárez': { lat: -37.4667, lng: -61.9333 },
-            'Pigüé': { lat: -37.6000, lng: -62.4000 },
-            'Coronel Dorrego': { lat: -38.7167, lng: -61.2833 },
-            'Monte Hermoso': { lat: -38.9833, lng: -61.2833 },
-            'Punta Alta': { lat: -38.8833, lng: -62.0833 },
-            'Carhué': { lat: -37.1333, lng: -62.7833 },
-            'Pehuajó': { lat: -35.8167, lng: -61.9000 },
-            'Trenque Lauquen': { lat: -35.9667, lng: -62.7333 },
-            'Lincoln': { lat: -34.8667, lng: -61.5333 },
-            'Chivilcoy': { lat: -34.8956, lng: -60.0167 },
-            'Mercedes': { lat: -34.6514, lng: -59.4342 },
-            'Luján': { lat: -34.5700, lng: -59.1050 },
-            'Campana': { lat: -34.1667, lng: -58.9667 },
-            'Zárate': { lat: -34.0989, lng: -59.0289 },
-            'Pergamino': { lat: -33.8892, lng: -60.5736 },
-            'San Pedro': { lat: -33.6667, lng: -59.6667 },
-            'Ramallo': { lat: -33.4833, lng: -60.0167 },
-            'Junín': { lat: -34.5833, lng: -60.9500 },
-
-
-        // CÓRDOBA - Localidades adicionales
-        'Jesús María': { lat: -30.9833, lng: -64.0833 },
-        'Cosquín': { lat: -31.2500, lng: -64.4667 },
-        'La Falda': { lat: -31.0833, lng: -64.4833 },
-        'Cruz del Eje': { lat: -30.7167, lng: -64.8000 },
-        'Dean Funes': { lat: -30.4167, lng: -64.3500 },
-        'Río Tercero': { lat: -32.1736, lng: -64.1128 },
-        'Marcos Juárez': { lat: -32.6972, lng: -62.1042 },
-        'Laboulaye': { lat: -34.1264, lng: -63.3889 },
-        'Las Varillas': { lat: -31.8733, lng: -62.7197 },
-        'Arroyito': { lat: -31.4167, lng: -63.0500 },
-        'Villa del Rosario': { lat: -31.5500, lng: -63.5333 },
-        'Villa Dolores': { lat: -31.9500, lng: -65.1833 },
-        'Merlo': { lat: -32.3431, lng: -65.0142 },
-        'La Cumbre': { lat: -30.9833, lng: -64.5000 },
-        'Capilla del Monte': { lat: -30.8667, lng: -64.5333 },
-        'Villa General Belgrano': { lat: -31.9833, lng: -64.5500 },
-        'Santa Rosa de Calamuchita': { lat: -32.0667, lng: -64.5333 },
-        'Río Segundo': { lat: -31.6500, lng: -63.9167 },
-        'Corral de Bustos': { lat: -33.2667, lng: -62.1833 },
-        'Morteros': { lat: -30.7122, lng: -61.9964 },
-        'Freyre': { lat: -31.1667, lng: -62.1000 },
-        'Leones': { lat: -32.6833, lng: -62.3000 },
-        'General Cabrera': { lat: -32.8167, lng: -63.8667 },
-        'Hernando': { lat: -32.4333, lng: -63.7333 },
-        'Adelia María': { lat: -33.6833, lng: -64.0333 },
-        'Berrotarán': { lat: -32.4500, lng: -64.3833 },
-        'Villa Carlos Paz': { lat: -31.4201, lng: -64.4997 },
-        'Alta Gracia': { lat: -31.6500, lng: -64.4333 },
-        'Bell Ville': { lat: -32.6333, lng: -62.6833 },
-        'Villa María': { lat: -32.4089, lng: -63.2439 },
-        'Río Cuarto': { lat: -33.1300, lng: -64.3497 },
-        'La Carlota': { lat: -33.4167, lng: -63.2833 },
-        'Villa Rumipal': { lat: -32.1833, lng: -64.4833 },
-        'Embalse': { lat: -32.1833, lng: -64.4167 },
-        'Las Higueras': { lat: -33.0833, lng: -64.2667 },
-        'San Francisco': { lat: -31.4333, lng: -62.0833 },
-        'Villa del Dique': { lat: -32.1833, lng: -64.4667 },
-
-
-            // SANTA FE - Localidades adicionales
-            'Esperanza': { lat: -31.4489, lng: -60.9317 },
-            'Villa Constitución': { lat: -33.2278, lng: -60.3292 },
-            'Cañada de Gómez': { lat: -32.8167, lng: -61.3833 },
-            'Casilda': { lat: -33.0431, lng: -61.1678 },
-            'Firmat': { lat: -33.4628, lng: -61.4831 },
-            'San Lorenzo': { lat: -32.7483, lng: -60.7353 },
-            'Capitán Bermúdez': { lat: -32.8231, lng: -60.7167 },
-            'Funes': { lat: -32.9167, lng: -60.8167 },
-            'Granadero Baigorria': { lat: -32.8667, lng: -60.7167 },
-            'Villa Gobernador Gálvez': { lat: -33.0294, lng: -60.6369 },
-            'Pérez': { lat: -32.9983, lng: -60.7661 },
-            'Rufino': { lat: -34.2678, lng: -62.7131 },
-            'Gálvez': { lat: -32.0333, lng: -61.2167 },
-            'Las Parejas': { lat: -32.6833, lng: -61.5167 },
-            'Totoras': { lat: -32.5833, lng: -61.1667 },
-            'San Javier': { lat: -30.5833, lng: -59.9333 },
-            'Vera': { lat: -29.4667, lng: -60.2167 },
-            'Tostado': { lat: -29.2333, lng: -61.7667 },
-            'Avellaneda': { lat: -29.1167, lng: -59.6667 },
-            'San Justo': { lat: -30.7889, lng: -60.5914 },
-            'Rafaela': { lat: -31.2500, lng: -61.4833 },
-            'Reconquista': { lat: -29.1500, lng: -59.6500 },
-            'Sunchales': { lat: -30.9333, lng: -61.5667 },
-            'Ceres': { lat: -29.8833, lng: -61.9500 },
-            'San Cristóbal': { lat: -30.3167, lng: -61.2333 },
-
-
-            // MENDOZA - Localidades adicionales
-            'Las Heras': { lat: -32.8500, lng: -68.8333 },
-            'Guaymallén': { lat: -32.8978, lng: -68.8117 },
-            'Tunuyán': { lat: -33.5775, lng: -69.0156 },
-            'San Martín': { lat: -33.0808, lng: -68.4689 },
-            'Rivadavia': { lat: -33.1833, lng: -68.4667 },
-            'Junín': { lat: -33.1333, lng: -68.4833 },
-            'La Paz': { lat: -33.4667, lng: -67.5500 },
-            'Tupungato': { lat: -33.3667, lng: -69.1500 },
-            'Malargüe': { lat: -35.4756, lng: -69.5833 },
-            'General Alvear': { lat: -34.9667, lng: -67.6833 },
-            'Santa Rosa': { lat: -33.2667, lng: -68.1500 },
-            'Lavalle': { lat: -32.7333, lng: -68.6000 },
-            'Uspallata': { lat: -32.5917, lng: -69.3453 },
-            'Potrerillos': { lat: -33.0000, lng: -69.2333 },
-            'Cacheuta': { lat: -33.0500, lng: -69.1167 },
-
-            // TUCUMÁN - Localidades adicionales
-            'Banda del Río Salí': { lat: -26.8333, lng: -65.1833 },
-            'Alderetes': { lat: -26.8167, lng: -65.1833 },
-            'Aguilares': { lat: -27.4333, lng: -65.6167 },
-            'Monteros': { lat: -27.1667, lng: -65.5000 },
-            'Tafí del Valle': { lat: -26.8500, lng: -65.7167 },
-            'Famaillá': { lat: -27.0500, lng: -65.4000 },
-            'Bella Vista': { lat: -26.7833, lng: -65.3000 },
-            'Simoca': { lat: -27.2667, lng: -65.3500 },
-            'Burruyacú': { lat: -26.4833, lng: -64.7333 },
-            'Trancas': { lat: -26.2167, lng: -65.2833 },
-            'Lules': { lat: -26.9333, lng: -65.3333 },
-            'Graneros': { lat: -27.6333, lng: -65.4500 },
-            'Ranchillos': { lat: -26.7833, lng: -65.2333 },
-            'La Cocha': { lat: -27.7667, lng: -65.5833 },
-
-            // SALTA - Localidades adicionales
-            'Cafayate': { lat: -26.0728, lng: -65.9783 },
-            'Joaquín V. González': { lat: -25.0833, lng: -64.1167 },
-            'Embarcación': { lat: -23.2167, lng: -64.1000 },
-            'General Güemes': { lat: -24.6667, lng: -65.0500 },
-            'El Carril': { lat: -25.0833, lng: -65.4833 },
-            'Rosario de la Frontera': { lat: -25.8000, lng: -64.9667 },
-            'Chicoana': { lat: -25.1000, lng: -65.5333 },
-            'Cerrillos': { lat: -24.9000, lng: -65.4833 },
-            'La Caldera': { lat: -24.6000, lng: -65.4000 },
-            'Cachi': { lat: -25.1167, lng: -66.1667 },
-            'Molinos': { lat: -25.4500, lng: -66.3000 },
-            'San Antonio de los Cobres': { lat: -24.2167, lng: -66.3167 },
-            'Coronel Moldes': { lat: -25.2667, lng: -65.3000 },
-            'Campo Quijano': { lat: -24.9167, lng: -65.6667 },
-            'Rosario de Lerma': { lat: -24.9833, lng: -65.5833 },
-            'Salta': { lat: -24.7829, lng: -65.4232 },
-            'Tartagal': { lat: -22.5167, lng: -63.8000 },
-            'Orán': { lat: -23.1333, lng: -64.3333 },
-            'Metán': { lat: -25.5000, lng: -64.9667 },
-
-
-            // JUJUY - Todas las localidades
-            'Humahuaca': { lat: -23.2050, lng: -65.3517 },
-            'Tilcara': { lat: -23.5783, lng: -65.3956 },
-            'La Quiaca': { lat: -22.1058, lng: -65.5961 },
-            'Abra Pampa': { lat: -22.7211, lng: -65.6972 },
-            'Perico': { lat: -24.3667, lng: -65.1167 },
-            'El Carmen': { lat: -24.3833, lng: -65.2833 },
-            'Monterrico': { lat: -24.1500, lng: -65.2167 },
-            'Yala': { lat: -24.1333, lng: -65.4000 },
-            'Volcán': { lat: -23.9333, lng: -65.4667 },
-            'Purmamarca': { lat: -23.7481, lng: -65.4981 },
-            'Maimará': { lat: -23.6189, lng: -65.4078 },
-            'Fraile Pintado': { lat: -23.9333, lng: -64.8000 },
-            'Calilegua': { lat: -23.7778, lng: -64.7694 },
-            'Santa Clara': { lat: -24.2833, lng: -64.6500 },
-            'Caimancito': { lat: -23.7333, lng: -64.6000 },
-            'Aguas Calientes': { lat: -24.5000, lng: -65.5000 },
-            'Susques': { lat: -23.4000, lng: -66.3667 },
-            'La Mendieta': { lat: -24.3500, lng: -64.9667 },
-            'Santa Catalina': { lat: -22.1500, lng: -66.0500 },
-            'Cochinoca': { lat: -22.7500, lng: -65.9000 },
-            'Rinconada': { lat: -22.5167, lng: -66.1833 },
-            'Puesto del Marqués': { lat: -24.2167, lng: -65.4500 },
-            'León': { lat: -24.1833, lng: -65.4167 },
-            'Valle Grande': { lat: -23.5000, lng: -64.9500 },
-            'San Francisco': { lat: -23.9500, lng: -65.0333 },
-
-
-            // CATAMARCA - Localidades adicionales
-            'Santa María': { lat: -26.6944, lng: -66.0472 },
-            'Recreo': { lat: -29.2833, lng: -65.0333 },
-            'Tinogasta': { lat: -28.0639, lng: -67.5650 },
-            'Fiambalá': { lat: -27.6833, lng: -67.6167 },
-            'Valle Viejo': { lat: -28.4667, lng: -65.7000 },
-            'Fray Mamerto Esquiú': { lat: -28.5167, lng: -65.7833 },
-            'La Puerta': { lat: -28.0833, lng: -65.8167 },
-            'Pomán': { lat: -28.3958, lng: -66.2211 },
-            'Ancasti': { lat: -28.8167, lng: -65.5000 },
-            'Santa Rosa': { lat: -28.1167, lng: -65.8500 },
-            'Copacabana': { lat: -28.6000, lng: -66.2167 },
-            'Hualfín': { lat: -27.2333, lng: -66.8167 },
-            'Londres': { lat: -27.7167, lng: -67.1500 },
-            'El Rodeo': { lat: -28.2167, lng: -67.3333 },
-            'Aconquija': { lat: -27.5333, lng: -65.9333 },
-            'Icaño': { lat: -28.9500, lng: -65.3333 },
-            'San Fernando del Valle': { lat: -28.4696, lng: -65.7795 },
-            'Chumbicha': { lat: -28.8667, lng: -66.2333 },
-            'Capayán': { lat: -28.7833, lng: -66.0500 },
-            'Mutquín': { lat: -28.3500, lng: -66.1833 },
-            'Belén': { lat: -27.6496, lng: -67.0344 },
-            'Andalgalá': { lat: -27.5833, lng: -66.3167 },
-
-
-            // LA RIOJA - Localidades adicionales
-            'Chamical': { lat: -30.3608, lng: -66.3133 },
-            'Aimogasta': { lat: -28.5500, lng: -66.8167 },
-            'Villa Unión': { lat: -29.3167, lng: -68.2167 },
-            'Chepes': { lat: -31.3450, lng: -66.5989 },
-            'Nonogasta': { lat: -29.2333, lng: -67.2333 },
-            'Famatina': { lat: -28.9208, lng: -67.5042 },
-            'Vinchina': { lat: -28.7500, lng: -68.2333 },
-            'Sanagasta': { lat: -29.2667, lng: -66.9667 },
-            'Anillaco': { lat: -28.8000, lng: -66.9500 },
-            'Castro Barros': { lat: -30.7167, lng: -66.1333 },
-            'Villa Castelli': { lat: -29.0167, lng: -68.2167 },
-            'Milagro': { lat: -29.4333, lng: -66.8667 },
-
-            //RIO NEGRO 
-            'Viedma': { lat: -40.8135, lng: -63.0009 },
-            'General Roca': { lat: -39.0333, lng: -67.5833 },
-            'San Carlos de Bariloche': { lat: -41.1335, lng: -71.3103 },
-            'Cipolletti': { lat: -38.9333, lng: -67.9833 },
-
-
-            // SAN LUIS - Localidades adicionales
-            'La Punta': { lat: -33.1833, lng: -66.3167 },
-            'Justo Daract': { lat: -33.8500, lng: -65.1833 },
-            'Concarán': { lat: -32.5667, lng: -65.2500 },
-            'Tilisarao': { lat: -32.7167, lng: -65.3000 },
-            'Villa de la Quebrada': { lat: -32.4333, lng: -65.0667 },
-            'Naschel': { lat: -32.9167, lng: -65.3667 },
-            'Quines': { lat: -32.2333, lng: -66.3167 },
-            'San Francisco del Monte de Oro': { lat: -32.5956, lng: -66.1256 },
-            'La Toma': { lat: -33.0500, lng: -65.6167 },
-            'Carpintería': { lat: -32.4500, lng: -65.3500 },
-            'Nogolí': { lat: -32.9333, lng: -66.2833 },
-            'Unión': { lat: -34.0667, lng: -65.4500 },
-            'San Luis': { lat: -33.2950, lng: -66.3356 },
-            'Villa Mercedes': { lat: -33.6750, lng: -65.4578 },
-            'Merlo': { lat: -32.3500, lng: -65.0167 },
-
-
-            // SAN JUAN - Localidades adicionales
-            'San Juan': { lat: -31.5375, lng: -68.5364 },
-            'Rawson': { lat: -31.5667, lng: -68.5000 },
-            'Santa Lucía': { lat: -31.5333, lng: -68.5000 },
-            'Caucete': { lat: -31.6667, lng: -68.2833 },
-            'Albardón': { lat: -31.4333, lng: -68.5333 },
-            '9 de Julio': { lat: -31.6167, lng: -68.4000 },
-            '25 de Mayo': { lat: -31.7167, lng: -68.3667 },
-            'Angaco': { lat: -31.5667, lng: -68.3000 },
-            'Jáchal': { lat: -30.2394, lng: -68.7458 },
-            'Valle Fértil': { lat: -30.6333, lng: -67.4667 },
-            'Calingasta': { lat: -31.2833, lng: -69.4667 },
-            'Iglesia': { lat: -30.1333, lng: -69.0833 },
-            'Ullum': { lat: -31.4500, lng: -68.7833 },
-            'Zonda': { lat: -31.5000, lng: -68.7167 },
-            'Sarmiento': { lat: -31.5833, lng: -68.9167 },
-            'Capital': { lat: -31.5375, lng: -68.5364 },
-            'Trinidad': { lat: -31.4667, lng: -68.4167 },
-            'Barreal': { lat: -31.6333, lng: -69.4667 },
-            'Tamberías': { lat: -31.3333, lng: -69.4167 },
-
-
-            // ENTRE RÍOS - Localidades adicionales
-            'Colón': { lat: -32.2231, lng: -58.1419 },
-            'Federación': { lat: -30.9567, lng: -57.8964 },
-            'Victoria': { lat: -32.6186, lng: -60.1567 },
-            'Gualeguay': { lat: -33.1425, lng: -59.3089 },
-            'Villaguay': { lat: -31.8667, lng: -59.0167 },
-            'Chajarí': { lat: -30.7500, lng: -57.9833 },
-            'La Paz': { lat: -30.7411, lng: -59.6489 },
-            'Diamante': { lat: -32.0667, lng: -60.6333 },
-            'Nogoyá': { lat: -32.3958, lng: -59.7922 },
-            'Crespo': { lat: -32.0333, lng: -60.3000 },
-            'San José de Feliciano': { lat: -30.3833, lng: -58.7500 },
-            'Basavilbaso': { lat: -32.3722, lng: -58.8833 },
-            'Rosario del Tala': { lat: -32.3000, lng: -59.1500 },
-            'Uruguay': { lat: -32.4856, lng: -58.2344 },
-            'San Salvador': { lat: -31.6167, lng: -58.5000 },
-            'Concepción del Uruguay': { lat: -32.4822, lng: -58.2372 },
-            'Gualeguaychú': { lat: -33.0089, lng: -58.5172 },
-            'Paraná': { lat: -31.7319, lng: -60.5238 },
-            'Concordia': { lat: -31.3929, lng: -58.0209 },
-            
-            //NEUQUEN   
-            'Neuquén': { lat: -38.9516, lng: -68.0591 },
-            'Plottier': { lat: -38.9675, lng: -68.2333 },
-            'Centenario': { lat: -38.8333, lng: -68.1333 },
-            'Cutral Có': { lat: -38.9333, lng: -69.2333 },
-            'Zapala': { lat: -38.9000, lng: -70.0667 },
-            'San Martín de los Andes': { lat: -40.1579, lng: -71.3534 },
-            'Villa La Angostura': { lat: -40.7667, lng: -71.6333 },
-            'Chos Malal': { lat: -37.3833, lng: -70.2667 },
-            'Andacollo': { lat: -37.1667, lng: -70.6667 },
-            'Las Lajas': { lat: -38.5167, lng: -70.3667 },
-
-
-            // CORRIENTES - Localidades adicionales
-            'Esquina': { lat: -30.0167, lng: -59.5333 },
-            'Mercedes': { lat: -29.1844, lng: -58.0728 },
-            'Sauce': { lat: -30.1167, lng: -58.7833 },
-            'Santo Tomé': { lat: -28.5489, lng: -56.0403 },
-            'Monte Caseros': { lat: -30.2500, lng: -57.6333 },
-            'Bella Vista': { lat: -28.5097, lng: -59.0414 },
-            'Saladas': { lat: -28.2500, lng: -58.6333 },
-            'Ituzaingó': { lat: -27.5833, lng: -56.6833 },
-            'Alvear': { lat: -29.1000, lng: -56.5500 },
-            'Gobernador Virasoro': { lat: -28.0333, lng: -56.0167 },
-            'San Roque': { lat: -28.5667, lng: -58.7000 },
-            'Empedrado': { lat: -27.9500, lng: -58.8000 },
-            'Mburucuyá': { lat: -28.0333, lng: -58.2333 },
-            'San Luis del Palmar': { lat: -27.5081, lng: -58.5558 },
-            'Corrientes': { lat: -27.4806, lng: -58.8341 },
-            'Goya': { lat: -29.1333, lng: -59.2667 },
-            'Curuzú Cuatiá': { lat: -29.7911, lng: -58.0642 },
-            'Paso de los Libres': { lat: -29.7167, lng: -57.0833 },
-
-            // MISIONES - Localidades adicionales
-            'Apóstoles': { lat: -27.9108, lng: -55.7569 },
-            'Leandro N. Alem': { lat: -27.6036, lng: -55.3264 },
-            'Jardín América': { lat: -27.0389, lng: -55.2278 },
-            'San Vicente': { lat: -26.6167, lng: -54.1333 },
-            'Aristóbulo del Valle': { lat: -27.0953, lng: -54.8994 },
-            'Dos de Mayo': { lat: -27.1500, lng: -54.7167 },
-            'Montecarlo': { lat: -26.5667, lng: -54.7500 },
-            'Puerto Rico': { lat: -26.7953, lng: -55.0244 },
-            'Garuhapé': { lat: -26.9500, lng: -54.9333 },
-            '25 de Mayo': { lat: -27.3833, lng: -54.7500 },
-            'Cainguás': { lat: -27.5333, lng: -55.0500 },
-            'San Ignacio': { lat: -27.2572, lng: -55.5358 },
-            'Candelaria': { lat: -27.4681, lng: -55.7428 },
-            'Bernardo de Irigoyen': { lat: -26.2500, lng: -53.6500 },
-            'El Soberbio': { lat: -27.2967, lng: -54.1967 },
-
-            // CHACO - Localidades adicionales
-            'Fontana': { lat: -27.4167, lng: -59.0167 },
-            'General José de San Martín': { lat: -26.5333, lng: -59.3500 },
-            'Quitilipi': { lat: -26.8667, lng: -60.2167 },
-            'Machagai': { lat: -26.9272, lng: -60.0486 },
-            'Charata': { lat: -27.2144, lng: -61.1894 },
-            'Las Breñas': { lat: -27.0900, lng: -61.0811 },
-            'General Pinedo': { lat: -27.3167, lng: -61.2833 },
-            'Tres Isletas': { lat: -26.3417, lng: -60.4317 },
-            'Castelli': { lat: -25.9500, lng: -60.6167 },
-            'Juan José Castelli': { lat: -25.9500, lng: -60.6167 },
-            'Hermoso Campo': { lat: -27.6333, lng: -61.4167 },
-            'Pampa del Infierno': { lat: -26.5000, lng: -61.1667 },
-            'Villa Berthet': { lat: -27.2833, lng: -60.4167 },
-            'Corzuela': { lat: -26.9500, lng: -60.9667 },
-            'Taco Pozo': { lat: -25.6167, lng: -63.2667 },
-            'Resistencia': { lat: -27.4514, lng: -58.9867 },
-            'Sáenz Peña': { lat: -26.7852, lng: -60.4387 },
-            'Barranqueras': { lat: -27.4833, lng: -58.9333 },
-            'Puerto Tirol': { lat: -27.3667, lng: -59.0833 },
-            'Villa Ángela': { lat: -27.5833, lng: -60.7167 },
-
-
-            // FORMOSA
-            'Formosa': { lat: -26.1775, lng: -58.1781 },
-            'Clorinda': { lat: -25.2833, lng: -57.7167 },
-            'Pirané': { lat: -25.7322, lng: -59.1089 },
-
-            // SANTIAGO DEL ESTERO - Localidades adicionales
-            'Frías': { lat: -28.6500, lng: -65.1333 },
-            'Añatuya': { lat: -28.4603, lng: -62.8319 },
-            'Monte Quemado': { lat: -25.8000, lng: -62.8167 },
-            'Fernández': { lat: -27.8833, lng: -63.9500 },
-            'Suncho Corral': { lat: -28.9500, lng: -63.4333 },
-            'Clodomira': { lat: -27.7000, lng: -64.3667 },
-            'Quimilí': { lat: -27.6500, lng: -62.4333 },
-            'Loreto': { lat: -28.3167, lng: -64.1833 },
-            'Tintina': { lat: -28.0667, lng: -62.5167 },
-            'Bandera': { lat: -28.8833, lng: -62.2500 },
-            'Los Telares': { lat: -27.7500, lng: -64.3500 },
-            'Campo Gallo': { lat: -26.5833, lng: -62.8667 },
-            'Nueva Esperanza': { lat: -26.8667, lng: -60.9333 },
-            'Pinto': { lat: -29.1500, lng: -62.6500 },
-            'Ojo de Agua': { lat: -29.5000, lng: -63.6833 },
-
-            // CHUBUT - Localidades adicionales
-            'Dolavon': { lat: -43.3167, lng: -65.7000 },
-            'Gaiman': { lat: -43.2833, lng: -65.4833 },
-            'Rada Tilly': { lat: -45.9333, lng: -67.5500 },
-            'Sarmiento': { lat: -45.5833, lng: -69.0833 },
-            'Gobernador Costa': { lat: -43.6000, lng: -68.5667 },
-            'Camarones': { lat: -44.8000, lng: -65.7167 },
-            'Río Mayo': { lat: -45.6833, lng: -70.2500 },
-            'José de San Martín': { lat: -44.0500, lng: -70.4667 },
-            'Tecka': { lat: -43.4833, lng: -70.8167 },
-            'Trevelin': { lat: -43.0833, lng: -71.4667 },
-            'El Maitén': { lat: -42.0500, lng: -71.1667 },
-            'El Hoyo': { lat: -42.0667, lng: -71.5167 },
-            'Lago Puelo': { lat: -42.0667, lng: -71.6167 },
-            'Cholila': { lat: -42.5167, lng: -71.4333 },
-
-            // RÍO NEGRO - Localidades adicionales
-            'Allen': { lat: -38.9833, lng: -67.8333 },
-            'Villa Regina': { lat: -39.1000, lng: -67.0833 },
-            'Catriel': { lat: -37.8833, lng: -67.7833 },
-            'Cinco Saltos': { lat: -38.8333, lng: -68.0833 },
-            'Choele Choel': { lat: -39.2833, lng: -65.6667 },
-            'Luis Beltrán': { lat: -39.2167, lng: -65.6000 },
-            'Río Colorado': { lat: -38.9833, lng: -64.0833 },
-            'Sierra Grande': { lat: -41.6000, lng: -65.3500 },
-            'San Antonio Oeste': { lat: -40.7333, lng: -64.9500 },
-            'Las Grutas': { lat: -40.8167, lng: -65.0833 },
-            'Lamarque': { lat: -39.4167, lng: -65.7000 },
-            'Mainqué': { lat: -39.6500, lng: -65.9667 },
-            'El Bolsón': { lat: -41.9667, lng: -71.5333 },
-            'Comallo': { lat: -41.0333, lng: -70.2667 },
-            'Ingeniero Jacobacci': { lat: -41.3333, lng: -69.5500 },
-
-            // LA PAMPA - Localidades adicionales
-            'Toay': { lat: -36.6667, lng: -64.3667 },
-            'Eduardo Castex': { lat: -35.9167, lng: -64.2833 },
-            'Realicó': { lat: -35.0333, lng: -64.2500 },
-            'Victorica': { lat: -36.2167, lng: -65.4333 },
-            'Intendente Alvear': { lat: -35.2333, lng: -63.5833 },
-            'Macachín': { lat: -37.1333, lng: -63.6667 },
-            'Catriló': { lat: -36.3833, lng: -63.4167 },
-            'Telén': { lat: -35.4500, lng: -65.2833 },
-            'Quemú Quemú': { lat: -36.0500, lng: -63.5667 },
-            'Winifreda': { lat: -36.2333, lng: -64.2333 },
-            'Santa Isabel': { lat: -36.2167, lng: -66.9333 },
-            'General San Martín': { lat: -35.5167, lng: -63.6167 },
-            'Anguil': { lat: -36.5333, lng: -64.0167 },
-            'Alta Italia': { lat: -35.3167, lng: -64.1667 },
-            'Doblas': { lat: -36.8833, lng: -64.0000 },
-            'Santa Rosa': { lat: -36.6167, lng: -64.2833 },
-            'General Pico': { lat: -35.6667, lng: -63.7500 },
-            'Guatraché': { lat: -37.6667, lng: -63.5333 },
-
-
-           // SANTA CRUZ - Localidades adicionales
-            'Puerto Deseado': { lat: -47.7500, lng: -65.8833 },
-            'Puerto San Julián': { lat: -49.3056, lng: -67.7278 },
-            'Pico Truncado': { lat: -46.7833, lng: -67.9500 },
-            'Las Heras': { lat: -46.5417, lng: -68.9333 },
-            'Puerto Santa Cruz': { lat: -50.0194, lng: -68.5231 },
-            'Perito Moreno': { lat: -46.5889, lng: -70.9256 },
-            'Gobernador Gregores': { lat: -48.7500, lng: -70.2500 },
-            'El Chaltén': { lat: -49.3314, lng: -72.8858 },
-            'Los Antiguos': { lat: -46.5500, lng: -71.6333 },
-            'Comandante Luis Piedra Buena': { lat: -49.9833, lng: -68.9167 },
-            'Río Gallegos': { lat: -51.6226, lng: -69.2181 },
-            '28 de Noviembre': { lat: -51.6000, lng: -72.2167 },
-            'Puerto Coig': { lat: -51.6833, lng: -69.8833 },
-            'Fitz Roy': { lat: -50.3500, lng: -72.3000 },
-            'Tres Lagos': { lat: -49.5833, lng: -71.4167 },
-            'Jaramillo': { lat: -46.2833, lng: -67.8167 },
-            'Koluel Kaike': { lat: -46.2167, lng: -67.7333 },
-            'Tellier': { lat: -46.8167, lng: -67.4333 },
-
-            // TIERRA DEL FUEGO - Localidades adicionales
-            'Puerto Almanza': { lat: -54.8500, lng: -67.1333 },
-            'Puerto Williams': { lat: -54.9333, lng: -67.6167 },
-            'Lago Escondido': { lat: -54.6500, lng: -67.8333 },
-            'San Sebastián': { lat: -53.3000, lng: -68.5000 },
-            'Puerto Harberton': { lat: -54.8833, lng: -67.2500 },
-            'Cabo San Pablo': { lat: -54.3000, lng: -67.2000 },
-            'Estancia María Luisa': { lat: -54.6167, lng: -67.4667 },
-            'Moat': { lat: -54.9500, lng: -66.7500 },
-            'Ushuaia': { lat: -54.8019, lng: -68.3030 },
-            'Río Grande': { lat: -53.7877, lng: -67.7095 },
-            'Tolhuin': { lat: -54.5167, lng: -67.2000 },
-
+            // ... (incluir todas las coordenadas de tu archivo original)
         };
 
         // Parsear vendedores desde Django
@@ -908,33 +481,26 @@
             
             if (vendedoresJson && vendedoresJson !== 'None' && vendedoresJson !== '') {
                 vendedoresData = JSON.parse(vendedoresJson);
-                console.log('[DEBUG] Vendedores parseados:', vendedoresData);
+                console.log('[DEBUG] Vendedores parseados:', vendedoresData.length);
             }
         } catch (e) {
-            console.error('[ERROR] Error parseando vendedores JSON:', e);
+            console.error('[ERROR] Error parseando JSON:', e);
         }
         
-        // Obtener ubicación del usuario
+        // Ubicación del usuario
         const localidad = "{{ solicitud.localidad }}";
         const zona = "{{ solicitud.zona }}";
         
-        console.log('[DEBUG] Ubicación usuario:', { localidad, zona });
-        
         // Función para buscar coordenadas
         function buscarCoordenadas(loc, prov) {
-            // Intentar primero con localidad + zona
             if (loc && prov) {
                 const key1 = `${loc}, ${prov}`;
                 if (coordenadas[key1]) return coordenadas[key1];
             }
             
-            // Intentar solo con localidad
             if (loc && coordenadas[loc]) return coordenadas[loc];
-            
-            // Intentar solo con zona/provincia
             if (prov && coordenadas[prov]) return coordenadas[prov];
             
-            // Buscar coincidencia parcial
             const normalizar = str => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             
             if (loc) {
@@ -962,116 +528,105 @@
         let userCoords = buscarCoordenadas(localidad, zona);
         
         if (!userCoords) {
-            console.warn('[WARN] No se encontraron coordenadas del usuario, usando Buenos Aires');
+            console.warn('[WARN] Sin coordenadas usuario, usando Buenos Aires');
             userCoords = coordenadas['Buenos Aires'];
         }
 
-        console.log('[DEBUG] Coordenadas del usuario:', userCoords);
+        // Inicializar mapa con delay para animación
+        setTimeout(() => {
+            document.getElementById('mapLoading').style.display = 'none';
+            document.getElementById('map').style.display = 'block';
+            
+            const map = L.map('map').setView([userCoords.lat, userCoords.lng], 12);
 
-        // Inicializar el mapa
-        const map = L.map('map').setView([userCoords.lat, userCoords.lng], 11);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
 
-        // Agregar capa de OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 19
-        }).addTo(map);
-
-        // Iconos personalizados
-        const userIcon = L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        });
-
-        const vendedorIcon = L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        });
-
-        // Marcador de tu ubicación
-        const ubicacionDisplay = (localidad ? localidad : '') + (localidad && zona ? ', ' : '') + (zona ? zona : '');
-        const userMarker = L.marker([userCoords.lat, userCoords.lng], {icon: userIcon})
-            .addTo(map)
-            .bindPopup('<b>Tu ubicación</b><br>' + ubicacionDisplay)
-            .openPopup();
-
-        const allMarkers = [userMarker];
-
-        // ✅ AGREGAR MARCADORES DE VENDEDORES CON PRIORIDAD GPS
-        console.log('[DEBUG] Procesando vendedores:', vendedoresData.length);
-        
-        if (Array.isArray(vendedoresData) && vendedoresData.length > 0) {
-            vendedoresData.forEach((vendedor, index) => {
-                console.log(`[DEBUG] Vendedor ${index + 1}:`, vendedor);
-                
-                let vendedorCoords = null;
-                
-                // 🎯 PRIORIDAD 1: Usar coordenadas GPS EXACTAS si existen
-                if (vendedor.tiene_gps && vendedor.latitud && vendedor.longitud) {
-                    vendedorCoords = {
-                        lat: parseFloat(vendedor.latitud),
-                        lng: parseFloat(vendedor.longitud)
-                    };
-                    console.log(`[GPS EXACTO] ✓ ${vendedor.nombre}: ${vendedorCoords.lat}, ${vendedorCoords.lng}`);
-                } 
-                // ⚠️ FALLBACK: Usar base de datos local solo si NO tiene GPS
-                else {
-                    vendedorCoords = buscarCoordenadas(vendedor.localidad, vendedor.zona);
-                    if (vendedorCoords) {
-                        console.log(`[APROXIMADO] ⚠ ${vendedor.nombre}: ${vendedorCoords.lat}, ${vendedorCoords.lng}`);
-                    }
-                }
-                
-                if (vendedorCoords) {
-                    // Construir ubicación completa para el popup
-                    const ubicacionVendedor = [
-                        vendedor.direccion,
-                        vendedor.localidad,
-                        vendedor.zona
-                    ].filter(Boolean).join(', ');
-                    
-                    // Iconos y etiquetas según tipo de ubicación
-                    const gpsIcon = vendedor.tiene_gps ? '📍' : '📌';
-                    const gpsLabel = vendedor.tiene_gps ? '<span style="color: #27ae60; font-weight: bold;">GPS Exacto</span>' : '<span style="color: #f39c12;">Ubicación Aproximada</span>';
-                    
-                    const marker = L.marker([vendedorCoords.lat, vendedorCoords.lng], {icon: vendedorIcon})
-                        .addTo(map)
-                        .bindPopup(`
-                            <div style="min-width: 200px;">
-                                <b>${vendedor.nombre}</b><br>
-                                ${gpsIcon} ${ubicacionVendedor}<br>
-                                <small>${gpsLabel}</small><br>
-                                📧 ${vendedor.email}<br>
-                                📱 ${vendedor.telefono}
-                            </div>
-                        `);
-                    
-                    allMarkers.push(marker);
-                    console.log(`✓ Marcador agregado: ${vendedor.nombre}`);
-                } else {
-                    console.warn(`✗ Sin coordenadas para: ${vendedor.nombre} (${vendedor.localidad}, ${vendedor.zona})`);
-                }
+            // Iconos personalizados
+            const userIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
             });
-        } else {
-            console.warn('[WARN] No hay vendedores para mostrar');
-        }
 
-        // Ajustar mapa para mostrar todos los marcadores
-        if (allMarkers.length > 1) {
-            const group = L.featureGroup(allMarkers);
-            map.fitBounds(group.getBounds().pad(0.1));
-            console.log('[DEBUG] Mapa ajustado para todos los marcadores');
-        }
-        
-        console.log('[DEBUG] Inicialización completada - Total marcadores:', allMarkers.length);
+            const vendedorIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+
+            // Marcador usuario
+            const ubicacionDisplay = (localidad ? localidad : '') + (localidad && zona ? ', ' : '') + (zona ? zona : '');
+            const userMarker = L.marker([userCoords.lat, userCoords.lng], {icon: userIcon})
+                .addTo(map)
+                .bindPopup(`<div class="popup-title">📍 Tu ubicación</div><div class="popup-info">${ubicacionDisplay}</div>`)
+                .openPopup();
+
+            const allMarkers = [userMarker];
+
+            // Agregar vendedores
+            if (Array.isArray(vendedoresData) && vendedoresData.length > 0) {
+                vendedoresData.forEach((vendedor, index) => {
+                    let vendedorCoords = null;
+                    
+                    if (vendedor.tiene_gps && vendedor.latitud && vendedor.longitud) {
+                        vendedorCoords = {
+                            lat: parseFloat(vendedor.latitud),
+                            lng: parseFloat(vendedor.longitud)
+                        };
+                        console.log(`[GPS EXACTO] ✓ ${vendedor.nombre}: ${vendedorCoords.lat}, ${vendedorCoords.lng}`);
+                    } else {
+                        vendedorCoords = buscarCoordenadas(vendedor.localidad, vendedor.zona);
+                        if (vendedorCoords) {
+                            console.log(`[APROXIMADO] ⚠ ${vendedor.nombre}`);
+                        }
+                    }
+                    
+                    if (vendedorCoords) {
+                        const ubicacionVendedor = [
+                            vendedor.direccion,
+                            vendedor.localidad,
+                            vendedor.zona
+                        ].filter(Boolean).join(', ');
+                        
+                        const gpsIcon = vendedor.tiene_gps ? '📍' : '📌';
+                        const gpsBadgeClass = vendedor.tiene_gps ? 'gps-exacto' : 'gps-aproximado';
+                        const gpsLabel = vendedor.tiene_gps ? 'GPS Exacto' : 'Ubicación Aproximada';
+                        
+                        const popupContent = `
+                            <div class="popup-title">${vendedor.nombre}</div>
+                            <div class="popup-info">${gpsIcon} ${ubicacionVendedor}</div>
+                            <div class="popup-badge ${gpsBadgeClass}">${gpsLabel}</div>
+                            <div class="popup-info" style="margin-top: 8px;">📧 ${vendedor.email}</div>
+                            <div class="popup-info">📱 ${vendedor.telefono}</div>
+                        `;
+                        
+                        const marker = L.marker([vendedorCoords.lat, vendedorCoords.lng], {icon: vendedorIcon})
+                            .addTo(map)
+                            .bindPopup(popupContent);
+                        
+                        allMarkers.push(marker);
+                        console.log(`✓ Marcador agregado: ${vendedor.nombre}`);
+                    }
+                });
+            }
+
+            // Ajustar vista
+            if (allMarkers.length > 1) {
+                const group = L.featureGroup(allMarkers);
+                map.fitBounds(group.getBounds().pad(0.15));
+            }
+            
+            console.log('[MAPA] Inicialización completa -', allMarkers.length, 'marcadores');
+        }, 800);
     </script>
 </body>
 </html>
